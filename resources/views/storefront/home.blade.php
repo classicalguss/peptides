@@ -1,0 +1,213 @@
+<x-layouts.storefront title="Powered Up Peptides — Research Peptides & Stack Protocols">
+
+    {{-- Hero --}}
+    <section class="relative overflow-hidden bg-electric">
+        <div class="absolute inset-0 bg-[url('/assets/brand/hero-banner.png')] bg-cover bg-center opacity-25"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/70 to-ink"></div>
+
+        <div class="relative mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pt-24 lg:pb-28">
+            <div>
+                <div class="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/[0.06] px-3.5 py-1.5">
+                    <span class="size-1.5 rounded-full bg-gold"></span>
+                    <span class="eyebrow text-gold">Third-Party Tested · 99%+ Purity</span>
+                </div>
+
+                <h1 class="display-title mt-6 text-5xl sm:text-6xl lg:text-7xl">
+                    <span class="text-white">Power Up Your</span><br>
+                    <span class="text-foil">Research</span>
+                </h1>
+
+                <p class="animate-in mt-6 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg" style="--reveal-delay: 120ms">
+                    Premium research peptides and pre-built stack protocols. Every batch is
+                    independently HPLC verified and the certificate of analysis is published
+                    before it ships &mdash; so you always know exactly what is in the vial.
+                </p>
+
+                <div class="animate-in mt-9 flex flex-wrap items-center gap-3" style="--reveal-delay: 220ms">
+                    <a href="{{ route('stacks') }}"
+                       class="rounded-full bg-gold px-7 py-3.5 text-sm font-extrabold tracking-wider text-black uppercase transition hover:bg-gold-bright hover:shadow-[0_0_40px_-8px_var(--color-gold)]">
+                        Shop Stack Protocols
+                    </a>
+                    <a href="{{ route('lab-reports') }}"
+                       class="rounded-full border border-white/15 px-7 py-3.5 text-sm font-extrabold tracking-wider text-white uppercase transition hover:border-gold/50 hover:text-gold">
+                        View Lab Reports
+                    </a>
+                </div>
+
+                <dl class="animate-in mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7" style="--reveal-delay: 320ms">
+                    <div>
+                        <dt class="display-title text-3xl text-foil">99.8%</dt>
+                        <dd class="mt-1 text-[11px] font-bold tracking-widest text-white/40 uppercase">Peak Purity</dd>
+                    </div>
+                    <div>
+                        <dt class="display-title text-3xl text-foil">{{ $compoundCount }}</dt>
+                        <dd class="mt-1 text-[11px] font-bold tracking-widest text-white/40 uppercase">Compounds</dd>
+                    </div>
+                    <div>
+                        <dt class="display-title text-3xl text-foil">24h</dt>
+                        <dd class="mt-1 text-[11px] font-bold tracking-widest text-white/40 uppercase">Dispatch</dd>
+                    </div>
+                </dl>
+            </div>
+
+            {{-- Featured stack --}}
+            @if ($featured)
+                @php
+                    $featuredImage = $featured->product->getFirstMedia('images');
+                    $featuredSlug = $featured->product->urls->first()?->slug ?? $featured->handle;
+                @endphp
+                <div style="{{ $featured->accentStyle() }}" class="relative">
+                    <div class="absolute -inset-8 rounded-full bg-[var(--accent)]/15 blur-3xl"></div>
+                    <a href="{{ route('stack', $featuredSlug) }}"
+                       class="relative block overflow-hidden rounded-3xl panel accent-ring">
+                        <div class="relative aspect-[5/6] bg-accent-electric">
+                            @if ($featuredImage)
+                                <img src="{{ $featuredImage->getUrl('large') }}"
+                                     alt="{{ $featured->product->translateAttribute('name') }}"
+                                     class="absolute inset-0 size-full object-contain p-6">
+                            @endif
+                            <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
+                                Best Seller
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4 border-t border-white/5 p-6">
+                            <div>
+                                <p class="eyebrow text-[var(--accent)]">{{ $featured->protocol_label }}</p>
+                                <h2 class="display-title mt-1.5 text-2xl text-white">{{ $featured->product->translateAttribute('name') }}</h2>
+                                <p class="mt-1 text-[13px] text-white/50">{{ $featured->tagline }}</p>
+                            </div>
+                            <div class="shrink-0 text-right">
+                                <p class="text-[10px] font-bold tracking-widest text-white/35 uppercase">From</p>
+                                <p class="display-title text-3xl text-accent-foil">{{ \App\Support\Catalog::money($featuredFrom) }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <x-store.trust-bar />
+
+    {{-- Stack protocols --}}
+    <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+        <x-store.section-heading
+            eyebrow="Built For Results"
+            title='Stack <span class="text-foil">Protocols</span>'
+            subtitle="Pre-built systems that pair synergistic compounds with the bacteriostatic water you need. Every stack ships in three protocol tiers — save up to 58% versus buying vials individually." />
+
+        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($stacks as $i => $stack)
+                <x-store.product-card :profile="$stack"
+                                      class="reveal" style="{{ $stack->accentStyle() }} --reveal-delay: {{ ($i % 3) * 90 }}ms" />
+            @endforeach
+        </div>
+    </section>
+
+    {{-- Individual compounds --}}
+    <section class="border-y border-white/5 bg-black/40 py-20 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4">
+            <div class="flex flex-wrap items-end justify-between gap-6">
+                <x-store.section-heading
+                    align="left"
+                    eyebrow="À La Carte"
+                    title='Individual <span class="text-foil">Compounds</span>'
+                    subtitle="Building your own protocol? Every compound is available on its own with quantity-break pricing — the more vials, the lower the unit cost." />
+
+                <a href="{{ route('shop') }}"
+                   class="rounded-full border border-gold/30 px-5 py-2.5 text-xs font-extrabold tracking-widest text-gold uppercase transition hover:bg-gold hover:text-black">
+                    View All
+                </a>
+            </div>
+
+            <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($compounds as $i => $compound)
+                    <x-store.product-card :profile="$compound"
+                                          class="reveal" style="{{ $compound->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- Why us --}}
+    <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+        <x-store.section-heading
+            eyebrow="Why Powered Up"
+            title='No Guessing. <span class="text-foil">Ever.</span>'
+            subtitle="Most suppliers ask you to take their word for it. We publish the receipts." />
+
+        <div class="mt-14 grid gap-6 lg:grid-cols-3">
+            @foreach ([
+                ['title' => 'Every Batch Tested', 'body' => 'Independent ISO-accredited analysis by HPLC and mass spectrometry on every single batch — not a one-off sample from two years ago.', 'stat' => '100%'],
+                ['title' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.', 'stat' => 'Public'],
+                ['title' => 'Cold Chain Packed', 'body' => 'Lyophilised powder is packed with insulation and shipped in discreet packaging within 24 hours of your order clearing.', 'stat' => '24h'],
+            ] as $i => $item)
+                <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ $i * 90 }}ms">
+                    <p class="display-title text-4xl text-foil">{{ $item['stat'] }}</p>
+                    <h3 class="mt-5 text-lg font-extrabold tracking-wide text-white uppercase">{{ $item['title'] }}</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item['body'] }}</p>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
+    {{-- Reviews --}}
+    @if ($reviews->isNotEmpty())
+        <section class="border-y border-white/5 bg-black/40 py-20 sm:py-24">
+            <div class="mx-auto max-w-7xl px-4">
+                <x-store.section-heading
+                    eyebrow="Verified Buyers"
+                    title='Researcher <span class="text-foil">Reviews</span>' />
+
+                <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($reviews as $i => $review)
+                        <figure class="reveal hover-lift flex flex-col rounded-2xl panel p-6 hover:border-gold/25"
+                                style="--reveal-delay: {{ ($i % 3) * 90 }}ms">
+                            <x-store.stars :rating="$review->rating" />
+                            <blockquote class="mt-4 flex-1">
+                                <p class="text-sm font-bold text-white">{{ $review->title }}</p>
+                                <p class="mt-2 text-sm leading-relaxed text-white/55">{{ $review->body }}</p>
+                            </blockquote>
+                            <figcaption class="mt-5 flex items-center justify-between border-t border-white/5 pt-4 text-xs">
+                                <span class="font-bold text-white/70">{{ $review->author_name }}</span>
+                                <span class="inline-flex items-center gap-1.5 text-gold/80">
+                                    <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.7l1.9 1.5 2.4-.3 1 2.2 2.2 1-.3 2.4L18.3 12l-1.5 1.9.3 2.4-2.2 1-1 2.2-2.4-.3L10 20.7 8.1 19.2l-2.4.3-1-2.2-2.2-1 .3-2.4L1.7 12l1.1-1.5-.3-2.4 2.2-1 1-2.2 2.4.3L10 1.7z" opacity=".25"/><path d="M7.5 10.2l1.8 1.8 3.4-3.6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    Verified
+                                </span>
+                            </figcaption>
+                        </figure>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Closing CTA --}}
+    <section class="relative overflow-hidden">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+            <div class="relative overflow-hidden rounded-3xl panel gold-ring px-6 py-14 text-center sm:px-14">
+                <div class="absolute inset-0 bg-electric opacity-70"></div>
+                <div class="relative">
+                    <h2 class="display-title text-4xl text-white sm:text-5xl">
+                        Ready To <span class="text-foil">Power Up?</span>
+                    </h2>
+                    <p class="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/55">
+                        Start with a stack protocol built around your research goal, or browse the
+                        full compound library and build your own.
+                    </p>
+                    <div class="mt-9 flex flex-wrap justify-center gap-3">
+                        <a href="{{ route('stacks') }}"
+                           class="rounded-full bg-gold px-8 py-3.5 text-sm font-extrabold tracking-wider text-black uppercase transition hover:bg-gold-bright">
+                            Shop Stack Protocols
+                        </a>
+                        <a href="{{ route('contact') }}"
+                           class="rounded-full border border-white/15 px-8 py-3.5 text-sm font-extrabold tracking-wider text-white uppercase transition hover:border-gold/50 hover:text-gold">
+                            Talk To Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</x-layouts.storefront>

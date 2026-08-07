@@ -1,0 +1,182 @@
+<x-layouts.storefront title="About — Powered Up Peptides"
+                      description="Who we are, how we source and test our research peptides, and the standards every batch has to clear before it ships.">
+
+    <section class="relative overflow-hidden bg-electric">
+        <div class="mx-auto max-w-7xl px-4 pt-10 pb-20">
+            <nav class="flex items-center gap-2 text-xs text-white/40">
+                <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
+                <span>/</span>
+                <span class="text-white/70">About</span>
+            </nav>
+
+            <p class="mt-8 eyebrow text-gold">Our Standard</p>
+            <h1 class="display-title mt-4 max-w-3xl text-5xl leading-[0.95] text-white sm:text-6xl lg:text-7xl">
+                Know Exactly <span class="text-foil">What Is In The Vial</span>
+            </h1>
+
+            <p class="mt-6 max-w-2xl text-base leading-relaxed text-white/55">
+                Powered Up Peptides exists because too much of this market asks researchers to take
+                purity on faith. We publish the analysis for every batch we sell, so you never have
+                to.
+            </p>
+        </div>
+    </section>
+
+    {{-- Stats --}}
+    <section class="border-y border-white/5 bg-black/40">
+        <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 py-10 sm:grid-cols-4">
+            @foreach ([
+                ['99%+', 'Minimum purity threshold'],
+                ['100%', 'Batches third-party tested'],
+                ['24h', 'Typical dispatch time'],
+                ['0', 'Batches shipped without a COA'],
+            ] as $i => [$stat, $label])
+                <div class="reveal px-2 text-center" style="--reveal-delay: {{ $i * 90 }}ms">
+                    <p class="display-title text-4xl text-gold sm:text-5xl">{{ $stat }}</p>
+                    <p class="mt-2 text-[11px] leading-relaxed tracking-wide text-white/40 uppercase">{{ $label }}</p>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
+    <div class="mx-auto max-w-7xl px-4 py-16">
+
+        {{-- Story --}}
+        <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+                <p class="eyebrow text-gold">Why We Started</p>
+                <h2 class="display-title mt-3 text-4xl text-white sm:text-5xl">
+                    Built Out Of <span class="text-foil">Frustration</span>
+                </h2>
+                <div class="mt-6 space-y-4 text-[15px] leading-relaxed text-white/55">
+                    <p>
+                        Anyone who has sourced research peptides knows the routine. A vendor claims
+                        99% purity. There is no certificate, or there is one certificate from two
+                        years ago covering a batch you did not receive. You are left running your own
+                        verification before you can even begin the work you actually planned.
+                    </p>
+                    <p>
+                        We built Powered Up Peptides around the opposite default. Every batch is sent
+                        to an independent lab for HPLC and mass spectrometry analysis before it is
+                        listed. That report is published against the batch number printed on your
+                        vial, and it stays public whether the result flatters us or not.
+                    </p>
+                    <p>
+                        If a batch does not clear our purity threshold, it does not get sold. It is
+                        a simple rule, and it is the entire reason this company exists.
+                    </p>
+                </div>
+            </div>
+
+            <div class="reveal rounded-2xl panel p-8">
+                <p class="eyebrow text-gold">The Commitments</p>
+                <ul class="mt-6 space-y-5">
+                    @foreach ([
+                        ['Every batch tested', 'Independent HPLC and mass spec analysis, published against the batch number on your vial.'],
+                        ['No hidden failures', 'Reports stay public regardless of the result. Batches under threshold are destroyed, not discounted.'],
+                        ['Cold chain integrity', 'Lyophilised, sealed and temperature controlled from the lab bench to your door.'],
+                        ['Honest pricing', 'Volume discounts are applied automatically. No inflated list price to make a fake sale look generous.'],
+                    ] as $i => [$title, $body])
+                        <li class="reveal flex gap-4" style="--reveal-delay: {{ $i * 80 }}ms">
+                            <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-gold/15 text-xs font-black text-gold">&#10003;</span>
+                            <div>
+                                <p class="text-sm font-bold text-white">{{ $title }}</p>
+                                <p class="mt-1 text-[13px] leading-relaxed text-white/50">{{ $body }}</p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+
+        {{-- Process --}}
+        <section id="process" class="mt-20 scroll-mt-28">
+            <x-store.section-heading eyebrow="How It Works"
+                                     title='From Synthesis <span class="text-foil">To Your Bench</span>'
+                                     subtitle="Four checkpoints, and a batch has to clear all of them." />
+
+            <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ([
+                    ['01', 'Sourcing', 'We work with a small number of vetted synthesis partners operating under documented quality systems. New suppliers go through sample testing long before they get an order.'],
+                    ['02', 'Independent testing', 'Every batch goes to a third-party lab. HPLC establishes purity, mass spectrometry confirms the compound is what it claims to be.'],
+                    ['03', 'Review', 'Results are checked against our 99% threshold. Anything that falls short is rejected outright. Passing batches get their COA published.'],
+                    ['04', 'Cold chain dispatch', 'Vials are packed with temperature control in plain outer packaging and dispatched, typically within 24 hours.'],
+                ] as $i => [$num, $title, $body])
+                    <div class="reveal hover-lift rounded-2xl panel p-6 hover:gold-ring" style="--reveal-delay: {{ $i * 90 }}ms">
+                        <p class="display-title text-3xl text-gold/30">{{ $num }}</p>
+                        <h3 class="mt-3 text-base font-extrabold text-white">{{ $title }}</h3>
+                        <p class="mt-2.5 text-[13px] leading-relaxed text-white/50">{{ $body }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
+        {{-- Compliance --}}
+        <section class="mt-20 grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <div class="rounded-2xl border border-gold/25 bg-gold/[0.04] p-8">
+                <p class="eyebrow text-gold">Where We Draw The Line</p>
+                <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">Research Use Only</h2>
+                <div class="mt-5 space-y-4 text-sm leading-relaxed text-white/55">
+                    <p>
+                        Everything we sell is supplied strictly for in-vitro laboratory research. Our
+                        products are not drugs, foods or cosmetics, they have not been evaluated by
+                        the FDA, and they are not for human or veterinary consumption.
+                    </p>
+                    <p>
+                        We do not provide dosing protocols, medical guidance or advice on
+                        administration, and we will not do so if asked. Where our product pages cite
+                        figures from published literature, that is a reference to the research
+                        record, not a recommendation.
+                    </p>
+                    <p class="text-white/70">
+                        By ordering, you confirm you are a qualified researcher aged 21 or over and
+                        that you are responsible for compliance with the regulations that apply where
+                        you are.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <p class="eyebrow text-gold">Questions We Get Asked</p>
+                <h2 class="display-title mt-3 text-4xl text-white sm:text-5xl">
+                    Straight <span class="text-foil">Answers</span>
+                </h2>
+                <div class="mt-8 space-y-3">
+                    @foreach ([
+                        ['Who actually tests the batches?', 'Independent accredited laboratories with no commercial stake in the result. We do not run purity analysis in-house, because a vendor grading its own work is not verification.'],
+                        ['What happens to a failed batch?', 'It is destroyed. We do not relabel it, sell it at a discount, or move it to a secondary channel.'],
+                        ['Do you sell to individuals?', 'We sell to qualified researchers aged 21 and over. Our products are for laboratory research only and are never supplied for personal use.'],
+                        ['How do I verify what I received?', 'Every vial carries a batch number. Enter it on the lab reports page to pull the exact certificate for that batch.'],
+                    ] as $i => $item)
+                        <x-store.accordion :question="$item[0]" :answer="$item[1]"
+                                           class="reveal" style="--reveal-delay: {{ $i * 60 }}ms" />
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        {{-- CTA --}}
+        <section class="mt-20 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-16">
+            <h2 class="display-title text-4xl text-white sm:text-5xl">
+                Check Us <span class="text-foil">Before You Buy</span>
+            </h2>
+            <p class="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/55">
+                Do not take our word for any of this. Pull a batch certificate and read the numbers
+                yourself.
+            </p>
+            <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+                <a href="{{ route('lab-reports') }}"
+                   class="rounded-full bg-gold px-9 py-4 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
+                    View Lab Reports
+                </a>
+                <a href="{{ route('contact') }}"
+                   class="rounded-full border border-white/20 px-9 py-4 text-xs font-extrabold tracking-widest text-white uppercase transition hover:border-gold/50 hover:text-gold">
+                    Talk To Us
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <x-store.trust-bar />
+
+</x-layouts.storefront>

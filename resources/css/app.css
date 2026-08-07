@@ -1,0 +1,197 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Archivo', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Brand palette sampled from the logo + hero banner */
+    --color-ink: #050506;
+    --color-ink-soft: #0b0a0f;
+    --color-panel: #100e16;
+    --color-panel-raised: #171420;
+
+    --color-gold: #ffc000;
+    --color-gold-bright: #ffd426;
+    --color-gold-deep: #a06000;
+    --color-violet: #8b31f5;
+    --color-magenta: #d946ef;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--color-ink);
+        color: #d8d6e0;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+        background: var(--color-gold);
+        color: #000;
+    }
+}
+
+@utility display-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+    text-transform: uppercase;
+}
+
+/* Gold foil treatment used for the wordmark and headline type */
+@utility text-foil {
+    background-image: linear-gradient(
+        180deg,
+        #fff4c2 0%,
+        var(--color-gold-bright) 38%,
+        var(--color-gold) 55%,
+        var(--color-gold-deep) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px rgb(255 192 0 / 0.35));
+}
+
+@utility text-accent-foil {
+    background-image: linear-gradient(180deg, #ffffff 0%, var(--accent) 45%, var(--accent-glow) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 45%, transparent));
+}
+
+/* Electric lightning backdrop from the banner artwork */
+@utility bg-electric {
+    background-color: var(--color-ink);
+    background-image:
+        radial-gradient(ellipse 60% 50% at 50% 0%, color-mix(in srgb, var(--color-gold) 22%, transparent), transparent 70%),
+        radial-gradient(ellipse 45% 40% at 12% 25%, color-mix(in srgb, var(--color-violet) 30%, transparent), transparent 70%),
+        radial-gradient(ellipse 45% 40% at 88% 30%, color-mix(in srgb, var(--color-magenta) 22%, transparent), transparent 70%);
+}
+
+@utility bg-accent-electric {
+    background-color: var(--color-ink);
+    background-image:
+        radial-gradient(ellipse 65% 55% at 50% 0%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%),
+        radial-gradient(ellipse 40% 45% at 8% 30%, color-mix(in srgb, var(--accent-glow) 45%, transparent), transparent 70%),
+        radial-gradient(ellipse 40% 45% at 92% 35%, color-mix(in srgb, var(--color-violet) 20%, transparent), transparent 70%);
+}
+
+@utility panel {
+    background: linear-gradient(180deg, var(--color-panel) 0%, var(--color-ink-soft) 100%);
+    border: 1px solid rgb(255 255 255 / 0.07);
+}
+
+@utility accent-ring {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+        0 18px 60px -24px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+@utility gold-ring {
+    border-color: color-mix(in srgb, var(--color-gold) 40%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--color-gold) 18%, transparent),
+        0 18px 60px -24px color-mix(in srgb, var(--color-gold) 45%, transparent);
+}
+
+@utility eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@keyframes reveal-up {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/*
+ * Elements tagged `.reveal` start hidden and animate in once the observer in
+ * app.js adds `.is-visible`. Stagger with `style="--reveal-delay: 120ms"`.
+ */
+@utility reveal {
+    opacity: 0;
+    will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+    animation: reveal-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Above-the-fold content should not wait for the observer. */
+@utility animate-in {
+    animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--reveal-delay, 0ms);
+}
+
+@utility animate-fade {
+    animation: fade-in 0.8s ease-out both;
+    animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Card hover treatment shared by product tiles and panels. */
+@utility hover-lift {
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.001ms !important;
+    }
+
+    .reveal {
+        opacity: 1;
+    }
+
+    .hover-lift:hover {
+        transform: none;
+    }
+}
