@@ -189,7 +189,7 @@ class StorefrontController extends Controller
 
         $components = StackComponent::where('stack_product_id', $profile->product_id)
             ->orderBy('position')
-            ->with('component.urls')
+            ->with(['component.urls', 'componentProfile'])
             ->get();
 
         $componentProfiles = ProductProfile::whereIn('product_id', $components->pluck('component_product_id'))

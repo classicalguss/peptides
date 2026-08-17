@@ -3,6 +3,7 @@
 namespace App\Filament\Extensions;
 
 use App\Models\ProductProfile;
+use App\Models\StackComponent;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -12,6 +13,9 @@ class EditProductPageExtension extends EditPageExtension
 {
     /** @var array<string, mixed>|null */
     private ?array $pendingPageText = null;
+
+    /** @var array<int, array<string, mixed>>|null */
+    private ?array $pendingIncludedItems = null;
 
     public function headerActions(array $actions): array
     {
@@ -47,6 +51,20 @@ class EditProductPageExtension extends EditPageExtension
 
         $data['page_text'] = $pageText;
 
+        if ($profile->isStack()) {
+            $data['included_items']['components'] = StackComponent::query()
+                ->where('stack_product_id', $profile->product_id)
+                ->orderBy('position')
+                ->get()
+                ->map(fn (StackComponent $component) => [
+                    'id' => $component->id,
+                    'name' => $component->component?->translateAttribute('name') ?? 'Item',
+                    'short_description' => $component->componentProfile?->subtitle,
+                    'base_quantity' => $component->base_quantity,
+                ])
+                ->all();
+        }
+
         return $data;
     }
 
@@ -72,6 +90,9 @@ class EditProductPageExtension extends EditPageExtension
 
         $this->pendingPageText = Arr::only($pageText, $this->editableColumns());
 
+        $includedItems = Arr::pull($data, 'included_items');
+        $this->pendingIncludedItems = is_array($includedItems) ? ($includedItems['components'] ?? null) : null;
+
         return $data;
     }
 
@@ -89,6 +110,19 @@ class EditProductPageExtension extends EditPageExtension
             }
 
             $this->pendingPageText = null;
+        }
+
+        if ($this->pendingIncludedItems !== null) {
+            foreach ($this->pendingIncludedItems as $item) {
+                StackComponent::query()
+                    ->where('id', $item['id'] ?? 0)
+                    ->where('stack_product_id', $record->getKey())
+                    ->update([
+                        'base_quantity' => max(0, (int) ($item['base_quantity'] ?? 0)),
+                    ]);
+            }
+
+            $this->pendingIncludedItems = null;
         }
 
         return $record;

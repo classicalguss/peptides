@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lunar\Models\Product;
 
 class ProductProfile extends Model
@@ -26,6 +27,11 @@ class ProductProfile extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function components(): HasMany
+    {
+        return $this->hasMany(StackComponent::class, 'stack_product_id', 'product_id');
     }
 
     public function isStack(): bool

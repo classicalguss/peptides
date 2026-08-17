@@ -23,4 +23,9 @@ class StackComponent extends Model
     {
         return $this->belongsTo(Product::class, 'component_product_id');
     }
+
+    public function componentProfile(): BelongsTo
+    {
+        return $this->belongsTo(ProductProfile::class, 'component_product_id', 'product_id');
+    }
 }

@@ -30,7 +30,8 @@ class ProductResourceExtension extends ResourceExtension
                         ->description('The short labels and main paragraphs beside the product image.')
                         ->schema([
                             Forms\Components\TextInput::make('subtitle')
-                                ->label('Small label above product name')
+                                ->label('Short description')
+                                ->helperText('Shown above the product name, and as this product\'s row in every collection\'s What\'s Included table.')
                                 ->maxLength(255)
                                 ->visible(fn (?Model $record): bool => ! static::isStack($record))
                                 ->dehydratedWhenHidden(false),
@@ -133,6 +134,37 @@ class ProductResourceExtension extends ResourceExtension
                                 ])
                                 ->columnSpanFull(),
                         ]),
+                ]),
+
+            Forms\Components\Section::make('What\'s Included table')
+                ->description('The rows of the included-items table on this collection page. Vial counts per tier are calculated automatically from the base count.')
+                ->statePath('included_items')
+                ->visible(fn (?Model $record): bool => static::isStack($record))
+                ->schema([
+                    Forms\Components\Repeater::make('components')
+                        ->label('Included items')
+                        ->addable(false)
+                        ->deletable(false)
+                        ->reorderable(false)
+                        ->schema([
+                            Forms\Components\Hidden::make('id'),
+                            Forms\Components\TextInput::make('name')
+                                ->label('Item')
+                                ->disabled()
+                                ->dehydrated(false),
+                            Forms\Components\TextInput::make('short_description')
+                                ->label('Short description (edited on the compound\'s own page)')
+                                ->disabled()
+                                ->dehydrated(false),
+                            Forms\Components\TextInput::make('base_quantity')
+                                ->label('Vials in the base collection size')
+                                ->numeric()
+                                ->minValue(0)
+                                ->maxValue(100)
+                                ->required(),
+                        ])
+                        ->columns(3)
+                        ->columnSpanFull(),
                 ]),
         ]);
     }

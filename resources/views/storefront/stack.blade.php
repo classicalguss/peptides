@@ -158,8 +158,8 @@
                     <table class="w-full text-left text-sm">
                         <thead class="border-b border-white/8 bg-black/40">
                             <tr class="text-[10px] font-extrabold tracking-widest text-white/45 uppercase">
-                                <th class="px-5 py-4">Compound</th>
-                                <th class="hidden px-5 py-4 md:table-cell">Research Focus</th>
+                                <th class="px-5 py-4">{{ site_text('collection_product.table_compound_heading') }}</th>
+                                <th class="hidden px-5 py-4 md:table-cell">{{ site_text('collection_product.table_details_heading') }}</th>
                                 @foreach ($tiers as $tier)
                                     <th class="px-5 py-4 text-center whitespace-nowrap">{{ $tier->code }}</th>
                                 @endforeach
@@ -178,7 +178,7 @@
                                             {{ $child->translateAttribute('name') }}
                                         </a>
                                     </td>
-                                    <td class="hidden px-5 py-4 text-white/45 md:table-cell">{{ $component->benefit }}</td>
+                                    <td class="hidden px-5 py-4 text-white/45 md:table-cell">{{ $component->componentProfile?->subtitle }}</td>
                                     @foreach ($tiers as $tier)
                                         <td class="px-5 py-4 text-center whitespace-nowrap">
                                             <span class="font-bold text-[var(--accent)]">
