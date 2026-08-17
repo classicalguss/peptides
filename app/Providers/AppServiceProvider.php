@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
-use App\Filament\Resources\ProductPageTextResource;
 use App\Filament\Resources\WebsiteTextResource;
 use App\Models\ProductProfile;
 use App\Shipping\FlatRateShipping;
@@ -31,7 +30,6 @@ class AppServiceProvider extends ServiceProvider
                 ])
                 ->resources([
                     WebsiteTextResource::class,
-                    ProductPageTextResource::class,
                 ])
                 ->navigationGroups([
                     'Website',
