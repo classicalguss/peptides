@@ -74,16 +74,6 @@
 
                         <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $profile->overview }}</p>
 
-                        {{-- Benefit chips --}}
-                        <div class="mt-7 grid grid-cols-2 gap-3">
-                            @foreach ($profile->benefits ?? [] as $benefit)
-                                <div class="rounded-xl border border-white/8 bg-panel px-4 py-3">
-                                    <p class="text-[13px] font-extrabold tracking-wide text-[var(--accent)] uppercase">{{ $benefit['title'] }}</p>
-                                    <p class="mt-0.5 text-[11px] text-white/45">{{ $benefit['detail'] }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-
                         {{-- Quantity breaks --}}
                         <form method="POST" action="{{ route('cart.add') }}" class="mt-9">
                             @csrf

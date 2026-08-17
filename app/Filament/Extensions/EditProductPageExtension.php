@@ -43,13 +43,7 @@ class EditProductPageExtension extends EditPageExtension
             return $data;
         }
 
-        $pageText = $profile->only($this->editableColumns());
-
-        if ($profile->isStack()) {
-            $pageText['stack_benefits'] = $profile->benefits ?? [];
-        }
-
-        $data['page_text'] = $pageText;
+        $data['page_text'] = $profile->only($this->editableColumns());
 
         if ($profile->isStack()) {
             $data['included_items']['components'] = StackComponent::query()
@@ -81,12 +75,6 @@ class EditProductPageExtension extends EditPageExtension
         if (! $profile) {
             return $data;
         }
-
-        if ($profile->isStack()) {
-            $pageText['benefits'] = $pageText['stack_benefits'] ?? [];
-        }
-
-        unset($pageText['stack_benefits']);
 
         $this->pendingPageText = Arr::only($pageText, $this->editableColumns());
 
@@ -141,7 +129,6 @@ class EditProductPageExtension extends EditPageExtension
             'overview',
             'research_info',
             'storage',
-            'benefits',
             'highlights',
             'pillars',
             'audience',

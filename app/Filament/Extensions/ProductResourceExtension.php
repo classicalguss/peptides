@@ -81,22 +81,6 @@ class ProductResourceExtension extends ResourceExtension
                                 ->visible(fn (?Model $record): bool => ! static::isStack($record))
                                 ->dehydratedWhenHidden(false)
                                 ->columnSpanFull(),
-                            Forms\Components\Repeater::make('benefits')
-                                ->label('Benefit boxes')
-                                ->schema([
-                                    Forms\Components\TextInput::make('title')->required()->maxLength(255),
-                                    Forms\Components\TextInput::make('detail')->maxLength(255),
-                                ])
-                                ->columns(2)
-                                ->visible(fn (?Model $record): bool => ! static::isStack($record))
-                                ->dehydratedWhenHidden(false)
-                                ->columnSpanFull(),
-                            Forms\Components\Repeater::make('stack_benefits')
-                                ->label('Key benefits list')
-                                ->simple(Forms\Components\TextInput::make('text')->required()->maxLength(1000))
-                                ->visible(fn (?Model $record): bool => static::isStack($record))
-                                ->dehydratedWhenHidden(false)
-                                ->columnSpanFull(),
                             Forms\Components\Repeater::make('highlights')
                                 ->label('Highlights')
                                 ->simple(Forms\Components\TextInput::make('text')->required()->maxLength(1000))
@@ -213,7 +197,6 @@ class ProductResourceExtension extends ResourceExtension
             'overview',
             'research_info',
             'storage',
-            'benefits',
             'highlights',
             'pillars',
             'audience',

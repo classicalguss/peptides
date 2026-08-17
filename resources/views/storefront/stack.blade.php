@@ -212,24 +212,9 @@
             </div>
         </section>
 
-        {{-- Benefits + audience --}}
+        {{-- Audience --}}
         <section class="mx-auto max-w-7xl px-4 py-20">
             <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
-                <div>
-                    <p class="eyebrow text-[var(--accent)]">{{ site_text('collection_product.benefits_eyebrow') }}</p>
-                    <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('collection_product.benefits_title') }}</h2>
-                    <ul class="mt-7 space-y-4">
-                        @foreach ($profile->benefits ?? [] as $benefit)
-                            <li class="flex gap-3.5 rounded-xl panel p-4">
-                                <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--accent)]/15 text-xs font-extrabold text-[var(--accent)]">
-                                    &#10003;
-                                </span>
-                                <span class="text-sm leading-relaxed text-white/65">{{ $benefit }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-
                 <div>
                     <p class="eyebrow text-[var(--accent)]">{{ site_text('collection_product.audience_eyebrow') }}</p>
                     <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('collection_product.audience_title') }}</h2>

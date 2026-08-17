@@ -33,7 +33,6 @@ class ProductTextSearchResource extends Resource
         'overview' => 'Main description',
         'research_info' => 'Research background',
         'storage' => 'Storage and handling',
-        'benefits' => 'Key benefits list',
         'highlights' => 'Highlights list',
         'pillars' => 'Highlight pills',
         'audience' => 'Who it is for list',
