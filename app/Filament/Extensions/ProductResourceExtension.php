@@ -46,11 +46,14 @@ class ProductResourceExtension extends ResourceExtension
                                 ->visible(fn (?Model $record): bool => static::isStack($record))
                                 ->dehydratedWhenHidden(false),
                             Forms\Components\Textarea::make('summary')
-                                ->label('Main collection description')
+                                ->label(fn (?Model $record): string => static::isStack($record)
+                                    ? 'Main collection description'
+                                    : 'Search result description')
+                                ->helperText(fn (?Model $record): string => static::isStack($record)
+                                    ? 'Shown on the collection page, on collection cards, and in search results.'
+                                    : 'Used by search engines and link previews for this product\'s page.')
                                 ->rows(4)
                                 ->maxLength(5000)
-                                ->visible(fn (?Model $record): bool => static::isStack($record))
-                                ->dehydratedWhenHidden(false)
                                 ->columnSpanFull(),
                             Forms\Components\Textarea::make('overview')
                                 ->label('Main compound description')
