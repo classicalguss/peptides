@@ -137,6 +137,21 @@ return new class extends Migration
         // "Supplies" becomes "Laboratory Supplies" (display name only).
         $this->renameCollection('supplies', 'Laboratory Supplies');
 
+        // The master collection grouping all six research collections is
+        // named "Stack Protocols" on some environments. Its slug differs
+        // between local ('stacks') and production ('research-collections'),
+        // so match by current name instead.
+        LunarCollection::all()->each(function (LunarCollection $collection) {
+            if ($collection->translateAttribute('name') === 'Stack Protocols') {
+                $attributes = json_decode(DB::table('lunar_collections')->where('id', $collection->id)->value('attribute_data'), true) ?? [];
+                $attributes['name']['value']['en'] = 'Research Collections';
+
+                DB::table('lunar_collections')->where('id', $collection->id)->update([
+                    'attribute_data' => json_encode($attributes),
+                ]);
+            }
+        });
+
         // The remaining outcome-named collections lose their products, so
         // they silently drop out of the shop filter bar (Catalog::categoriesFor
         // only lists collections with at least one matching product).
