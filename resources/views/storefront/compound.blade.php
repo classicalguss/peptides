@@ -36,7 +36,7 @@
 
                             @if ($coa)
                                 <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
-                                    {{ $coa->purity }} Purity
+                                    COA Available
                                 </span>
                             @endif
                         </div>
@@ -64,9 +64,6 @@
                         </h1>
 
                         <div class="mt-4 flex flex-wrap items-center gap-4">
-                            @if ($rating['count'])
-                                <x-store.stars :rating="$rating['average']" :count="$rating['count']" size="size-4" />
-                            @endif
                             @if ($variant)
                                 <span class="text-xs text-white/40">SKU {{ $variant->sku }}</span>
                             @endif
@@ -172,7 +169,7 @@
                         @if ($coa)
                             <div class="rounded-2xl border border-[var(--accent)]/25 bg-[var(--accent)]/[0.05] p-6">
                                 <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Current Batch</h3>
-                                <dl class="mt-4 grid grid-cols-3 gap-4 text-sm">
+                                <dl class="mt-4 grid grid-cols-2 gap-4 text-sm">
                                     <div>
                                         <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch</dt>
                                         <dd class="mt-1 font-mono text-xs text-white/80">{{ $coa->batch_number }}</dd>
@@ -180,10 +177,6 @@
                                     <div>
                                         <dt class="text-[10px] tracking-widest text-white/40 uppercase">Tested</dt>
                                         <dd class="mt-1 text-white/80">{{ $coa->tested_on->format('M j, Y') }}</dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-[10px] tracking-widest text-white/40 uppercase">Purity</dt>
-                                        <dd class="mt-1 font-bold text-[var(--accent)]">{{ $coa->purity }}</dd>
                                     </div>
                                 </dl>
                                 <div class="mt-5 flex flex-wrap items-center gap-3">
@@ -238,32 +231,6 @@
                                                class="reveal" style="--reveal-delay: {{ $i * 60 }}ms" />
                         @endforeach
                     </div>
-                </div>
-            </section>
-        @endif
-
-        {{-- Reviews --}}
-        @if ($reviews->isNotEmpty())
-            <section class="mx-auto max-w-7xl px-4 py-20">
-                <x-store.section-heading
-                    align="left"
-                    eyebrow="Verified Buyers"
-                    :title="'Researcher <span class=\'text-accent-foil\'>Reviews</span>'" />
-
-                <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($reviews as $review)
-                        <figure class="flex flex-col rounded-2xl panel p-6">
-                            <x-store.stars :rating="$review->rating" />
-                            <blockquote class="mt-4 flex-1">
-                                <p class="text-sm font-bold text-white">{{ $review->title }}</p>
-                                <p class="mt-2 text-sm leading-relaxed text-white/55">{{ $review->body }}</p>
-                            </blockquote>
-                            <figcaption class="mt-5 border-t border-white/5 pt-4 text-xs font-bold text-white/60">
-                                {{ $review->author_name }}
-                                <span class="ml-1 font-normal text-white/35">&middot; Verified buyer</span>
-                            </figcaption>
-                        </figure>
-                    @endforeach
                 </div>
             </section>
         @endif

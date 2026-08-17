@@ -60,12 +60,6 @@
 
                         <p class="mt-3 text-lg font-semibold text-white/70">{{ $profile->tagline }}</p>
 
-                        @if ($rating['count'])
-                            <div class="mt-4">
-                                <x-store.stars :rating="$rating['average']" :count="$rating['count']" size="size-4" />
-                            </div>
-                        @endif
-
                         <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $profile->summary }}</p>
 
                         {{-- Pillars --}}
@@ -102,18 +96,17 @@
                                                     <span class="rounded-full bg-[var(--accent)]/15 px-2 py-0.5 text-[9px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Popular</span>
                                                 @endif
                                             </div>
-                                            <p class="mt-1 text-xs text-white/45">
-                                                {{ $tier->supply_days }}-day supply
-                                                @if ($tier->save_percent > 0)
-                                                    &middot; save {{ rtrim(rtrim(number_format($tier->save_percent, 1), '0'), '.') }}%
-                                                @endif
-                                            </p>
+                                            @if ($tier->save_percent > 0)
+                                                <p class="mt-1 text-xs text-white/45">
+                                                    save {{ rtrim(rtrim(number_format($tier->save_percent, 1), '0'), '.') }}%
+                                                </p>
+                                            @endif
                                         </div>
 
                                         <div class="shrink-0 text-right">
                                             <p class="display-title text-2xl text-white">{{ Catalog::money($tier->price) }}</p>
                                             <p class="text-[11px] text-white/40">
-                                                or {{ Catalog::money($tier->subscribe_price) }} subscribed
+                                                or {{ Catalog::money($tier->subscribe_price) }} on a scheduled reorder
                                             </p>
                                         </div>
                                     </label>
@@ -245,7 +238,6 @@
                                 <th class="px-5 py-4">Product</th>
                                 <th class="px-5 py-4">Batch</th>
                                 <th class="hidden px-5 py-4 sm:table-cell">Tested</th>
-                                <th class="px-5 py-4">Purity</th>
                                 <th class="px-5 py-4 text-right">COA</th>
                             </tr>
                         </thead>
@@ -255,9 +247,6 @@
                                     <td class="px-5 py-4 font-bold text-white">{{ $coa->product_label }}</td>
                                     <td class="px-5 py-4 font-mono text-xs text-white/50">{{ $coa->batch_number }}</td>
                                     <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $coa->tested_on->format('M j, Y') }}</td>
-                                    <td class="px-5 py-4">
-                                        <span class="font-bold text-[var(--accent)]">{{ $coa->purity }}</span>
-                                    </td>
                                     <td class="px-5 py-4 text-right">
                                         @if ($coa->pdf_path)
                                             <a href="{{ asset($coa->pdf_path) }}" download
@@ -279,34 +268,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
-            </section>
-        @endif
-
-        {{-- Reviews --}}
-        @if ($reviews->isNotEmpty())
-            <section class="border-t border-white/5 bg-black/40 py-20">
-                <div class="mx-auto max-w-7xl px-4">
-                    <x-store.section-heading
-                        align="left"
-                        eyebrow="Verified Buyers"
-                        :title="'What Researchers <span class=\'text-accent-foil\'>Say</span>'" />
-
-                    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($reviews as $review)
-                            <figure class="flex flex-col rounded-2xl panel p-6">
-                                <x-store.stars :rating="$review->rating" />
-                                <blockquote class="mt-4 flex-1">
-                                    <p class="text-sm font-bold text-white">{{ $review->title }}</p>
-                                    <p class="mt-2 text-sm leading-relaxed text-white/55">{{ $review->body }}</p>
-                                </blockquote>
-                                <figcaption class="mt-5 border-t border-white/5 pt-4 text-xs font-bold text-white/60">
-                                    {{ $review->author_name }}
-                                    <span class="ml-1 font-normal text-white/35">&middot; Verified buyer</span>
-                                </figcaption>
-                            </figure>
-                        @endforeach
-                    </div>
                 </div>
             </section>
         @endif

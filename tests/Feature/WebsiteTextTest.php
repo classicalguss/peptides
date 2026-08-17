@@ -42,7 +42,7 @@ class WebsiteTextTest extends TestCase
 
     public function test_content_can_be_found_by_page_section_label_or_current_wording(): void
     {
-        $term = 'protocol';
+        $term = 'eyebrow';
 
         $matches = WebsiteText::query()
             ->where(function ($query) use ($term) {

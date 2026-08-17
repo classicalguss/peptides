@@ -8,7 +8,7 @@ class ContactMessage extends Model
 {
     public const TOPICS = [
         'order' => 'An existing order',
-        'product' => 'Product or protocol question',
+        'product' => 'Product or research collection question',
         'coa' => 'Lab report / certificate request',
         'wholesale' => 'Wholesale or bulk enquiry',
         'general' => 'Something else',

@@ -157,7 +157,7 @@
                 @foreach ([
                     ['q' => 'How fast do orders ship?', 'a' => 'Orders placed before 2pm on a business day are packed and dispatched within 24 hours. You will get tracking by email as soon as the label is created.'],
                     ['q' => 'Do you ship internationally?', 'a' => 'We ship to most countries. Customs rules for research chemicals vary, and the buyer is responsible for confirming that import is permitted at their destination.'],
-                    ['q' => 'How are the peptides shipped?', 'a' => 'Everything is supplied as lyophilised powder in sealed vials, cold chain packed in discreet outer packaging with no product branding on the exterior.'],
+                    ['q' => 'How are the peptides shipped?', 'a' => 'Everything is supplied as lyophilised powder in sealed vials, packed in discreet outer packaging with no product branding on the exterior.'],
                     ['q' => 'Can I get a certificate for my batch?', 'a' => 'Yes. Every batch we sell is third-party tested and published on the lab reports page. Search the batch number printed on your vial label.'],
                     ['q' => 'What is your return policy?', 'a' => 'Because these are research materials, sealed vials cannot be returned once shipped. If an order arrives damaged or incorrect, contact us within 7 days and we will replace it.'],
                     ['q' => 'Do you offer bulk or wholesale pricing?', 'a' => 'Yes. Volume pricing already applies automatically at 3, 5 and 10 vials. For larger laboratory supply agreements, send us your expected monthly volume.'],

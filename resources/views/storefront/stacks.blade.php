@@ -64,7 +64,6 @@
                         $slug = $profile->product->urls->first()?->slug;
                         $url = $slug ? route('stack', $slug) : route('stacks');
                         $stackTiers = $tiers[$profile->product_id] ?? collect();
-                        $rating = \App\Support\Catalog::rating($profile);
                         $from = \App\Support\Catalog::fromPrice($profile);
                         $image = $profile->product->getFirstMedia('images');
                         $componentCount = $componentCounts[$profile->product_id] ?? 0;
@@ -131,11 +130,6 @@
                                 </div>
                             @endif
 
-                            @if ($rating['count'])
-                                <div class="mt-auto pt-4">
-                                    <x-store.stars :rating="$rating['average']" :count="$rating['count']" />
-                                </div>
-                            @endif
                         </div>
 
                         {{-- Buy panel --}}
@@ -156,7 +150,7 @@
                                     <ul class="mt-4 space-y-1.5 border-t border-white/8 pt-4">
                                         @foreach ($stackTiers as $tier)
                                             <li class="flex items-baseline justify-between gap-3 text-xs">
-                                                <span class="text-white/50">{{ $tier->supply_days }}-day</span>
+                                                <span class="text-white/50">{{ $tier->code }} {{ $tier->label }}</span>
                                                 <span class="font-bold text-white/80">
                                                     {{ \App\Support\Catalog::money($tier->price) }}
                                                 </span>

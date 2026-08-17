@@ -15,7 +15,7 @@
                 </a>
                 <a href="{{ route('stack', 'healing-stack') }}"
                    class="rounded-full border border-white/15 px-7 py-3.5 text-sm font-extrabold tracking-wider text-white uppercase transition hover:border-gold/50 hover:text-gold">
-                    View Healing Stack
+                    View Research Collection
                 </a>
             </div>
         </div>

@@ -34,8 +34,8 @@
 
                 <dl class="animate-in mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-7" style="--reveal-delay: 320ms">
                     <div>
-                        <dt class="display-title text-3xl text-foil">99.8%</dt>
-                        <dd class="mt-1 text-[11px] font-bold tracking-widest text-white/40 uppercase">Peak Purity</dd>
+                        <dt class="display-title text-3xl text-foil">100%</dt>
+                        <dd class="mt-1 text-[11px] font-bold tracking-widest text-white/40 uppercase">Third-Party Tested</dd>
                     </div>
                     <div>
                         <dt class="display-title text-3xl text-foil">{{ $compoundCount }}</dt>
@@ -138,7 +138,7 @@
             @foreach ([
                 ['title' => 'Every Batch Tested', 'body' => 'Independent ISO-accredited analysis by HPLC and mass spectrometry on every single batch — not a one-off sample from two years ago.', 'stat' => '100%'],
                 ['title' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.', 'stat' => 'Public'],
-                ['title' => 'Cold Chain Packed', 'body' => 'Lyophilised powder is packed with insulation and shipped in discreet packaging within 24 hours of your order clearing.', 'stat' => '24h'],
+                ['title' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.', 'stat' => '24h'],
             ] as $i => $item)
                 <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ $i * 90 }}ms">
                     <p class="display-title text-4xl text-foil">{{ $item['stat'] }}</p>
@@ -148,37 +148,6 @@
             @endforeach
         </div>
     </section>
-
-    {{-- Reviews --}}
-    @if ($reviews->isNotEmpty())
-        <section class="border-y border-white/5 bg-black/40 py-20 sm:py-24">
-            <div class="mx-auto max-w-7xl px-4">
-                <x-store.section-heading
-                    eyebrow="Verified Buyers"
-                    title='Researcher <span class="text-foil">Reviews</span>' />
-
-                <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($reviews as $i => $review)
-                        <figure class="reveal hover-lift flex flex-col rounded-2xl panel p-6 hover:border-gold/25"
-                                style="--reveal-delay: {{ ($i % 3) * 90 }}ms">
-                            <x-store.stars :rating="$review->rating" />
-                            <blockquote class="mt-4 flex-1">
-                                <p class="text-sm font-bold text-white">{{ $review->title }}</p>
-                                <p class="mt-2 text-sm leading-relaxed text-white/55">{{ $review->body }}</p>
-                            </blockquote>
-                            <figcaption class="mt-5 flex items-center justify-between border-t border-white/5 pt-4 text-xs">
-                                <span class="font-bold text-white/70">{{ $review->author_name }}</span>
-                                <span class="inline-flex items-center gap-1.5 text-gold/80">
-                                    <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.7l1.9 1.5 2.4-.3 1 2.2 2.2 1-.3 2.4L18.3 12l-1.5 1.9.3 2.4-2.2 1-1 2.2-2.4-.3L10 20.7 8.1 19.2l-2.4.3-1-2.2-2.2-1 .3-2.4L1.7 12l1.1-1.5-.3-2.4 2.2-1 1-2.2 2.4.3L10 1.7z" opacity=".25"/><path d="M7.5 10.2l1.8 1.8 3.4-3.6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    Verified
-                                </span>
-                            </figcaption>
-                        </figure>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
 
     {{-- Closing CTA --}}
     <section class="relative overflow-hidden">

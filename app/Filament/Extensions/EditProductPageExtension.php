@@ -4,6 +4,7 @@ namespace App\Filament\Extensions;
 
 use App\Models\ProductProfile;
 use App\Models\StackComponent;
+use App\Models\StackTier;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -16,6 +17,9 @@ class EditProductPageExtension extends EditPageExtension
 
     /** @var array<int, array<string, mixed>>|null */
     private ?array $pendingIncludedItems = null;
+
+    /** @var array<int, array<string, mixed>>|null */
+    private ?array $pendingCollectionSizes = null;
 
     public function headerActions(array $actions): array
     {
@@ -57,6 +61,17 @@ class EditProductPageExtension extends EditPageExtension
                     'base_quantity' => $component->base_quantity,
                 ])
                 ->all();
+
+            $data['collection_sizes']['tiers'] = StackTier::query()
+                ->where('product_id', $profile->product_id)
+                ->orderBy('position')
+                ->get(['id', 'code', 'label'])
+                ->map(fn (StackTier $tier) => [
+                    'id' => $tier->id,
+                    'code' => $tier->code,
+                    'label' => $tier->label,
+                ])
+                ->all();
         }
 
         return $data;
@@ -80,6 +95,9 @@ class EditProductPageExtension extends EditPageExtension
 
         $includedItems = Arr::pull($data, 'included_items');
         $this->pendingIncludedItems = is_array($includedItems) ? ($includedItems['components'] ?? null) : null;
+
+        $collectionSizes = Arr::pull($data, 'collection_sizes');
+        $this->pendingCollectionSizes = is_array($collectionSizes) ? ($collectionSizes['tiers'] ?? null) : null;
 
         return $data;
     }
@@ -111,6 +129,20 @@ class EditProductPageExtension extends EditPageExtension
             }
 
             $this->pendingIncludedItems = null;
+        }
+
+        if ($this->pendingCollectionSizes !== null) {
+            foreach ($this->pendingCollectionSizes as $tier) {
+                StackTier::query()
+                    ->where('id', $tier['id'] ?? 0)
+                    ->where('product_id', $record->getKey())
+                    ->update([
+                        'code' => (string) ($tier['code'] ?? ''),
+                        'label' => (string) ($tier['label'] ?? ''),
+                    ]);
+            }
+
+            $this->pendingCollectionSizes = null;
         }
 
         return $record;

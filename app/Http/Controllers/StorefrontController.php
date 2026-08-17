@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CoaReport;
 use App\Models\ProductProfile;
-use App\Models\ProductReview;
 use App\Models\StackComponent;
 use App\Models\StackTier;
 use App\Support\Catalog;
@@ -25,11 +24,6 @@ class StorefrontController extends Controller
             'compoundCount' => Catalog::compounds()->count(),
             'featured' => $featured,
             'featuredFrom' => $featured ? Catalog::fromPrice($featured) : 0,
-            'reviews' => ProductReview::approved()
-                ->where('rating', 5)
-                ->latest('id')
-                ->take(6)
-                ->get(),
         ]);
     }
 
@@ -131,11 +125,6 @@ class StorefrontController extends Controller
             'activeImage' => $images->get($activeIndex),
             'priceTiers' => $tiers,
             'unitPrice' => $unitPrice,
-            'rating' => Catalog::rating($profile),
-            'reviews' => ProductReview::approved()
-                ->where('product_id', $profile->product_id)
-                ->latest('id')
-                ->get(),
             'coa' => CoaReport::where('product_id', $profile->product_id)->first(),
             'usedInStacks' => $this->stacksContaining($profile),
             'related' => Catalog::compounds(includeSupplies: false)
@@ -207,11 +196,6 @@ class StorefrontController extends Controller
             'components' => $components,
             'componentProfiles' => $componentProfiles,
             'retailValues' => $this->retailValues($tiers, $components, $componentProfiles),
-            'rating' => Catalog::rating($profile),
-            'reviews' => ProductReview::approved()
-                ->where('product_id', $profile->product_id)
-                ->latest('id')
-                ->get(),
             'coas' => CoaReport::whereIn('product_id', $components->pluck('component_product_id'))
                 ->orderBy('product_label')
                 ->get(),

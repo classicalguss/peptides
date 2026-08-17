@@ -58,7 +58,6 @@
                             <th class="px-5 py-4">Batch Number</th>
                             <th class="hidden px-5 py-4 sm:table-cell">Test Date</th>
                             <th class="hidden px-5 py-4 lg:table-cell">Laboratory</th>
-                            <th class="px-5 py-4">Purity</th>
                             <th class="px-5 py-4 text-right">Report</th>
                         </tr>
                     </thead>
@@ -77,13 +76,6 @@
                                 <td class="px-5 py-4 font-mono text-xs text-white/55">{{ $report->batch_number }}</td>
                                 <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $report->tested_on->format('M j, Y') }}</td>
                                 <td class="hidden px-5 py-4 text-white/50 lg:table-cell">{{ $report->lab_name }}</td>
-                                <td class="px-5 py-4">
-                                    @if ($report->purity === 'N/A')
-                                        <span class="text-white/40">&mdash;</span>
-                                    @else
-                                        <span class="font-bold text-gold">{{ $report->purity }}</span>
-                                    @endif
-                                </td>
                                 <td class="px-5 py-4">
                                     @if ($report->pdf_path)
                                         <div class="flex items-center justify-end gap-2">

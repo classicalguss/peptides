@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use App\Models\ProductProfile;
-use App\Models\ProductReview;
 use App\Models\StackTier;
 use Illuminate\Support\Collection;
 use Lunar\Models\Collection as LunarCollection;
@@ -150,17 +149,6 @@ class Catalog
             ->where('min_quantity', 1);
 
         return (int) ($prices->min('price.value') ?: static::fromPrice($profile));
-    }
-
-    public static function rating(ProductProfile $profile): array
-    {
-        $reviews = ProductReview::approved()->where('product_id', $profile->product_id);
-        $count = $reviews->count();
-
-        return [
-            'count' => $count,
-            'average' => $count ? round((float) $reviews->avg('rating'), 1) : 0.0,
-        ];
     }
 
     /**

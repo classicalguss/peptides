@@ -24,7 +24,7 @@
     <section class="border-y border-white/5 bg-black/40">
         <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 py-10 sm:grid-cols-4">
             @foreach ([
-                ['99%+', 'Minimum purity threshold'],
+                ['COA', 'Published for every batch'],
                 ['100%', 'Batches third-party tested'],
                 ['24h', 'Typical dispatch time'],
                 ['0', 'Batches shipped without a COA'],
@@ -59,7 +59,7 @@
                     @foreach ([
                         ['Every batch tested', 'Independent HPLC and mass spec analysis, published against the batch number on your vial.'],
                         ['No hidden failures', 'Reports stay public regardless of the result. Batches under threshold are destroyed, not discounted.'],
-                        ['Cold chain integrity', 'Lyophilised, sealed and temperature controlled from the lab bench to your door.'],
+                        ['Batch documentation', 'Lyophilised and sealed, with the certificate of analysis published against the batch number.'],
                         ['Honest pricing', 'Volume discounts are applied automatically. No inflated list price to make a fake sale look generous.'],
                     ] as $i => [$title, $body])
                         <li class="reveal flex gap-4" style="--reveal-delay: {{ $i * 80 }}ms">
@@ -85,7 +85,7 @@
                     ['01', 'Sourcing', 'We work with a small number of vetted synthesis partners operating under documented quality systems. New suppliers go through sample testing long before they get an order.'],
                     ['02', 'Independent testing', 'Every batch goes to a third-party lab. HPLC establishes purity, mass spectrometry confirms the compound is what it claims to be.'],
                     ['03', 'Review', 'Results are checked against our 99% threshold. Anything that falls short is rejected outright. Passing batches get their COA published.'],
-                    ['04', 'Cold chain dispatch', 'Vials are packed with temperature control in plain outer packaging and dispatched, typically within 24 hours.'],
+                    ['04', 'Dispatch', 'Vials are packed in plain outer packaging with no product branding, and dispatched typically within 24 hours.'],
                 ] as $i => [$num, $title, $body])
                     <div class="reveal hover-lift rounded-2xl panel p-6 hover:gold-ring" style="--reveal-delay: {{ $i * 90 }}ms">
                         <p class="display-title text-3xl text-gold/30">{{ $num }}</p>
@@ -97,32 +97,14 @@
         </section>
 
         {{-- Compliance --}}
-        <section class="mt-20 grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <div class="rounded-2xl border border-gold/25 bg-gold/[0.04] p-8">
+        <section class="mt-20">
+            <div class="mx-auto max-w-2xl rounded-2xl border border-gold/25 bg-gold/[0.04] p-8">
                 <p class="eyebrow text-gold">{{ site_text('about.compliance_eyebrow') }}</p>
                 <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('about.compliance_title') }}</h2>
                 <div class="mt-5 space-y-4 text-sm leading-relaxed text-white/55">
                     <p>{{ site_text('about.compliance_paragraph_1') }}</p>
                     <p>{{ site_text('about.compliance_paragraph_2') }}</p>
                     <p class="text-white/70">{{ site_text('about.compliance_paragraph_3') }}</p>
-                </div>
-            </div>
-
-            <div>
-                <p class="eyebrow text-gold">Questions We Get Asked</p>
-                <h2 class="display-title mt-3 text-4xl text-white sm:text-5xl">
-                    Straight <span class="text-foil">Answers</span>
-                </h2>
-                <div class="mt-8 space-y-3">
-                    @foreach ([
-                        ['Who actually tests the batches?', 'Independent accredited laboratories with no commercial stake in the result. We do not run purity analysis in-house, because a vendor grading its own work is not verification.'],
-                        ['What happens to a failed batch?', 'It is destroyed. We do not relabel it, sell it at a discount, or move it to a secondary channel.'],
-                        ['Do you sell to individuals?', 'We sell to qualified researchers aged 21 and over. Our products are for laboratory research only and are never supplied for personal use.'],
-                        ['How do I verify what I received?', 'Every vial carries a batch number. Enter it on the lab reports page to pull the exact certificate for that batch.'],
-                    ] as $i => $item)
-                        <x-store.accordion :question="$item[0]" :answer="$item[1]"
-                                           class="reveal" style="--reveal-delay: {{ $i * 60 }}ms" />
-                    @endforeach
                 </div>
             </div>
         </section>

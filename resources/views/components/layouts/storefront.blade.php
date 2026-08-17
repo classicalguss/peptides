@@ -10,6 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen font-sans antialiased">
+    <x-store.entry-gate />
     <x-store.announcement />
     <x-store.nav />
 

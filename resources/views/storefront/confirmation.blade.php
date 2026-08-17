@@ -97,7 +97,7 @@
                     </li>
                     <li class="flex gap-3">
                         <span class="font-mono text-xs text-gold">02</span>
-                        Cold chain packed and dispatched within 24 hours.
+                        Packed and dispatched within 24 hours.
                     </li>
                     <li class="flex gap-3">
                         <span class="font-mono text-xs text-gold">03</span>

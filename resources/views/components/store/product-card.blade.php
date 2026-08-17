@@ -7,7 +7,6 @@
     $slug = $product->urls->first()?->slug ?? $profile->handle;
     $href = $profile->isStack() ? route('stack', $slug) : route('compound', $slug);
     $image = $product->getFirstMedia('images');
-    $rating = Catalog::rating($profile);
     $from = Catalog::fromPrice($profile);
 @endphp
 
@@ -44,12 +43,6 @@
         <p class="mt-2 line-clamp-2 text-[13px] leading-relaxed text-white/50">
             {{ $profile->tagline ?? $profile->subtitle }}
         </p>
-
-        @if ($rating['count'])
-            <div class="mt-3">
-                <x-store.stars :rating="$rating['average']" :count="$rating['count']" />
-            </div>
-        @endif
 
         <div class="mt-4 flex items-end justify-between border-t border-white/5 pt-4">
             <div>

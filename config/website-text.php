@@ -19,6 +19,11 @@ $item = static fn (
 ];
 
 return [
+    // Entry acknowledgment gate (shown once per visitor before the site is used).
+    'gate.heading' => $item('Shared Site Content', 'Entry Gate', 'Heading', 'RESEARCH USE ONLY', 'Bold line at the top of the entry acknowledgment popup.', 'home', 1),
+    'gate.body' => $item('Shared Site Content', 'Entry Gate', 'Body text', 'NOT FOR HUMAN OR VETERINARY USE OR CONSUMPTION. By entering this website, you confirm you are a qualified researcher aged 21 or over and that all products are for laboratory research use only.', 'Paragraph in the entry acknowledgment popup.', 'home', 2),
+    'gate.button' => $item('Shared Site Content', 'Entry Gate', 'Button', 'I Understand — Enter Site', 'Button that dismisses the entry acknowledgment popup.', 'home', 3),
+
     // Shared site content.
     'global.meta_description' => $item('Shared Site Content', 'Search & Sharing', 'Default search description', 'Third-party tested research peptides and stack protocols. 99%+ purity, published COA for every batch.', 'Used by search engines and link previews when a page has no custom description.', 'home', 10),
     'global.announcement_title' => $item('Shared Site Content', 'Top Announcement', 'Announcement heading', 'Research Use Only', 'Gold message at the very top of every page.', 'home', 20),

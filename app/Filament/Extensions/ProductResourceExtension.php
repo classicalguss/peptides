@@ -147,6 +147,31 @@ class ProductResourceExtension extends ResourceExtension
                         ->columns(3)
                         ->columnSpanFull(),
                 ]),
+
+            Forms\Components\Section::make('Collection Sizes')
+                ->description('The names shown for each quantity tier of this collection (e.g. "HP" + "Core"). Pricing and stock stay in the standard variant controls below.')
+                ->statePath('collection_sizes')
+                ->visible(fn (?Model $record): bool => static::isStack($record))
+                ->schema([
+                    Forms\Components\Repeater::make('tiers')
+                        ->label('Sizes')
+                        ->addable(false)
+                        ->deletable(false)
+                        ->reorderable(false)
+                        ->schema([
+                            Forms\Components\Hidden::make('id'),
+                            Forms\Components\TextInput::make('code')
+                                ->label('Short code')
+                                ->maxLength(10)
+                                ->required(),
+                            Forms\Components\TextInput::make('label')
+                                ->label('Name')
+                                ->maxLength(30)
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 
