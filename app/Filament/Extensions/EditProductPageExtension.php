@@ -106,7 +106,6 @@ class EditProductPageExtension extends EditPageExtension
             'summary',
             'overview',
             'research_info',
-            'dosage',
             'storage',
             'benefits',
             'highlights',

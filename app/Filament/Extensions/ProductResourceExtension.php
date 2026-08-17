@@ -70,12 +70,6 @@ class ProductResourceExtension extends ResourceExtension
                                 ->maxLength(10000)
                                 ->visible(fn (?Model $record): bool => ! static::isStack($record))
                                 ->dehydratedWhenHidden(false),
-                            Forms\Components\Textarea::make('dosage')
-                                ->label('Reference range in literature')
-                                ->rows(5)
-                                ->maxLength(10000)
-                                ->visible(fn (?Model $record): bool => ! static::isStack($record))
-                                ->dehydratedWhenHidden(false),
                             Forms\Components\Textarea::make('storage')
                                 ->label('Storage and handling')
                                 ->rows(5)
@@ -183,7 +177,6 @@ class ProductResourceExtension extends ResourceExtension
             'summary',
             'overview',
             'research_info',
-            'dosage',
             'storage',
             'benefits',
             'highlights',

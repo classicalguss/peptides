@@ -171,11 +171,6 @@
                         </div>
 
                         <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.reference_heading') }}</h3>
-                            <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->dosage }}</p>
-                        </div>
-
-                        <div class="rounded-2xl panel p-6">
                             <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.storage_heading') }}</h3>
                             <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->storage }}</p>
                         </div>
