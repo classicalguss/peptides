@@ -7,8 +7,8 @@
                     <path d="M8.8 12.2l2.2 2.2 4.2-4.4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <div>
-                    <p class="text-[13px] font-extrabold tracking-wide text-white uppercase">{{ $item['label'] }}</p>
-                    <p class="mt-0.5 text-xs text-white/45">{{ $item['detail'] }}</p>
+                    <p class="text-[13px] font-extrabold tracking-wide text-white uppercase">{{ site_text($item['label_key'], $item['label']) }}</p>
+                    <p class="mt-0.5 text-xs text-white/45">{{ site_text($item['detail_key'], $item['detail']) }}</p>
                 </div>
             </div>
         @endforeach

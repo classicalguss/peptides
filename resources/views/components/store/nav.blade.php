@@ -33,7 +33,7 @@
                    @if ($isActive) aria-current="page" @endif
                    class="relative text-[13px] font-semibold tracking-wide uppercase transition hover:text-gold
                           {{ $isActive ? 'text-gold' : 'text-white/70' }}">
-                    {{ $item['label'] }}
+                    {{ site_text($item['text_key'], $item['label']) }}
                     @if ($isActive)
                         <span class="absolute -bottom-1.5 left-0 h-0.5 w-full rounded-full bg-gold"></span>
                     @endif
@@ -42,10 +42,6 @@
         </div>
 
         <div class="ml-auto flex items-center gap-3 lg:ml-0">
-            <a href="{{ route('stacks') }}"
-               class="hidden rounded-full border border-gold/30 px-4 py-2 text-[13px] font-bold tracking-wide text-gold uppercase transition hover:bg-gold hover:text-black sm:inline-block lg:hidden xl:inline-block">
-                Shop Stacks
-            </a>
             <a href="{{ auth()->check() ? route('account') : route('login') }}"
                class="rounded-full border border-white/10 p-2.5 text-white/70 transition hover:border-gold/40 hover:text-gold"
                aria-label="{{ auth()->check() ? 'Your account' : 'Sign in' }}">
@@ -104,7 +100,7 @@
                               {{ $isActive
                                   ? 'border-gold bg-gold/10 text-gold'
                                   : 'border-transparent text-white/75 hover:bg-white/5 hover:text-gold' }}">
-                        {{ $item['label'] }}
+                        {{ site_text($item['text_key'], $item['label']) }}
                     </a>
                 @endforeach
             </div>

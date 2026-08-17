@@ -4,15 +4,14 @@
             <div>
                 <img src="{{ asset('assets/brand/logo-wordmark.png') }}" alt="Powered Up Peptides" class="h-11 w-auto">
                 <p class="mt-5 max-w-sm text-sm leading-relaxed text-white/45">
-                    Research-grade peptides with published third-party analysis on every batch.
-                    Built for laboratories and researchers who need to trust what is in the vial.
+                    {{ site_text('global.footer_description') }}
                 </p>
             </div>
 
             <div>
                 <h3 class="eyebrow text-gold">Shop</h3>
                 <ul class="mt-4 space-y-2.5 text-sm text-white/55">
-                    <li><a href="{{ route('stacks') }}" class="transition hover:text-gold">Stack Protocols</a></li>
+                    <li><a href="{{ route('stacks') }}" class="transition hover:text-gold">{{ site_text('global.footer_collections_link') }}</a></li>
                     <li><a href="{{ route('shop') }}" class="transition hover:text-gold">Individual Compounds</a></li>
                     <li><a href="{{ route('shop', ['category' => 'supplies']) }}" class="transition hover:text-gold">Supplies</a></li>
                 </ul>
@@ -39,13 +38,8 @@
 
         <div class="mt-12 rounded-xl border border-gold/20 bg-gold/[0.04] p-5">
             <p class="text-xs leading-relaxed text-white/50">
-                <span class="font-bold text-gold">RESEARCH USE ONLY.</span>
-                All products sold by Powered Up Peptides are intended strictly for in-vitro laboratory
-                research and are <strong class="text-white/70">not for human or veterinary consumption</strong>.
-                These products are not drugs, foods, or cosmetics and have not been evaluated by the FDA.
-                Any reference to dosages reflects published third-party literature and is not a
-                recommendation for use in humans. By purchasing, you confirm you are a qualified
-                researcher aged 21 or over.
+                <span class="font-bold text-gold">{{ site_text('global.footer_disclaimer_heading') }}</span>
+                {{ site_text('global.footer_disclaimer') }}
             </p>
         </div>
 

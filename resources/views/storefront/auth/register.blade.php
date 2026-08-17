@@ -5,7 +5,7 @@
             Create <span class="text-foil">Account</span>
         </h1>
         <p class="mt-3 text-center text-sm text-white/50">
-            Track orders, pull batch certificates and reorder your protocol in one click.
+            {{ site_text('register.introduction') }}
         </p>
 
         @if ($errors->any())
@@ -56,10 +56,7 @@
             <label class="flex cursor-pointer gap-3 pt-1">
                 <input type="checkbox" name="research_use_confirmed" value="1" @checked(old('research_use_confirmed'))
                        class="mt-0.5 size-4 shrink-0 appearance-none rounded border-2 border-white/25 transition checked:border-gold checked:bg-gold">
-                <span class="text-[11px] leading-relaxed text-white/50">
-                    I am a qualified researcher aged 21 or over and understand these products are
-                    supplied strictly for <strong class="text-gold">laboratory research use only</strong>.
-                </span>
+                <span class="text-[11px] leading-relaxed text-white/50">{{ site_text('register.disclaimer') }}</span>
             </label>
 
             <button type="submit"

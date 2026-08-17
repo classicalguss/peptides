@@ -1,61 +1,59 @@
 @php $categoryLabel = $categories[$activeCategory]['label'] ?? null; @endphp
 
-<x-layouts.storefront :title="($categoryLabel ? $categoryLabel.' Protocols' : 'Stack Protocols').' — Powered Up Peptides'"
-                      description="Complete research peptide protocols. Each stack pairs proven compounds into a programme with a set supply length and published lab results.">
+<x-layouts.storefront :title="$categoryLabel ? $categoryLabel.' Protocols — Powered Up Peptides' : site_text('collections.meta_title')"
+                      :description="site_text('collections.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-14">
             <nav class="flex items-center gap-2 text-xs text-white/40">
                 <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
                 <span>/</span>
-                <a href="{{ route('stacks') }}" class="transition hover:text-gold">Stacks</a>
+                <a href="{{ route('stacks') }}" class="transition hover:text-gold">{{ site_text('collections.breadcrumb') }}</a>
                 @if ($categoryLabel)
                     <span>/</span>
                     <span class="text-white/70">{{ $categoryLabel }}</span>
                 @endif
             </nav>
 
-            <p class="mt-8 eyebrow text-gold">Complete Protocols</p>
+            <p class="mt-8 eyebrow text-gold">{{ site_text('collections.hero_eyebrow') }}</p>
 
             <h1 class="display-title mt-3 text-5xl text-white sm:text-6xl">
                 @if ($categoryLabel)
-                    <span class="text-foil">{{ $categoryLabel }}</span> Protocols
+                    <span class="text-foil">{{ $categoryLabel }}</span> {{ site_text('collections.category_suffix') }}
                 @else
-                    Stack <span class="text-foil">Protocols</span>
+                    {!! foil_last_words(site_text('collections.hero_title')) !!}
                 @endif
             </h1>
 
             <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/55">
-                Every stack pairs compounds that work together into one programme, with a fixed
-                supply length and a single price. Pick the goal, pick the duration, and everything
-                arrives in one cold chain shipment.
+                {{ site_text('collections.hero_description') }}
             </p>
 
             <a href="{{ route('shop') }}"
                class="mt-7 inline-flex items-center gap-2 text-xs font-extrabold tracking-widest text-gold uppercase transition hover:text-gold-bright">
-                Prefer single vials? Shop compounds &rarr;
+                {{ site_text('collections.shop_link') }}
             </a>
         </div>
     </section>
 
     <div class="mx-auto max-w-7xl px-4 py-12">
 
-        <x-store.catalog-filters route="stacks" all-label="All Protocols"
+        <x-store.catalog-filters route="stacks" :all-label="site_text('collections.all_filter')"
                                  :categories="$categories" :active-category="$activeCategory"
                                  :sort="$sort" :total-count="$totalCount" />
 
         <p class="mt-6 text-xs text-white/40">
             Showing <span class="font-bold text-white/70">{{ $profiles->count() }}</span>
-            {{ Str::plural('protocol', $profiles->count()) }}
+            {{ $profiles->count() === 1 ? site_text('collections.item_singular') : site_text('collections.item_plural') }}
         </p>
 
         @if ($profiles->isEmpty())
             <div class="mt-10 rounded-2xl panel p-14 text-center">
-                <p class="display-title text-2xl text-white">No protocols here</p>
-                <p class="mt-3 text-sm text-white/50">Try a different goal.</p>
+                <p class="display-title text-2xl text-white">{{ site_text('collections.empty_title') }}</p>
+                <p class="mt-3 text-sm text-white/50">{{ site_text('collections.empty_description') }}</p>
                 <a href="{{ route('stacks') }}"
                    class="mt-7 inline-block rounded-full bg-gold px-6 py-3 text-xs font-extrabold tracking-widest text-black uppercase">
-                    Show All Protocols
+                    {{ site_text('collections.empty_button') }}
                 </a>
             </div>
         @else
@@ -170,7 +168,7 @@
 
                             <a href="{{ $url }}"
                                class="block rounded-full bg-gold px-5 py-3 text-center text-[11px] font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                                View Protocol
+                                {{ site_text('collections.view_button') }}
                             </a>
                         </div>
                     </article>
@@ -181,15 +179,14 @@
         {{-- Cross-sell to compounds --}}
         <section class="mt-16 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-14">
             <h2 class="display-title text-3xl text-white sm:text-4xl">
-                Want To <span class="text-foil">Build Your Own?</span>
+                {!! foil_last_words(site_text('collections.cross_sell_title'), 3) !!}
             </h2>
             <p class="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/55">
-                Every compound inside these protocols is available on its own, with quantity-break
-                pricing that drops the unit cost as you scale up.
+                {{ site_text('collections.cross_sell_description') }}
             </p>
             <a href="{{ route('shop') }}"
                class="mt-8 inline-block rounded-full bg-gold px-8 py-3.5 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                Shop Individual Compounds
+                {{ site_text('collections.cross_sell_button') }}
             </a>
         </section>
     </div>

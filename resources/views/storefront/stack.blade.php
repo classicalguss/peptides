@@ -12,7 +12,7 @@
                 <nav class="flex items-center gap-2 text-xs text-white/40">
                     <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
                     <span>/</span>
-                    <a href="{{ route('stacks') }}" class="transition hover:text-gold">Stack Protocols</a>
+                    <a href="{{ route('stacks') }}" class="transition hover:text-gold">{{ site_text('collection_product.breadcrumb') }}</a>
                     <span>/</span>
                     <span class="text-white/70">{{ $profile->product->translateAttribute('name') }}</span>
                 </nav>
@@ -82,8 +82,8 @@
                             @csrf
 
                             <div class="flex items-baseline justify-between">
-                                <h2 class="text-[13px] font-extrabold tracking-widest text-white uppercase">Choose Your Protocol</h2>
-                                <span class="text-[11px] text-white/40">Longer supply = lower cost per vial</span>
+                                <h2 class="text-[13px] font-extrabold tracking-widest text-white uppercase">{{ site_text('collection_product.choose_heading') }}</h2>
+                                <span class="text-[11px] text-white/40">{{ site_text('collection_product.choose_help') }}</span>
                             </div>
 
                             <div class="mt-4 space-y-3">
@@ -122,7 +122,7 @@
 
                             <button type="submit"
                                     class="mt-6 w-full rounded-full bg-[var(--accent)] px-8 py-4 text-sm font-extrabold tracking-widest text-black uppercase transition hover:brightness-110">
-                                Add Protocol To Cart
+                                {{ site_text('collection_product.add_button') }}
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
@@ -150,9 +150,9 @@
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
-                    eyebrow="Inside The Box"
-                    :title="'What&rsquo;s <span class=\'text-accent-foil\'>Included</span>'"
-                    subtitle="Vial counts below are shown per protocol tier. Every tier includes the bacteriostatic water required to reconstitute the full protocol." />
+                    :eyebrow="site_text('collection_product.included_eyebrow')"
+                    :title="foil_last_words(site_text('collection_product.included_title'), 1, 'text-accent-foil')"
+                    :subtitle="site_text('collection_product.included_description')" />
 
                 <div class="mt-12 overflow-hidden rounded-2xl panel">
                     <table class="w-full text-left text-sm">
@@ -216,8 +216,8 @@
         <section class="mx-auto max-w-7xl px-4 py-20">
             <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
                 <div>
-                    <p class="eyebrow text-[var(--accent)]">The Payoff</p>
-                    <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">Key Benefits</h2>
+                    <p class="eyebrow text-[var(--accent)]">{{ site_text('collection_product.benefits_eyebrow') }}</p>
+                    <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('collection_product.benefits_title') }}</h2>
                     <ul class="mt-7 space-y-4">
                         @foreach ($profile->benefits ?? [] as $benefit)
                             <li class="flex gap-3.5 rounded-xl panel p-4">
@@ -231,8 +231,8 @@
                 </div>
 
                 <div>
-                    <p class="eyebrow text-[var(--accent)]">Fit Check</p>
-                    <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">Who It&rsquo;s For</h2>
+                    <p class="eyebrow text-[var(--accent)]">{{ site_text('collection_product.audience_eyebrow') }}</p>
+                    <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('collection_product.audience_title') }}</h2>
                     <ul class="mt-7 space-y-4">
                         @foreach ($profile->audience ?? [] as $item)
                             <li class="flex gap-3.5 rounded-xl panel p-4">
@@ -252,9 +252,9 @@
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
-                    eyebrow="The Compounds"
-                    :title="'Every Vial, <span class=\'text-accent-foil\'>Documented</span>'"
-                    subtitle="Each compound in this protocol has its own product page with research background, storage guidance, and the batch certificate of analysis." />
+                    :eyebrow="site_text('collection_product.compounds_eyebrow')"
+                    :title="foil_last_words(site_text('collection_product.compounds_title'), 1, 'text-accent-foil')"
+                    :subtitle="site_text('collection_product.compounds_description')" />
 
                 <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($componentProfiles as $componentProfile)
@@ -271,7 +271,7 @@
                     align="left"
                     eyebrow="Transparency"
                     :title="'Batch <span class=\'text-accent-foil\'>Lab Results</span>'"
-                    subtitle="Independent third-party analysis for the exact batches included in this protocol." />
+                    :subtitle="site_text('collection_product.lab_description')" />
 
                 <div class="mt-12 overflow-hidden rounded-2xl panel">
                     <table class="w-full text-left text-sm">
@@ -351,7 +351,7 @@
             <x-store.section-heading
                 align="left"
                 eyebrow="Keep Looking"
-                title='Other <span class="text-foil">Protocols</span>' />
+                :title="foil_last_words(site_text('collection_product.other_title'))" />
 
             <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($otherStacks as $other)

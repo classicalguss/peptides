@@ -1,4 +1,4 @@
-<x-layouts.storefront title="Powered Up Peptides — Research Peptides & Stack Protocols">
+<x-layouts.storefront :title="site_text('home.meta_title')">
 
     {{-- Hero --}}
     <section class="relative overflow-hidden bg-electric">
@@ -9,28 +9,26 @@
             <div>
                 <div class="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/[0.06] px-3.5 py-1.5">
                     <span class="size-1.5 rounded-full bg-gold"></span>
-                    <span class="eyebrow text-gold">Third-Party Tested · 99%+ Purity</span>
+                    <span class="eyebrow text-gold">{{ site_text('home.hero_eyebrow') }}</span>
                 </div>
 
                 <h1 class="display-title mt-6 text-5xl sm:text-6xl lg:text-7xl">
-                    <span class="text-white">Power Up Your</span><br>
-                    <span class="text-foil">Research</span>
+                    <span class="text-white">{{ site_text('home.hero_title_line_1') }}</span><br>
+                    <span class="text-foil">{{ site_text('home.hero_title_line_2') }}</span>
                 </h1>
 
                 <p class="animate-in mt-6 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg" style="--reveal-delay: 120ms">
-                    Premium research peptides and pre-built stack protocols. Every batch is
-                    independently HPLC verified and the certificate of analysis is published
-                    before it ships &mdash; so you always know exactly what is in the vial.
+                    {{ site_text('home.hero_description') }}
                 </p>
 
                 <div class="animate-in mt-9 flex flex-wrap items-center gap-3" style="--reveal-delay: 220ms">
                     <a href="{{ route('stacks') }}"
                        class="rounded-full bg-gold px-7 py-3.5 text-sm font-extrabold tracking-wider text-black uppercase transition hover:bg-gold-bright hover:shadow-[0_0_40px_-8px_var(--color-gold)]">
-                        Shop Stack Protocols
+                        {{ site_text('home.hero_primary_button') }}
                     </a>
                     <a href="{{ route('lab-reports') }}"
                        class="rounded-full border border-white/15 px-7 py-3.5 text-sm font-extrabold tracking-wider text-white uppercase transition hover:border-gold/50 hover:text-gold">
-                        View Lab Reports
+                        {{ site_text('home.hero_secondary_button') }}
                     </a>
                 </div>
 
@@ -92,9 +90,9 @@
     {{-- Stack protocols --}}
     <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
         <x-store.section-heading
-            eyebrow="Built For Results"
-            title='Stack <span class="text-foil">Protocols</span>'
-            subtitle="Pre-built systems that pair synergistic compounds with the bacteriostatic water you need. Every stack ships in three protocol tiers — save up to 58% versus buying vials individually." />
+            :eyebrow="site_text('home.collections_eyebrow')"
+            :title="foil_last_words(site_text('home.collections_title'))"
+            :subtitle="site_text('home.collections_description')" />
 
         <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($stacks as $i => $stack)
@@ -110,9 +108,9 @@
             <div class="flex flex-wrap items-end justify-between gap-6">
                 <x-store.section-heading
                     align="left"
-                    eyebrow="À La Carte"
-                    title='Individual <span class="text-foil">Compounds</span>'
-                    subtitle="Building your own protocol? Every compound is available on its own with quantity-break pricing — the more vials, the lower the unit cost." />
+                    :eyebrow="site_text('home.compounds_eyebrow')"
+                    :title="foil_last_words(site_text('home.compounds_title'))"
+                    :subtitle="site_text('home.compounds_description')" />
 
                 <a href="{{ route('shop') }}"
                    class="rounded-full border border-gold/30 px-5 py-2.5 text-xs font-extrabold tracking-widest text-gold uppercase transition hover:bg-gold hover:text-black">
@@ -132,9 +130,9 @@
     {{-- Why us --}}
     <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
         <x-store.section-heading
-            eyebrow="Why Powered Up"
-            title='No Guessing. <span class="text-foil">Ever.</span>'
-            subtitle="Most suppliers ask you to take their word for it. We publish the receipts." />
+            :eyebrow="site_text('home.why_eyebrow')"
+            :title="foil_last_words(site_text('home.why_title'))"
+            :subtitle="site_text('home.why_description')" />
 
         <div class="mt-14 grid gap-6 lg:grid-cols-3">
             @foreach ([
@@ -189,16 +187,15 @@
                 <div class="absolute inset-0 bg-electric opacity-70"></div>
                 <div class="relative">
                     <h2 class="display-title text-4xl text-white sm:text-5xl">
-                        Ready To <span class="text-foil">Power Up?</span>
+                        {!! foil_last_words(site_text('home.closing_title'), 2) !!}
                     </h2>
                     <p class="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/55">
-                        Start with a stack protocol built around your research goal, or browse the
-                        full compound library and build your own.
+                        {{ site_text('home.closing_description') }}
                     </p>
                     <div class="mt-9 flex flex-wrap justify-center gap-3">
                         <a href="{{ route('stacks') }}"
                            class="rounded-full bg-gold px-8 py-3.5 text-sm font-extrabold tracking-wider text-black uppercase transition hover:bg-gold-bright">
-                            Shop Stack Protocols
+                            {{ site_text('home.closing_primary_button') }}
                         </a>
                         <a href="{{ route('contact') }}"
                            class="rounded-full border border-white/15 px-8 py-3.5 text-sm font-extrabold tracking-wider text-white uppercase transition hover:border-gold/50 hover:text-gold">

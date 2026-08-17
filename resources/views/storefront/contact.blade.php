@@ -1,5 +1,5 @@
 <x-layouts.storefront title="Contact — Powered Up Peptides"
-                      description="Questions about an order, a protocol or a batch certificate? Talk to the Powered Up Peptides team.">
+                      :description="site_text('contact.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-16">
@@ -10,12 +10,11 @@
             </nav>
 
             <h1 class="display-title mt-6 text-5xl text-white sm:text-6xl">
-                Talk To <span class="text-foil">Us</span>
+                {!! foil_last_words(site_text('contact.hero_title')) !!}
             </h1>
 
             <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/55">
-                Order issues, batch certificates, protocol questions or bulk enquiries &mdash;
-                a real person reads every message and replies within one business day.
+                {{ site_text('contact.hero_description') }}
             </p>
         </div>
     </section>
@@ -95,8 +94,7 @@
                     </button>
 
                     <p class="text-[11px] leading-relaxed text-white/35">
-                        We cannot provide dosing, medical or veterinary advice. All products are
-                        supplied strictly for laboratory research use.
+                        {{ site_text('contact.form_disclaimer') }}
                     </p>
                 </form>
             </div>
@@ -116,8 +114,8 @@
                             <p class="mt-1 text-xs text-white/45">Order history and status live in your account.</p>
                         </a>
                         <a href="{{ route('shop') }}" class="block rounded-xl border border-white/8 bg-black/40 p-4 transition hover:border-gold/30">
-                            <p class="text-sm font-bold text-white">Not sure which protocol?</p>
-                            <p class="mt-1 text-xs text-white/45">Every stack lists its goal, components and supply length.</p>
+                            <p class="text-sm font-bold text-white">{{ site_text('contact.protocol_help_title') }}</p>
+                            <p class="mt-1 text-xs text-white/45">{{ site_text('contact.protocol_help_description') }}</p>
                         </a>
                     </div>
                 </div>

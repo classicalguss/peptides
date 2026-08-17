@@ -28,10 +28,10 @@ return [
     ],
 
     'trust' => [
-        ['label' => '3rd Party Tested', 'detail' => 'Every batch, HPLC verified'],
-        ['label' => '99%+ Purity', 'detail' => 'Published COA per batch'],
-        ['label' => 'Fast Discreet Shipping', 'detail' => 'Ships within 24 hours'],
-        ['label' => 'Cold Chain Packed', 'detail' => 'Temperature controlled'],
+        ['label' => '3rd Party Tested', 'label_key' => 'global.trust_1_title', 'detail' => 'Every batch, HPLC verified', 'detail_key' => 'global.trust_1_detail'],
+        ['label' => '99%+ Purity', 'label_key' => 'global.trust_2_title', 'detail' => 'Published COA per batch', 'detail_key' => 'global.trust_2_detail'],
+        ['label' => 'Fast Discreet Shipping', 'label_key' => 'global.trust_3_title', 'detail' => 'Ships within 24 hours', 'detail_key' => 'global.trust_3_detail'],
+        ['label' => 'Cold Chain Packed', 'label_key' => 'global.trust_4_title', 'detail' => 'Temperature controlled', 'detail_key' => 'global.trust_4_detail'],
     ],
 
     /*
@@ -39,10 +39,10 @@ return [
      * detail page still highlights the section it belongs to.
      */
     'nav' => [
-        ['label' => 'Shop', 'route' => 'shop', 'active' => ['shop', 'compound']],
-        ['label' => 'Stacks', 'route' => 'stacks', 'active' => ['stacks', 'stack']],
-        ['label' => 'Lab Reports', 'route' => 'lab-reports', 'active' => ['lab-reports']],
-        ['label' => 'About Us', 'route' => 'about', 'active' => ['about']],
-        ['label' => 'Contact', 'route' => 'contact', 'active' => ['contact', 'contact.store']],
+        ['label' => 'Shop', 'text_key' => 'global.nav_shop', 'route' => 'shop', 'active' => ['shop', 'compound']],
+        ['label' => 'Stacks', 'text_key' => 'global.nav_collections', 'route' => 'stacks', 'active' => ['stacks', 'stack']],
+        ['label' => 'Lab Reports', 'text_key' => 'global.nav_lab_reports', 'route' => 'lab-reports', 'active' => ['lab-reports']],
+        ['label' => 'About Us', 'text_key' => 'global.nav_about', 'route' => 'about', 'active' => ['about']],
+        ['label' => 'Contact', 'text_key' => 'global.nav_contact', 'route' => 'contact', 'active' => ['contact', 'contact.store']],
     ],
 ];

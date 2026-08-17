@@ -1,5 +1,5 @@
 <x-layouts.storefront title="About — Powered Up Peptides"
-                      description="Who we are, how we source and test our research peptides, and the standards every batch has to clear before it ships.">
+                      :description="site_text('about.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-20">
@@ -9,15 +9,13 @@
                 <span class="text-white/70">About</span>
             </nav>
 
-            <p class="mt-8 eyebrow text-gold">Our Standard</p>
+            <p class="mt-8 eyebrow text-gold">{{ site_text('about.hero_eyebrow') }}</p>
             <h1 class="display-title mt-4 max-w-3xl text-5xl leading-[0.95] text-white sm:text-6xl lg:text-7xl">
-                Know Exactly <span class="text-foil">What Is In The Vial</span>
+                {!! foil_last_words(site_text('about.hero_title'), 5) !!}
             </h1>
 
             <p class="mt-6 max-w-2xl text-base leading-relaxed text-white/55">
-                Powered Up Peptides exists because too much of this market asks researchers to take
-                purity on faith. We publish the analysis for every batch we sell, so you never have
-                to.
+                {{ site_text('about.hero_description') }}
             </p>
         </div>
     </section>
@@ -44,27 +42,14 @@
         {{-- Story --}}
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-                <p class="eyebrow text-gold">Why We Started</p>
+                <p class="eyebrow text-gold">{{ site_text('about.story_eyebrow') }}</p>
                 <h2 class="display-title mt-3 text-4xl text-white sm:text-5xl">
-                    Built Out Of <span class="text-foil">Frustration</span>
+                    {!! foil_last_words(site_text('about.story_title')) !!}
                 </h2>
                 <div class="mt-6 space-y-4 text-[15px] leading-relaxed text-white/55">
-                    <p>
-                        Anyone who has sourced research peptides knows the routine. A vendor claims
-                        99% purity. There is no certificate, or there is one certificate from two
-                        years ago covering a batch you did not receive. You are left running your own
-                        verification before you can even begin the work you actually planned.
-                    </p>
-                    <p>
-                        We built Powered Up Peptides around the opposite default. Every batch is sent
-                        to an independent lab for HPLC and mass spectrometry analysis before it is
-                        listed. That report is published against the batch number printed on your
-                        vial, and it stays public whether the result flatters us or not.
-                    </p>
-                    <p>
-                        If a batch does not clear our purity threshold, it does not get sold. It is
-                        a simple rule, and it is the entire reason this company exists.
-                    </p>
+                    <p>{{ site_text('about.story_paragraph_1') }}</p>
+                    <p>{{ site_text('about.story_paragraph_2') }}</p>
+                    <p>{{ site_text('about.story_paragraph_3') }}</p>
                 </div>
             </div>
 
@@ -114,25 +99,12 @@
         {{-- Compliance --}}
         <section class="mt-20 grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
             <div class="rounded-2xl border border-gold/25 bg-gold/[0.04] p-8">
-                <p class="eyebrow text-gold">Where We Draw The Line</p>
-                <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">Research Use Only</h2>
+                <p class="eyebrow text-gold">{{ site_text('about.compliance_eyebrow') }}</p>
+                <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('about.compliance_title') }}</h2>
                 <div class="mt-5 space-y-4 text-sm leading-relaxed text-white/55">
-                    <p>
-                        Everything we sell is supplied strictly for in-vitro laboratory research. Our
-                        products are not drugs, foods or cosmetics, they have not been evaluated by
-                        the FDA, and they are not for human or veterinary consumption.
-                    </p>
-                    <p>
-                        We do not provide dosing protocols, medical guidance or advice on
-                        administration, and we will not do so if asked. Where our product pages cite
-                        figures from published literature, that is a reference to the research
-                        record, not a recommendation.
-                    </p>
-                    <p class="text-white/70">
-                        By ordering, you confirm you are a qualified researcher aged 21 or over and
-                        that you are responsible for compliance with the regulations that apply where
-                        you are.
-                    </p>
+                    <p>{{ site_text('about.compliance_paragraph_1') }}</p>
+                    <p>{{ site_text('about.compliance_paragraph_2') }}</p>
+                    <p class="text-white/70">{{ site_text('about.compliance_paragraph_3') }}</p>
                 </div>
             </div>
 

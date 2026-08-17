@@ -140,12 +140,7 @@
                     <label class="flex cursor-pointer gap-3.5">
                         <input type="checkbox" name="research_use_confirmed" value="1" @checked(old('research_use_confirmed'))
                                class="mt-0.5 size-4 shrink-0 appearance-none rounded border-2 border-white/25 transition checked:border-gold checked:bg-gold">
-                        <span class="text-xs leading-relaxed text-white/60">
-                            I confirm I am a qualified researcher aged 21 or over, and that these products
-                            will be used strictly for <strong class="text-gold">in-vitro laboratory research</strong>.
-                            They are not for human or veterinary consumption, and not for diagnostic or
-                            therapeutic use.
-                        </span>
+                        <span class="text-xs leading-relaxed text-white/60">{{ site_text('checkout.disclaimer_text') }}</span>
                     </label>
                 </section>
             </div>

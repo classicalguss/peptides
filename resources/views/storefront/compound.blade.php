@@ -90,8 +90,8 @@
                             <input type="hidden" name="variant_id" value="{{ $variant?->id }}">
 
                             <div class="flex items-baseline justify-between">
-                                <h2 class="text-[13px] font-extrabold tracking-widest text-white uppercase">Choose Quantity</h2>
-                                <span class="text-[11px] text-white/40">Unit price drops with volume</span>
+                                <h2 class="text-[13px] font-extrabold tracking-widest text-white uppercase">{{ site_text('compound_product.quantity_heading') }}</h2>
+                                <span class="text-[11px] text-white/40">{{ site_text('compound_product.quantity_help') }}</span>
                             </div>
 
                             <div class="mt-4 space-y-2.5">
@@ -132,7 +132,7 @@
 
                             <button type="submit"
                                     class="mt-6 w-full rounded-full bg-[var(--accent)] px-8 py-4 text-sm font-extrabold tracking-widest text-black uppercase transition hover:brightness-110">
-                                Add To Cart
+                                {{ site_text('compound_product.add_button') }}
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
@@ -152,8 +152,8 @@
             <div class="mx-auto max-w-7xl px-4">
                 <div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
                     <div>
-                        <p class="eyebrow text-[var(--accent)]">Why Researchers Use It</p>
-                        <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">Highlights</h2>
+                        <p class="eyebrow text-[var(--accent)]">{{ site_text('compound_product.highlights_eyebrow') }}</p>
+                        <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('compound_product.highlights_title') }}</h2>
                         <ul class="mt-7 space-y-3">
                             @foreach ($profile->highlights ?? [] as $highlight)
                                 <li class="flex gap-3.5 rounded-xl panel p-4">
@@ -166,17 +166,17 @@
 
                     <div class="space-y-5">
                         <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Research Background</h3>
+                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.research_heading') }}</h3>
                             <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->research_info }}</p>
                         </div>
 
                         <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Reference Range In Literature</h3>
+                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.reference_heading') }}</h3>
                             <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->dosage }}</p>
                         </div>
 
                         <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Storage &amp; Handling</h3>
+                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.storage_heading') }}</h3>
                             <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->storage }}</p>
                         </div>
 
@@ -226,8 +226,8 @@
                 <x-store.section-heading
                     align="left"
                     eyebrow="Bundle &amp; Save"
-                    :title="'Included In These <span class=\'text-accent-foil\'>Protocols</span>'"
-                    subtitle="Buying this compound as part of a stack is cheaper than buying it alone, and every stack ships with the bacteriostatic water you need." />
+                    :title="foil_last_words(site_text('compound_product.collections_title'), 1, 'text-accent-foil')"
+                    :subtitle="site_text('compound_product.collections_description')" />
 
                 <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($usedInStacks as $stack)
@@ -241,7 +241,7 @@
         @if (! empty($profile->faq))
             <section class="border-y border-white/5 bg-black/40 py-20">
                 <div class="mx-auto max-w-3xl px-4">
-                    <x-store.section-heading eyebrow="Questions" title='Frequently <span class="text-foil">Asked</span>' />
+                    <x-store.section-heading eyebrow="Questions" :title="foil_last_words(site_text('compound_product.faq_title'))" />
 
                     <div class="mt-12 space-y-3">
                         @foreach ($profile->faq as $i => $item)
@@ -282,7 +282,7 @@
         {{-- Related --}}
         <section class="border-t border-white/5 bg-black/40 py-20">
             <div class="mx-auto max-w-7xl px-4">
-                <x-store.section-heading align="left" eyebrow="Keep Looking" title='Other <span class="text-foil">Compounds</span>' />
+                <x-store.section-heading align="left" eyebrow="Keep Looking" :title="foil_last_words(site_text('compound_product.related_title'))" />
 
                 <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($related as $item)

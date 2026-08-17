@@ -1,7 +1,7 @@
 @php $categoryLabel = $categories[$activeCategory]['label'] ?? null; @endphp
 
 <x-layouts.storefront :title="($categoryLabel ?? 'Shop Peptides').' — Powered Up Peptides'"
-                      description="Individual research peptides with published third-party analysis and quantity-break pricing on every vial.">
+                      :description="site_text('shop.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-14">
@@ -15,25 +15,23 @@
                 @endif
             </nav>
 
-            <p class="mt-8 eyebrow text-gold">Individual Compounds</p>
+            <p class="mt-8 eyebrow text-gold">{{ site_text('shop.hero_eyebrow') }}</p>
 
             <h1 class="display-title mt-3 text-5xl text-white sm:text-6xl">
                 @if ($categoryLabel)
                     <span class="text-foil">{{ $categoryLabel }}</span>
                 @else
-                    Shop <span class="text-foil">Compounds</span>
+                    {!! foil_last_words(site_text('shop.hero_title')) !!}
                 @endif
             </h1>
 
             <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/55">
-                Single vials for researchers building their own protocol. Every compound is
-                third-party tested with the certificate published against its batch number, and
-                unit prices drop automatically as quantity goes up.
+                {{ site_text('shop.hero_description') }}
             </p>
 
             <a href="{{ route('stacks') }}"
                class="mt-7 inline-flex items-center gap-2 text-xs font-extrabold tracking-widest text-gold uppercase transition hover:text-gold-bright">
-                Looking for complete protocols? Browse stacks &rarr;
+                {{ site_text('shop.collections_link') }}
             </a>
         </div>
     </section>
@@ -71,15 +69,14 @@
         {{-- Cross-sell to the protocol page --}}
         <section class="mt-16 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-14">
             <h2 class="display-title text-3xl text-white sm:text-4xl">
-                Rather Not <span class="text-foil">Build It Yourself?</span>
+                {!! foil_last_words(site_text('shop.cross_sell_title'), 3) !!}
             </h2>
             <p class="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/55">
-                Our stack protocols pair these compounds into complete programmes with a set
-                supply length, so you do not have to work out the combination.
+                {{ site_text('shop.cross_sell_description') }}
             </p>
             <a href="{{ route('stacks') }}"
                class="mt-8 inline-block rounded-full bg-gold px-8 py-3.5 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                View Stack Protocols
+                {{ site_text('shop.cross_sell_button') }}
             </a>
         </section>
     </div>

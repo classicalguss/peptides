@@ -36,13 +36,12 @@
             <div class="mt-10 rounded-2xl panel p-16 text-center">
                 <p class="display-title text-3xl text-white">Nothing in here yet</p>
                 <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/50">
-                    Start with a stack protocol built around your research goal, or browse the
-                    compound library and build your own.
+                    {{ site_text('cart.empty_description') }}
                 </p>
                 <div class="mt-8 flex flex-wrap justify-center gap-3">
                     <a href="{{ route('stacks') }}"
                        class="rounded-full bg-gold px-7 py-3.5 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                        Shop Stack Protocols
+                        {{ site_text('cart.empty_collections_button') }}
                     </a>
                     <a href="{{ route('shop') }}"
                        class="rounded-full border border-white/15 px-7 py-3.5 text-xs font-extrabold tracking-widest text-white uppercase transition hover:border-gold/50 hover:text-gold">
@@ -196,22 +195,18 @@
                         @csrf
 
                         <div class="rounded-xl border border-gold/25 bg-gold/[0.05] p-4">
-                            <p class="text-[10px] font-extrabold tracking-widest text-gold uppercase">Research-use disclaimer</p>
+                            <p class="text-[10px] font-extrabold tracking-widest text-gold uppercase">{{ site_text('cart.disclaimer_heading') }}</p>
                             <label class="mt-3 flex cursor-pointer gap-3">
                                 <input type="checkbox" name="research_disclaimer_accepted" value="1" required
                                        @checked(old('research_disclaimer_accepted'))
                                        class="mt-0.5 size-4 shrink-0 appearance-none rounded border-2 border-white/30 transition checked:border-gold checked:bg-gold focus:outline-none focus:ring-2 focus:ring-gold/40">
-                                <span class="text-xs leading-relaxed text-white/60">
-                                    I confirm that I am a qualified researcher aged 21 or over and that these
-                                    products are strictly for <strong class="text-gold">in-vitro laboratory research only</strong>.
-                                    They are not for human or veterinary consumption, diagnostic use, or therapeutic use.
-                                </span>
+                                <span class="text-xs leading-relaxed text-white/60">{{ site_text('cart.disclaimer_text') }}</span>
                             </label>
                         </div>
 
                         <button type="submit"
                                 class="mt-4 w-full rounded-full bg-gold px-8 py-4 text-center text-sm font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                            Accept &amp; Proceed To Checkout
+                            {{ site_text('cart.disclaimer_button') }}
                         </button>
                     </form>
 

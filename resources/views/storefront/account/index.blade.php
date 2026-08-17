@@ -67,7 +67,7 @@
                 @if ($orders->isEmpty())
                     <div class="mt-5 rounded-2xl panel p-12 text-center">
                         <p class="display-title text-2xl text-white">No orders yet</p>
-                        <p class="mt-3 text-sm text-white/50">Your first protocol is waiting.</p>
+                        <p class="mt-3 text-sm text-white/50">{{ site_text('account.empty_orders_description') }}</p>
                         <a href="{{ route('shop') }}"
                            class="mt-6 inline-block rounded-full bg-gold px-6 py-3 text-xs font-extrabold tracking-widest text-black uppercase">
                             Start Shopping

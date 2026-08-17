@@ -1,4 +1,4 @@
-<x-layouts.storefront title="Lab Reports & Certificates of Analysis — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('labs.meta_title')">
 
     <section class="relative overflow-hidden bg-electric">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-16">
@@ -9,22 +9,20 @@
             </nav>
 
             <h1 class="display-title mt-6 text-5xl text-white sm:text-6xl">
-                Lab <span class="text-foil">Reports</span>
+                {!! foil_last_words(site_text('labs.hero_title')) !!}
             </h1>
 
             <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/55">
-                Every batch we sell is tested by an independent, accredited laboratory using HPLC
-                and mass spectrometry before it goes on sale. Look up any batch number printed
-                on your vial to see its certificate of analysis.
+                {{ site_text('labs.hero_description') }}
             </p>
 
             <form method="GET" action="{{ route('lab-reports') }}" class="mt-9 flex max-w-xl gap-3">
                 <input type="search" name="batch" value="{{ $search }}"
-                       placeholder="Enter batch number or product name"
+                       placeholder="{{ site_text('labs.search_placeholder') }}"
                        class="min-w-0 flex-1 rounded-full border border-white/12 bg-black/50 px-5 py-3.5 text-sm text-white placeholder:text-white/30 outline-none focus:border-gold/50">
                 <button type="submit"
                         class="shrink-0 rounded-full bg-gold px-6 py-3.5 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
-                    Look Up
+                    {{ site_text('labs.search_button') }}
                 </button>
             </form>
 
@@ -104,7 +102,7 @@
                                             </a>
                                         </div>
                                     @else
-                                        <span class="block text-right text-[11px] font-extrabold tracking-widest text-white/25 uppercase">Pending Upload</span>
+                                        <span class="block text-right text-[11px] font-extrabold tracking-widest text-white/25 uppercase">{{ site_text('labs.pending_label') }}</span>
                                     @endif
                                 </td>
                             </tr>
@@ -114,11 +112,7 @@
             </div>
 
             <p class="mt-5 text-xs leading-relaxed text-white/35">
-                Certificate PDFs are attached per batch in the admin. Rows marked
-                &ldquo;pending upload&rdquo; have been tested and released, but the signed PDF has
-                not been attached to this record yet.
-                <span class="text-white/50">The certificates currently linked here are sample
-                documents containing placeholder data, not real laboratory results.</span>
+                {{ site_text('labs.table_note') }}
             </p>
         @endif
 
