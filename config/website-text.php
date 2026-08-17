@@ -136,6 +136,8 @@ return [
     'collection_product.compounds_eyebrow' => $item('Research Collection Product Pages', 'Included Compounds', 'Section eyebrow', 'The Compounds', 'Small label above the included compound cards.', 'stacks', 120),
     'collection_product.compounds_title' => $item('Research Collection Product Pages', 'Included Compounds', 'Section heading', 'Every Vial, Documented', 'Large heading above the included compound cards.', 'stacks', 130),
     'collection_product.compounds_description' => $item('Research Collection Product Pages', 'Included Compounds', 'Section description', 'Each compound in this protocol has its own product page with research background, storage guidance, and the batch certificate of analysis.', 'Paragraph above the included compound cards.', 'stacks', 140),
+    'collection_product.lab_eyebrow' => $item('Research Collection Product Pages', 'Lab Results', 'Section eyebrow', 'Transparency', 'Small label above the batch lab results heading.', 'stacks', 145),
+    'collection_product.lab_title' => $item('Research Collection Product Pages', 'Lab Results', 'Section heading', 'Batch Lab Results', 'Large heading above the batch results table. The last two words are shown in the accent colour.', 'stacks', 148),
     'collection_product.lab_description' => $item('Research Collection Product Pages', 'Lab Results', 'Section description', 'Independent third-party analysis for the exact batches included in this protocol.', 'Paragraph above product-level batch results.', 'stacks', 150),
     'collection_product.other_title' => $item('Research Collection Product Pages', 'Related Collections', 'Section heading', 'Other Protocols', 'Heading above other research collection cards.', 'stacks', 160),
 

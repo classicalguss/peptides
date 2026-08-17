@@ -12,7 +12,9 @@ class WebsiteText
 
     public static function get(string $key, ?string $fallback = null): string
     {
-        $definition = config("website-text.{$key}");
+        // Definition keys contain dots, so they must be read from the array
+        // directly — config() would treat them as nested paths and miss.
+        $definition = self::definitions()[$key] ?? null;
         $fallback ??= is_array($definition) ? ($definition['default'] ?? '') : '';
 
         if (! (self::$tableAvailable ??= Schema::hasTable('website_texts'))) {

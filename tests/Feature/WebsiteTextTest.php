@@ -15,6 +15,17 @@ class WebsiteTextTest extends TestCase
         $this->assertSame(count(config('website-text')), WebsiteText::query()->count());
     }
 
+    public function test_a_key_missing_from_the_database_falls_back_to_its_configured_default(): void
+    {
+        $key = 'collection_product.lab_title';
+        $default = config('website-text')[$key]['default'];
+
+        WebsiteText::query()->where('key', $key)->delete();
+        cache()->forget('website-text.values');
+
+        $this->assertSame($default, site_text($key));
+    }
+
     public function test_an_admin_text_change_is_shown_on_the_storefront_and_escaped(): void
     {
         WebsiteText::query()

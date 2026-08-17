@@ -234,8 +234,8 @@
             <section class="mx-auto max-w-7xl px-4 py-20">
                 <x-store.section-heading
                     align="left"
-                    eyebrow="Transparency"
-                    :title="'Batch <span class=\'text-accent-foil\'>Lab Results</span>'"
+                    :eyebrow="site_text('collection_product.lab_eyebrow')"
+                    :title="foil_last_words(site_text('collection_product.lab_title'), 2, 'text-accent-foil')"
                     :subtitle="site_text('collection_product.lab_description')" />
 
                 <div class="mt-12 overflow-hidden rounded-2xl panel">
