@@ -93,12 +93,6 @@ class ProductResourceExtension extends ResourceExtension
                                 ->visible(fn (?Model $record): bool => static::isStack($record))
                                 ->dehydratedWhenHidden(false)
                                 ->columnSpanFull(),
-                            Forms\Components\Repeater::make('audience')
-                                ->label('Who it is for list')
-                                ->simple(Forms\Components\TextInput::make('text')->required()->maxLength(1000))
-                                ->visible(fn (?Model $record): bool => static::isStack($record))
-                                ->dehydratedWhenHidden(false)
-                                ->columnSpanFull(),
                         ])
                         ->columns(2),
 
@@ -199,7 +193,6 @@ class ProductResourceExtension extends ResourceExtension
             'storage',
             'highlights',
             'pillars',
-            'audience',
             'faq',
         ];
     }

@@ -35,7 +35,6 @@ class ProductTextSearchResource extends Resource
         'storage' => 'Storage and handling',
         'highlights' => 'Highlights list',
         'pillars' => 'Highlight pills',
-        'audience' => 'Who it is for list',
         'faq' => 'Frequently asked questions',
     ];
 
