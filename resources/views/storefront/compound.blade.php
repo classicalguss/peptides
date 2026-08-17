@@ -155,15 +155,19 @@
                     </div>
 
                     <div class="space-y-5">
-                        <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.research_heading') }}</h3>
-                            <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->research_info }}</p>
-                        </div>
+                        @if (filled($profile->research_info))
+                            <div class="rounded-2xl panel p-6">
+                                <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.research_heading') }}</h3>
+                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->research_info }}</p>
+                            </div>
+                        @endif
 
-                        <div class="rounded-2xl panel p-6">
-                            <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.storage_heading') }}</h3>
-                            <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->storage }}</p>
-                        </div>
+                        @if (filled($profile->storage))
+                            <div class="rounded-2xl panel p-6">
+                                <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.storage_heading') }}</h3>
+                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->storage }}</p>
+                            </div>
+                        @endif
 
                         @if ($coa)
                             <div class="rounded-2xl border border-[var(--accent)]/25 bg-[var(--accent)]/[0.05] p-6">
@@ -210,7 +214,7 @@
             <section class="mx-auto max-w-7xl px-4 py-20">
                 <x-store.section-heading
                     align="left"
-                    eyebrow="Bundle &amp; Save"
+                    :eyebrow="site_text('compound_product.collections_eyebrow')"
                     :title="foil_last_words(site_text('compound_product.collections_title'), 1, 'text-accent-foil')"
                     :subtitle="site_text('compound_product.collections_description')" />
 
