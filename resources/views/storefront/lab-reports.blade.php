@@ -122,32 +122,32 @@
                                         <div data-coa-panel class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
                                             <div class="min-h-0 overflow-hidden">
                                                 <div data-coa-content class="bg-black/30 px-5 py-5 opacity-0 transition-opacity duration-300 ease-out">
-                                                @if ($report->isPass())
-                                                    <dl class="grid grid-cols-2 gap-4 text-sm">
-                                                        <div>
-                                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch Number</dt>
-                                                            <dd class="mt-1 font-mono text-xs text-white/70">{{ $report->batch_number }}</dd>
-                                                </div>
-                                                <div>
-                                                    <dt class="text-[10px] tracking-widest text-white/40 uppercase">Analysis Date</dt>
-                                                    <dd class="mt-1 text-white/70">{{ $report->tested_on?->format('M j, Y') }}</dd>
-                                                </div>
-                                                <div>
-                                                    <dt class="text-[10px] tracking-widest text-white/40 uppercase">Laboratory</dt>
-                                                    <dd class="mt-1 text-white/70">{{ $report->lab_name }}</dd>
-                                                </div>
-                                                @if ($report->pdfUrl())
-                                                    <div class="self-end">
-                                                        <a href="{{ $report->pdfUrl() }}" target="_blank" rel="noopener"
-                                                           class="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest whitespace-nowrap text-black uppercase">
-                                                            View COA
-                                                        </a>
-                                                    </div>
-                                                @endif
-                                            </dl>
-                                        @else
-                                            <p class="text-[12px] leading-relaxed text-white/45">{{ site_text('labs.testing_note') }}</p>
-                                        @endif
+                                                    @if ($report->isPass())
+                                                        <dl class="grid grid-cols-2 gap-4 text-sm">
+                                                            <div>
+                                                                <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch Number</dt>
+                                                                <dd class="mt-1 font-mono text-xs text-white/70">{{ $report->batch_number }}</dd>
+                                                            </div>
+                                                            <div>
+                                                                <dt class="text-[10px] tracking-widest text-white/40 uppercase">Analysis Date</dt>
+                                                                <dd class="mt-1 text-white/70">{{ $report->tested_on?->format('M j, Y') }}</dd>
+                                                            </div>
+                                                            <div>
+                                                                <dt class="text-[10px] tracking-widest text-white/40 uppercase">Laboratory</dt>
+                                                                <dd class="mt-1 text-white/70">{{ $report->lab_name }}</dd>
+                                                            </div>
+                                                            @if ($report->pdfUrl())
+                                                                <div class="self-end">
+                                                                    <a href="{{ $report->pdfUrl() }}" target="_blank" rel="noopener"
+                                                                       class="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest whitespace-nowrap text-black uppercase">
+                                                                        View COA
+                                                                    </a>
+                                                                </div>
+                                                            @endif
+                                                        </dl>
+                                                    @else
+                                                        <p class="text-[12px] leading-relaxed text-white/45">{{ site_text('labs.testing_note') }}</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
