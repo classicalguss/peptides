@@ -75,30 +75,29 @@
                                         <span class="font-bold text-white">{{ $report->product_label }}</span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-4 font-mono text-xs text-white/55">{{ $report->batch_number ?? '—' }}</td>
-                                <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $report->tested_on?->format('M j, Y') ?? '—' }}</td>
-                                <td class="hidden px-5 py-4 text-white/50 lg:table-cell">{{ $report->lab_name ?? '—' }}</td>
-                                <td class="hidden px-5 py-4 font-bold text-white/80 sm:table-cell">{{ $report->purity ?? '—' }}</td>
+                                <td class="px-5 py-4 font-mono text-xs whitespace-nowrap text-white/55">{{ $report->batch_number ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 whitespace-nowrap text-white/50 sm:table-cell">{{ $report->tested_on?->format('M j, Y') ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 whitespace-nowrap text-white/50 lg:table-cell">{{ $report->lab_name ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 font-bold whitespace-nowrap text-white/80 sm:table-cell">{{ $report->purity ?? '—' }}</td>
                                 <td class="px-5 py-4">
                                     @if ($report->isPass())
-                                        <span class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
+                                        <span class="inline-block rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest whitespace-nowrap text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
                                     @elseif ($report->isTesting())
-                                        <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
+                                        <span class="inline-block rounded-full bg-amber-400/10 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
+                                        <span class="mt-2 block max-w-56 text-[11px] leading-relaxed normal-case text-white/35">{{ site_text('labs.testing_note') }}</span>
                                     @else
-                                        <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                        <span class="inline-block rounded-full bg-white/5 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-4">
+                                <td class="px-5 py-4 text-right">
                                     @if ($report->pdfUrl())
                                         <a href="{{ $report->pdfUrl() }}" target="_blank" rel="noopener"
                                            title="Open the certificate for batch {{ $report->batch_number }}"
-                                           class="float-right inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest text-black uppercase transition duration-200 hover:bg-gold-bright">
+                                           class="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest whitespace-nowrap text-black uppercase transition duration-200 hover:bg-gold-bright">
                                             View COA
                                         </a>
-                                    @elseif ($report->isTesting())
-                                        <span class="block text-right text-[11px] leading-relaxed text-white/35">{{ site_text('labs.testing_note') }}</span>
                                     @else
-                                        <span class="block text-right text-[11px] font-extrabold tracking-widest text-white/25 uppercase">—</span>
+                                        <span class="text-[11px] font-extrabold tracking-widest text-white/25 uppercase">—</span>
                                     @endif
                                 </td>
                             </tr>

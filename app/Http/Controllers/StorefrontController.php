@@ -141,6 +141,7 @@ class StorefrontController extends Controller
             ->when($search !== '', fn ($query) => $query
                 ->where('batch_number', 'like', "%{$search}%")
                 ->orWhere('product_label', 'like', "%{$search}%"))
+            ->orderByRaw("case status when 'pass' then 0 when 'testing' then 1 else 2 end")
             ->orderBy('product_label')
             ->with('product.urls')
             ->get();
