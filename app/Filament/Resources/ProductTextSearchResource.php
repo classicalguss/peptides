@@ -12,7 +12,7 @@ use Lunar\Admin\Filament\Resources\ProductResource;
 /**
  * Search-only resource: has no pages or navigation of its own. It lets the
  * admin global search box find product page text (descriptions, research
- * wording, highlights, FAQs, included-items rows), tells the admin which
+ * wording, highlights, included-items rows), tells the admin which
  * section the text lives in, and links to the product's edit page.
  */
 class ProductTextSearchResource extends Resource
@@ -35,7 +35,6 @@ class ProductTextSearchResource extends Resource
         'storage' => 'Storage and handling',
         'highlights' => 'Highlights list',
         'pillars' => 'Highlight pills',
-        'faq' => 'Frequently asked questions',
     ];
 
     public static function getGlobalSearchResults(string $search): Collection

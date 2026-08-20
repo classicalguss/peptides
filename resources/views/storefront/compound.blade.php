@@ -219,22 +219,6 @@
             </section>
         @endif
 
-        {{-- FAQ --}}
-        @if (! empty($profile->faq))
-            <section class="border-y border-white/5 bg-black/40 py-20">
-                <div class="mx-auto max-w-3xl px-4">
-                    <x-store.section-heading eyebrow="Questions" :title="foil_last_words(site_text('compound_product.faq_title'))" />
-
-                    <div class="mt-12 space-y-3">
-                        @foreach ($profile->faq as $i => $item)
-                            <x-store.accordion :question="$item['q']" :answer="$item['a']"
-                                               class="reveal" style="--reveal-delay: {{ $i * 60 }}ms" />
-                        @endforeach
-                    </div>
-                </div>
-            </section>
-        @endif
-
         {{-- Related --}}
         <section class="border-t border-white/5 bg-black/40 py-20">
             <div class="mx-auto max-w-7xl px-4">

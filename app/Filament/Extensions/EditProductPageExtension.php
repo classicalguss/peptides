@@ -163,7 +163,6 @@ class EditProductPageExtension extends EditPageExtension
             'storage',
             'highlights',
             'pillars',
-            'faq',
         ];
     }
 

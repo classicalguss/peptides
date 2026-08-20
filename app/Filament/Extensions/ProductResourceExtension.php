@@ -18,7 +18,7 @@ class ProductResourceExtension extends ResourceExtension
         return $form->schema([
             ...$form->getComponents(),
             Forms\Components\Section::make('Website Page Text')
-                ->description('Edit the descriptions, research wording, benefits, and FAQs shown on this product’s storefront page. Name, price, images, and stock remain in the standard product controls.')
+                ->description('Edit the descriptions, research wording, and benefits shown on this product’s storefront page. Name, price, images, and stock remain in the standard product controls.')
                 ->statePath('page_text')
                 ->visible(fn (?Model $record): bool => (bool) static::profile($record))
                 ->schema([
@@ -96,25 +96,6 @@ class ProductResourceExtension extends ResourceExtension
                         ])
                         ->columns(2),
 
-                    Forms\Components\Section::make('Frequently asked questions')
-                        ->schema([
-                            Forms\Components\Repeater::make('faq')
-                                ->label('Questions and answers')
-                                ->schema([
-                                    Forms\Components\TextInput::make('q')
-                                        ->label('Question')
-                                        ->required()
-                                        ->maxLength(1000)
-                                        ->columnSpanFull(),
-                                    Forms\Components\Textarea::make('a')
-                                        ->label('Answer')
-                                        ->required()
-                                        ->rows(4)
-                                        ->maxLength(10000)
-                                        ->columnSpanFull(),
-                                ])
-                                ->columnSpanFull(),
-                        ]),
                 ]),
 
             Forms\Components\Section::make('What\'s Included table')
@@ -218,7 +199,6 @@ class ProductResourceExtension extends ResourceExtension
             'storage',
             'highlights',
             'pillars',
-            'faq',
         ];
     }
 

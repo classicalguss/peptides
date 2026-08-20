@@ -157,7 +157,6 @@ return [
     'compound_product.collections_eyebrow' => $item('Individual Compound Product Pages', 'Related Collections', 'Section eyebrow', 'Bundle & Save', 'Small label above the related research collections heading.', 'shop', 88),
     'compound_product.collections_title' => $item('Individual Compound Product Pages', 'Related Collections', 'Section heading', 'Included In These Protocols', 'Heading above research collections that include this compound.', 'shop', 90),
     'compound_product.collections_description' => $item('Individual Compound Product Pages', 'Related Collections', 'Section description', 'Buying this compound as part of a stack is cheaper than buying it alone, and every stack ships with the bacteriostatic water you need.', 'Paragraph above related research collection cards.', 'shop', 100),
-    'compound_product.faq_title' => $item('Individual Compound Product Pages', 'Questions', 'FAQ heading', 'Frequently Asked', 'Heading above product-specific questions and answers.', 'shop', 110),
     'compound_product.related_title' => $item('Individual Compound Product Pages', 'Related Products', 'Section heading', 'Other Compounds', 'Heading above other individual compounds.', 'shop', 120),
 
     // Collection-list supporting copy.
