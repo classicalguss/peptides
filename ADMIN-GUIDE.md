@@ -133,9 +133,24 @@ This is almost always faster than asking a developer, and it's the first place t
 
 ## 7. Lab reports / certificates of analysis (COAs)
 
-Certificate PDFs and batch data (batch number, test date, lab name) are not yet editable from a dedicated admin screen — this remains a developer task for now. Send new certificates, batch numbers, and test dates to your developer to have them added.
+**Website → Lab Reports (COAs)**
 
-Note: purity percentages are currently hidden across the site because the certificate data on file is placeholder/sample data. Once real, verified certificates are uploaded, purity figures can be re-enabled per product.
+Each product has one row holding its current batch: batch number, analysis date, laboratory, HPLC purity, testing status, and the certificate PDF. This feeds both the public **Lab Reports** page and the **Current Batch** box on each product page, so they always match.
+
+When a new batch is tested:
+
+1. Open the product's row and click **Edit**.
+2. Update the batch number, analysis date, purity, and laboratory to match the new certificate.
+3. Upload the new certificate PDF (this replaces the one linked on the website).
+4. Keep **Testing status** on **Pass** and save.
+
+The **Testing status** field controls what visitors see:
+
+- **Pass — certificate published**: shows all batch details, the purity figure, a PASS badge, and the View COA button.
+- **Additional testing in progress**: hides everything and shows "Additional Testing in Progress" with a note that documentation will be published after testing. Use this when a batch is being retested.
+- **Documentation pending**: hides everything and shows "Documentation Pending". Use this when a batch is released but the paperwork hasn't arrived yet.
+
+Never enter estimated or placeholder values — if a result isn't confirmed by a certificate in hand, use one of the two non-pass statuses instead.
 
 ---
 

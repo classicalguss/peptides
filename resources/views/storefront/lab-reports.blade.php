@@ -56,8 +56,10 @@
                         <tr class="text-[10px] font-extrabold tracking-widest text-white/45 uppercase">
                             <th class="px-5 py-4">Product</th>
                             <th class="px-5 py-4">Batch Number</th>
-                            <th class="hidden px-5 py-4 sm:table-cell">Test Date</th>
+                            <th class="hidden px-5 py-4 sm:table-cell">Analysis Date</th>
                             <th class="hidden px-5 py-4 lg:table-cell">Laboratory</th>
+                            <th class="hidden px-5 py-4 sm:table-cell">HPLC Purity</th>
+                            <th class="px-5 py-4">Status</th>
                             <th class="px-5 py-4 text-right">Report</th>
                         </tr>
                     </thead>
@@ -73,28 +75,30 @@
                                         <span class="font-bold text-white">{{ $report->product_label }}</span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-4 font-mono text-xs text-white/55">{{ $report->batch_number }}</td>
-                                <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $report->tested_on->format('M j, Y') }}</td>
-                                <td class="hidden px-5 py-4 text-white/50 lg:table-cell">{{ $report->lab_name }}</td>
+                                <td class="px-5 py-4 font-mono text-xs text-white/55">{{ $report->batch_number ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $report->tested_on?->format('M j, Y') ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 text-white/50 lg:table-cell">{{ $report->lab_name ?? '—' }}</td>
+                                <td class="hidden px-5 py-4 font-bold text-white/80 sm:table-cell">{{ $report->purity ?? '—' }}</td>
                                 <td class="px-5 py-4">
-                                    @if ($report->pdf_path)
-                                        <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ asset($report->pdf_path) }}" target="_blank" rel="noopener"
-                                               title="Open in a new tab"
-                                               class="rounded-full border border-white/12 px-3 py-1.5 text-[11px] font-extrabold tracking-widest text-white/60 uppercase transition duration-200 hover:border-gold/40 hover:text-gold">
-                                                View
-                                            </a>
-                                            <a href="{{ asset($report->pdf_path) }}" download
-                                               title="Download the certificate for batch {{ $report->batch_number }}"
-                                               class="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest text-black uppercase transition duration-200 hover:bg-gold-bright">
-                                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-                                                    <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                                PDF
-                                            </a>
-                                        </div>
+                                    @if ($report->isPass())
+                                        <span class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
+                                    @elseif ($report->isTesting())
+                                        <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
                                     @else
-                                        <span class="block text-right text-[11px] font-extrabold tracking-widest text-white/25 uppercase">{{ site_text('labs.pending_label') }}</span>
+                                        <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-4">
+                                    @if ($report->pdfUrl())
+                                        <a href="{{ $report->pdfUrl() }}" target="_blank" rel="noopener"
+                                           title="Open the certificate for batch {{ $report->batch_number }}"
+                                           class="float-right inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-1.5 text-[11px] font-extrabold tracking-widest text-black uppercase transition duration-200 hover:bg-gold-bright">
+                                            View COA
+                                        </a>
+                                    @elseif ($report->isTesting())
+                                        <span class="block text-right text-[11px] leading-relaxed text-white/35">{{ site_text('labs.testing_note') }}</span>
+                                    @else
+                                        <span class="block text-right text-[11px] font-extrabold tracking-widest text-white/25 uppercase">—</span>
                                     @endif
                                 </td>
                             </tr>

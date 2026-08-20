@@ -245,23 +245,19 @@
                             @foreach ($coas as $coa)
                                 <tr class="transition hover:bg-white/[0.02]">
                                     <td class="px-5 py-4 font-bold text-white">{{ $coa->product_label }}</td>
-                                    <td class="px-5 py-4 font-mono text-xs text-white/50">{{ $coa->batch_number }}</td>
-                                    <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $coa->tested_on->format('M j, Y') }}</td>
+                                    <td class="px-5 py-4 font-mono text-xs text-white/50">{{ $coa->batch_number ?? '—' }}</td>
+                                    <td class="hidden px-5 py-4 text-white/50 sm:table-cell">{{ $coa->tested_on?->format('M j, Y') ?? '—' }}</td>
                                     <td class="px-5 py-4 text-right">
-                                        @if ($coa->pdf_path)
-                                            <a href="{{ asset($coa->pdf_path) }}" download
-                                               title="Download the certificate for batch {{ $coa->batch_number }}"
+                                        @if ($coa->pdfUrl())
+                                            <a href="{{ $coa->pdfUrl() }}" target="_blank" rel="noopener"
+                                               title="Open the certificate for batch {{ $coa->batch_number }}"
                                                class="inline-flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-[11px] font-extrabold tracking-widest text-white/60 uppercase transition duration-200 hover:border-[var(--accent)]/50 hover:text-[var(--accent)]">
-                                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-                                                    <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                                PDF
+                                                View COA
                                             </a>
+                                        @elseif ($coa->isTesting())
+                                            <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
                                         @else
-                                            <a href="{{ route('lab-reports', ['batch' => $coa->batch_number]) }}"
-                                               class="text-xs font-extrabold tracking-widest text-white/60 uppercase transition hover:text-[var(--accent)]">
-                                                View
-                                            </a>
+                                            <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
                                         @endif
                                     </td>
                                 </tr>

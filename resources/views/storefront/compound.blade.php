@@ -34,7 +34,7 @@
                                 @endif
                             </div>
 
-                            @if ($coa)
+                            @if ($coa?->isPass() && $coa->pdfUrl())
                                 <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
                                     COA Available
                                 </span>
@@ -169,32 +169,61 @@
                         @if ($coa)
                             <div class="rounded-2xl border border-[var(--accent)]/25 bg-[var(--accent)]/[0.05] p-6">
                                 <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Current Batch</h3>
-                                <dl class="mt-4 grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch</dt>
-                                        <dd class="mt-1 font-mono text-xs text-white/80">{{ $coa->batch_number }}</dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-[10px] tracking-widest text-white/40 uppercase">Tested</dt>
-                                        <dd class="mt-1 text-white/80">{{ $coa->tested_on->format('M j, Y') }}</dd>
-                                    </div>
-                                </dl>
-                                <div class="mt-5 flex flex-wrap items-center gap-3">
-                                    @if ($coa->pdf_path)
-                                        <a href="{{ asset($coa->pdf_path) }}" download
-                                           class="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-[11px] font-extrabold tracking-widest text-black uppercase transition duration-200 hover:brightness-110">
-                                            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-                                                <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            Download COA
-                                        </a>
-                                    @endif
 
-                                    <a href="{{ route('lab-reports', ['batch' => $coa->batch_number]) }}"
-                                       class="text-[11px] font-extrabold tracking-widest text-white uppercase underline decoration-[var(--accent)] decoration-2 underline-offset-4 transition hover:text-[var(--accent)]">
-                                        All Batch Records
-                                    </a>
-                                </div>
+                                @if ($coa->isPass())
+                                    <dl class="mt-4 grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch</dt>
+                                            <dd class="mt-1 font-mono text-xs text-white/80">{{ $coa->batch_number }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Laboratory</dt>
+                                            <dd class="mt-1 text-white/80">{{ $coa->lab_name }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Analysis Date</dt>
+                                            <dd class="mt-1 text-white/80">{{ $coa->tested_on->format('M j, Y') }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">HPLC Purity</dt>
+                                            <dd class="mt-1 font-bold text-white/90">{{ $coa->purity }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Status</dt>
+                                            <dd class="mt-1">
+                                                <span class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                    <div class="mt-5 flex flex-wrap items-center gap-3">
+                                        @if ($coa->pdfUrl())
+                                            <a href="{{ $coa->pdfUrl() }}" target="_blank" rel="noopener"
+                                               class="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-[11px] font-extrabold tracking-widest text-black uppercase transition duration-200 hover:brightness-110">
+                                                View COA
+                                            </a>
+                                        @endif
+
+                                        <a href="{{ route('lab-reports', ['batch' => $coa->batch_number]) }}"
+                                           class="text-[11px] font-extrabold tracking-widest text-white uppercase underline decoration-[var(--accent)] decoration-2 underline-offset-4 transition hover:text-[var(--accent)]">
+                                            All Batch Records
+                                        </a>
+                                    </div>
+                                @elseif ($coa->isTesting())
+                                    <p class="mt-4 text-sm">
+                                        <span class="text-[10px] tracking-widest text-white/40 uppercase">Status</span>
+                                        <span class="mt-1 block">
+                                            <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
+                                        </span>
+                                    </p>
+                                    <p class="mt-4 text-sm leading-relaxed text-white/55">{{ site_text('labs.testing_note') }}</p>
+                                @else
+                                    <p class="mt-4 text-sm">
+                                        <span class="text-[10px] tracking-widest text-white/40 uppercase">Status</span>
+                                        <span class="mt-1 block">
+                                            <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                        </span>
+                                    </p>
+                                @endif
                             </div>
                         @endif
                     </div>

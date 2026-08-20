@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
+use App\Filament\Resources\CoaReportResource;
 use App\Filament\Resources\ProductTextSearchResource;
 use App\Filament\Resources\WebsiteTextResource;
 use App\Models\ProductProfile;
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
                 ])
                 ->resources([
                     WebsiteTextResource::class,
+                    CoaReportResource::class,
                     ProductTextSearchResource::class,
                 ])
                 ->navigationGroups([
