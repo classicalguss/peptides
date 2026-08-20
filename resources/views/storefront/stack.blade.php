@@ -147,7 +147,7 @@
                     :title="foil_last_words(site_text('collection_product.included_title'), 1, 'text-accent-foil')"
                     :subtitle="site_text('collection_product.included_description')" />
 
-                <div class="mt-12 overflow-hidden rounded-2xl panel">
+                <div class="mt-12 overflow-x-auto rounded-2xl panel">
                     <table class="w-full text-left text-sm">
                         <thead class="border-b border-white/8 bg-black/40">
                             <tr class="text-[10px] font-extrabold tracking-widest text-white/45 uppercase">
@@ -231,7 +231,7 @@
                     :title="foil_last_words(site_text('collection_product.lab_title'), 2, 'text-accent-foil')"
                     :subtitle="site_text('collection_product.lab_description')" />
 
-                <div class="mt-12 overflow-hidden rounded-2xl panel">
+                <div class="mt-12 overflow-x-auto rounded-2xl panel">
                     <table class="w-full text-left text-sm">
                         <thead class="border-b border-white/8 bg-black/40">
                             <tr class="text-[10px] font-extrabold tracking-widest text-white/45 uppercase">

@@ -50,7 +50,7 @@
                 </a>
             </div>
         @else
-            <div class="overflow-hidden rounded-2xl panel">
+            <div class="overflow-x-auto rounded-2xl panel">
                 <table class="w-full text-left text-sm">
                     <thead class="border-b border-white/8 bg-black/40">
                         <tr class="text-[10px] font-extrabold tracking-widest text-white/45 uppercase">
@@ -84,7 +84,7 @@
                                         <span class="inline-block rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest whitespace-nowrap text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
                                     @elseif ($report->isTesting())
                                         <span class="inline-block rounded-full bg-amber-400/10 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
-                                        <span class="mt-2 block max-w-56 text-[11px] leading-relaxed normal-case text-white/35">{{ site_text('labs.testing_note') }}</span>
+                                        <span class="mt-2 hidden max-w-56 text-[11px] leading-relaxed normal-case text-white/35 sm:block">{{ site_text('labs.testing_note') }}</span>
                                     @else
                                         <span class="inline-block rounded-full bg-white/5 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
                                     @endif
