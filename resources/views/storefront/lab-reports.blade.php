@@ -117,13 +117,16 @@
                                 </td>
                             </tr>
                             @if ($expandable)
-                                <tr data-coa-detail class="hidden sm:hidden">
-                                    <td colspan="4" class="bg-black/30 px-5 py-5">
-                                        @if ($report->isPass())
-                                            <dl class="grid grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch Number</dt>
-                                                    <dd class="mt-1 font-mono text-xs text-white/70">{{ $report->batch_number }}</dd>
+                                <tr data-coa-detail class="!border-t-0 sm:hidden">
+                                    <td colspan="4" class="p-0">
+                                        <div data-coa-panel class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
+                                            <div class="min-h-0 overflow-hidden">
+                                                <div data-coa-content class="bg-black/30 px-5 py-5 opacity-0 transition-opacity duration-300 ease-out">
+                                                @if ($report->isPass())
+                                                    <dl class="grid grid-cols-2 gap-4 text-sm">
+                                                        <div>
+                                                            <dt class="text-[10px] tracking-widest text-white/40 uppercase">Batch Number</dt>
+                                                            <dd class="mt-1 font-mono text-xs text-white/70">{{ $report->batch_number }}</dd>
                                                 </div>
                                                 <div>
                                                     <dt class="text-[10px] tracking-widest text-white/40 uppercase">Analysis Date</dt>
@@ -145,6 +148,9 @@
                                         @else
                                             <p class="text-[12px] leading-relaxed text-white/45">{{ site_text('labs.testing_note') }}</p>
                                         @endif
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endif
