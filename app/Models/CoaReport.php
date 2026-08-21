@@ -16,19 +16,23 @@ class CoaReport extends Model
     public const DEFAULT_STATUS_COLOR = 'gray';
 
     /**
-     * Predefined status colours: the admin swatch (light), the text/ring
-     * colour used in the admin pill, and the storefront accent.
+     * Predefined status colours. One hex per colour, used identically on the
+     * storefront and in the admin preview, so what the admin picks is what
+     * visitors see.
      *
-     * @var array<string, array{label: string, swatch: string, text: string, site: string}>
+     * @var array<string, array{label: string, hex: string}>
      */
     public const COLORS = [
-        'gray' => ['label' => 'Grey', 'swatch' => '#e5e7eb', 'text' => '#374151', 'site' => '#9ca3af'],
-        'blue' => ['label' => 'Blue', 'swatch' => '#dbeafe', 'text' => '#1d4ed8', 'site' => '#60a5fa'],
-        'green' => ['label' => 'Green', 'swatch' => '#dcfce7', 'text' => '#15803d', 'site' => '#4ade80'],
-        'yellow' => ['label' => 'Yellow', 'swatch' => '#fef3c7', 'text' => '#b45309', 'site' => '#fbbf24'],
-        'red' => ['label' => 'Red', 'swatch' => '#fee2e2', 'text' => '#b91c1c', 'site' => '#f87171'],
-        'purple' => ['label' => 'Purple', 'swatch' => '#f3e8ff', 'text' => '#7e22ce', 'site' => '#c084fc'],
+        'gray' => ['label' => 'Grey', 'hex' => '#9ca3af'],
+        'blue' => ['label' => 'Blue', 'hex' => '#60a5fa'],
+        'green' => ['label' => 'Green', 'hex' => '#4ade80'],
+        'yellow' => ['label' => 'Yellow', 'hex' => '#fbbf24'],
+        'red' => ['label' => 'Red', 'hex' => '#f87171'],
+        'purple' => ['label' => 'Purple', 'hex' => '#c084fc'],
     ];
+
+    /** Storefront panel background, used behind the admin preview pill. */
+    public const PREVIEW_BACKGROUND = '#100e16';
 
     protected $guarded = [];
 
@@ -64,7 +68,7 @@ class CoaReport extends Model
      */
     public function statusColor(): string
     {
-        return (self::COLORS[$this->status_color] ?? self::COLORS[self::DEFAULT_STATUS_COLOR])['site'];
+        return (self::COLORS[$this->status_color] ?? self::COLORS[self::DEFAULT_STATUS_COLOR])['hex'];
     }
 
     /**
@@ -73,9 +77,16 @@ class CoaReport extends Model
      */
     public function statusStyle(): string
     {
-        $color = $this->statusColor();
+        return self::pillStyle($this->statusColor());
+    }
 
-        return "background-color: {$color}1a; color: {$color}; box-shadow: inset 0 0 0 1px {$color}4d;";
+    /**
+     * The one formula for a status pill — shared by the storefront and the
+     * admin preview.
+     */
+    public static function pillStyle(string $hex): string
+    {
+        return "background-color: {$hex}1a; color: {$hex}; box-shadow: inset 0 0 0 1px {$hex}4d;";
     }
 
     public function pdfUrl(): ?string

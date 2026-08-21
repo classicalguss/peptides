@@ -151,7 +151,7 @@ class CoaReportResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(fn (string $state, CoaReport $record): string => $record->isPass() ? 'Pass' : $record->statusLabel())
-                    ->color(fn (string $state, CoaReport $record): string|array => $record->isPass() ? 'success' : Color::hex((CoaReport::COLORS[$record->status_color] ?? CoaReport::COLORS[CoaReport::DEFAULT_STATUS_COLOR])['text'])),
+                    ->color(fn (string $state, CoaReport $record): string|array => $record->isPass() ? 'success' : Color::hex($record->statusColor())),
                 Tables\Columns\IconColumn::make('pdf_path')
                     ->label('COA attached')
                     ->boolean(),
