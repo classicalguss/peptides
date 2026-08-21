@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Schema;
  * list table the admin can add to, remove from and reorder.
  *
  * Items are carried over from the live website_texts values so admin edits
- * survive, except lists marked seed_from=defaults (the About commitments
- * and process steps), which take the client's new wording from revision
- * items 8 and 9. The numbered keys are then removed from website_texts.
+ * survive. Only the specific fields listed under a list's `overrides` are
+ * replaced — the client's new wording from revision items 8 and 9 for the
+ * About commitments and process steps. The numbered keys are then removed
+ * from website_texts.
  */
 return new class extends Migration
 {
@@ -34,8 +35,6 @@ return new class extends Migration
         $legacyKeys = [];
 
         foreach (config('website-lists', []) as $listKey => $definition) {
-            $fromDefaults = ($definition['seed_from'] ?? 'legacy') === 'defaults';
-
             foreach ($definition['defaults'] as $index => $default) {
                 $position = $index + 1;
                 $row = ['list_key' => $listKey, 'sort_order' => $position, 'created_at' => $now, 'updated_at' => $now];
@@ -49,12 +48,12 @@ return new class extends Migration
                     if ($legacyKey !== null) {
                         $live = DB::table('website_texts')->where('key', $legacyKey)->value('value');
 
-                        if (! $fromDefaults && $live !== null) {
+                        if ($live !== null) {
                             $value = $live;
                         }
                     }
 
-                    $row[$field] = $value;
+                    $row[$field] = $definition['overrides'][$position][$field] ?? $value;
                 }
 
                 DB::table('website_list_items')->insert($row);
