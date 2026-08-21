@@ -11,11 +11,9 @@ class CoaReport extends Model
 {
     public const STATUS_PASS = 'pass';
 
-    public const STATUS_TESTING = 'testing';
+    public const STATUS_UNPUBLISHED = 'unpublished';
 
-    public const STATUS_PENDING = 'pending';
-
-    public const STATUS_FAIL = 'fail';
+    public const COLORS = ['amber' => 'Amber', 'red' => 'Red', 'gray' => 'Grey'];
 
     protected $guarded = [];
 
@@ -33,39 +31,17 @@ class CoaReport extends Model
         return $this->status === self::STATUS_PASS;
     }
 
-    public function isTesting(): bool
-    {
-        return $this->status === self::STATUS_TESTING;
-    }
-
-    public function isFailed(): bool
-    {
-        return $this->status === self::STATUS_FAIL;
-    }
-
     /**
-     * Admin-editable label shown in place of batch details for any non-pass
-     * status.
+     * Wording shown in place of batch details while a batch is unpublished.
      */
     public function statusLabel(): string
     {
-        return match ($this->status) {
-            self::STATUS_TESTING => site_text('labs.testing_label'),
-            self::STATUS_FAIL => site_text('labs.failed_label'),
-            default => site_text('labs.pending_label'),
-        };
+        return $this->status_label ?: 'Not yet published';
     }
 
-    /**
-     * Optional explanatory sentence for a non-pass status.
-     */
     public function statusNote(): ?string
     {
-        return match ($this->status) {
-            self::STATUS_TESTING => site_text('labs.testing_note'),
-            self::STATUS_FAIL => site_text('labs.failed_note'),
-            default => null,
-        };
+        return $this->status_note ?: null;
     }
 
     public function pdfUrl(): ?string

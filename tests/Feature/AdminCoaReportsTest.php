@@ -39,11 +39,11 @@ class AdminCoaReportsTest extends TestCase
     {
         $this->signInAsAdmin();
         $product = $this->makeProduct('BPC-157 20mg');
-        $report = CoaReport::create(['product_id' => $product->id, 'product_label' => 'BPC-157 20mg', 'status' => CoaReport::STATUS_TESTING]);
+        $report = CoaReport::create(['product_id' => $product->id, 'product_label' => 'BPC-157 20mg', 'status' => CoaReport::STATUS_UNPUBLISHED, 'status_label' => 'Additional Testing in Progress', 'status_color' => 'amber']);
 
         $this->get('/lunar/coa-reports')->assertOk()->assertSee('BPC-157 20mg')->assertSee('Add product batch');
         $this->get('/lunar/coa-reports/create')->assertOk();
-        $this->get("/lunar/coa-reports/{$report->id}/edit")->assertOk()->assertSee('Testing status');
+        $this->get("/lunar/coa-reports/{$report->id}/edit")->assertOk()->assertSee('Publication status')->assertSee('Additional Testing in Progress');
     }
 
     public function test_an_admin_can_add_a_batch_record_for_a_new_product(): void
