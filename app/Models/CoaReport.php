@@ -13,7 +13,22 @@ class CoaReport extends Model
 
     public const STATUS_UNPUBLISHED = 'unpublished';
 
-    public const DEFAULT_STATUS_COLOR = '#9ca3af';
+    public const DEFAULT_STATUS_COLOR = 'gray';
+
+    /**
+     * Predefined status colours: the admin swatch (light), the text/ring
+     * colour used in the admin pill, and the storefront accent.
+     *
+     * @var array<string, array{label: string, swatch: string, text: string, site: string}>
+     */
+    public const COLORS = [
+        'gray' => ['label' => 'Grey', 'swatch' => '#e5e7eb', 'text' => '#374151', 'site' => '#9ca3af'],
+        'blue' => ['label' => 'Blue', 'swatch' => '#dbeafe', 'text' => '#1d4ed8', 'site' => '#60a5fa'],
+        'green' => ['label' => 'Green', 'swatch' => '#dcfce7', 'text' => '#15803d', 'site' => '#4ade80'],
+        'yellow' => ['label' => 'Yellow', 'swatch' => '#fef3c7', 'text' => '#b45309', 'site' => '#fbbf24'],
+        'red' => ['label' => 'Red', 'swatch' => '#fee2e2', 'text' => '#b91c1c', 'site' => '#f87171'],
+        'purple' => ['label' => 'Purple', 'swatch' => '#f3e8ff', 'text' => '#7e22ce', 'site' => '#c084fc'],
+    ];
 
     protected $guarded = [];
 
@@ -45,11 +60,11 @@ class CoaReport extends Model
     }
 
     /**
-     * Hex colour chosen in the admin for the unpublished-status pill.
+     * Storefront hex for the predefined colour chosen in the admin.
      */
     public function statusColor(): string
     {
-        return preg_match('/^#[0-9a-f]{6}$/i', (string) $this->status_color) ? $this->status_color : self::DEFAULT_STATUS_COLOR;
+        return (self::COLORS[$this->status_color] ?? self::COLORS[self::DEFAULT_STATUS_COLOR])['site'];
     }
 
     /**

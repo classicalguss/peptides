@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\Components\StatusPicker;
 use App\Filament\Resources\CoaReportResource\Pages;
 use App\Models\CoaReport;
 use App\Models\ProductProfile;
@@ -56,7 +57,7 @@ class CoaReportResource extends Resource
                             ->label('Product name shown on the site')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Grid::make(3)
+                        Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Select::make('status')
                                     ->label('Publication status')
@@ -67,18 +68,18 @@ class CoaReportResource extends Resource
                                     ->required()
                                     ->live()
                                     ->helperText('"Pass" shows batch details, purity and the COA. "Not published" shows the status message instead.'),
-                                Forms\Components\TextInput::make('status_label')
-                                    ->label('Status message')
-                                    ->placeholder('e.g. Additional Testing in Progress')
-                                    ->maxLength(255)
-                                    ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
-                                    ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
-                                Forms\Components\ColorPicker::make('status_color')
-                                    ->label('Status colour')
-                                    ->default(CoaReport::DEFAULT_STATUS_COLOR)
+                                StatusPicker::make('status_label')
+                                    ->label('Status shown on the website')
+                                    ->placeholder('Set a status')
+                                    ->colorField('status_color')
+                                    ->colors(CoaReport::COLORS)
+                                    ->helperText('Click the status to edit its wording and pick a colour.')
                                     ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
                                     ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
-                                    ->regex('/^#[0-9a-fA-F]{6}$/'),
+                                    ->rule('max:255'),
+                                Forms\Components\Hidden::make('status_color')
+                                    ->default(CoaReport::DEFAULT_STATUS_COLOR)
+                                    ->rule('in:'.implode(',', array_keys(CoaReport::COLORS))),
                             ])
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('status_note')
@@ -150,7 +151,7 @@ class CoaReportResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(fn (string $state, CoaReport $record): string => $record->isPass() ? 'Pass' : $record->statusLabel())
-                    ->color(fn (string $state, CoaReport $record): string|array => $record->isPass() ? 'success' : Color::hex($record->statusColor())),
+                    ->color(fn (string $state, CoaReport $record): string|array => $record->isPass() ? 'success' : Color::hex((CoaReport::COLORS[$record->status_color] ?? CoaReport::COLORS[CoaReport::DEFAULT_STATUS_COLOR])['text'])),
                 Tables\Columns\IconColumn::make('pdf_path')
                     ->label('COA attached')
                     ->boolean(),
