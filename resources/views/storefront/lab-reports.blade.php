@@ -67,7 +67,12 @@
                         @foreach ($reports as $report)
                             @php
                                 $slug = $report->product?->urls->first()?->slug;
-                                $expandable = $report->isPass() || $report->isTesting();
+                                $expandable = $report->isPass() || $report->statusNote() !== null;
+                                $tone = match ($report->status) {
+                                    'testing' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
+                                    'fail' => 'bg-red-400/10 text-red-300 ring-red-400/30',
+                                    default => 'bg-white/5 text-white/40 ring-white/15',
+                                };
                             @endphp
                             <tr @if ($expandable) data-coa-row @endif class="transition hover:bg-white/[0.02]">
                                 <td class="px-3 py-4 sm:px-5">
@@ -81,15 +86,15 @@
                                 <td class="hidden px-3 py-4 font-mono text-xs whitespace-nowrap text-white/55 sm:table-cell sm:px-5">{{ $report->batch_number ?? '—' }}</td>
                                 <td class="hidden px-3 py-4 whitespace-nowrap text-white/50 sm:table-cell sm:px-5">{{ $report->tested_on?->format('M j, Y') ?? '—' }}</td>
                                 <td class="hidden px-3 py-4 whitespace-nowrap text-white/50 lg:table-cell sm:px-5">{{ $report->lab_name ?? '—' }}</td>
-                                <td class="px-2 py-4 font-bold whitespace-nowrap text-white/80 sm:px-5">{{ $report->purity ?? '—' }}</td>
+                                <td class="px-2 py-4 font-bold whitespace-nowrap text-white/80 sm:px-5">{{ $report->isPass() ? ($report->purity ?? '—') : '—' }}</td>
                                 <td class="px-2 py-4 sm:px-5">
                                     @if ($report->isPass())
                                         <span class="inline-block rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest whitespace-nowrap text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
-                                    @elseif ($report->isTesting())
-                                        <span class="inline-block rounded-full bg-amber-400/10 px-2 py-1.5 sm:px-3 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
-                                        <span class="mt-2 hidden max-w-56 text-[11px] leading-relaxed normal-case text-white/35 sm:block">{{ site_text('labs.testing_note') }}</span>
                                     @else
-                                        <span class="inline-block rounded-full bg-white/5 px-2 py-1.5 sm:px-3 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                        <span class="inline-block rounded-full {{ $tone }} px-2 py-1.5 sm:px-3 text-[10px] font-extrabold tracking-widest uppercase ring-1">{{ $report->statusLabel() }}</span>
+                                        @if ($report->statusNote())
+                                            <span class="mt-2 hidden max-w-56 text-[11px] leading-relaxed normal-case text-white/35 sm:block">{{ $report->statusNote() }}</span>
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="hidden px-3 py-4 sm:px-5 text-right sm:table-cell">
@@ -145,7 +150,7 @@
                                                             @endif
                                                         </dl>
                                                     @else
-                                                        <p class="text-[12px] leading-relaxed text-white/45">{{ site_text('labs.testing_note') }}</p>
+                                                        <p class="text-[12px] leading-relaxed text-white/45">{{ $report->statusNote() }}</p>
                                                     @endif
                                                 </div>
                                             </div>

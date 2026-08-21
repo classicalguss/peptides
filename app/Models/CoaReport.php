@@ -15,6 +15,8 @@ class CoaReport extends Model
 
     public const STATUS_PENDING = 'pending';
 
+    public const STATUS_FAIL = 'fail';
+
     protected $guarded = [];
 
     protected $casts = [
@@ -34,6 +36,36 @@ class CoaReport extends Model
     public function isTesting(): bool
     {
         return $this->status === self::STATUS_TESTING;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->status === self::STATUS_FAIL;
+    }
+
+    /**
+     * Admin-editable label shown in place of batch details for any non-pass
+     * status.
+     */
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            self::STATUS_TESTING => site_text('labs.testing_label'),
+            self::STATUS_FAIL => site_text('labs.failed_label'),
+            default => site_text('labs.pending_label'),
+        };
+    }
+
+    /**
+     * Optional explanatory sentence for a non-pass status.
+     */
+    public function statusNote(): ?string
+    {
+        return match ($this->status) {
+            self::STATUS_TESTING => site_text('labs.testing_note'),
+            self::STATUS_FAIL => site_text('labs.failed_note'),
+            default => null,
+        };
     }
 
     public function pdfUrl(): ?string

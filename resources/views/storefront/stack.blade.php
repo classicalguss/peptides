@@ -247,10 +247,15 @@
                                                class="inline-flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-[11px] font-extrabold tracking-widest text-white/60 uppercase transition duration-200 hover:border-[var(--accent)]/50 hover:text-[var(--accent)]">
                                                 View COA
                                             </a>
-                                        @elseif ($coa->isTesting())
-                                            <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
                                         @else
-                                            <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                            @php
+                                                $tone = match ($coa->status) {
+                                                    'testing' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
+                                                    'fail' => 'bg-red-400/10 text-red-300 ring-red-400/30',
+                                                    default => 'bg-white/5 text-white/40 ring-white/15',
+                                                };
+                                            @endphp
+                                            <span class="rounded-full {{ $tone }} px-2.5 py-1 text-[10px] font-extrabold tracking-widest uppercase ring-1">{{ $coa->statusLabel() }}</span>
                                         @endif
                                     </td>
                                 </tr>

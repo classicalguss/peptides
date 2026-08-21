@@ -4,12 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CoaReportResource\Pages;
 use App\Models\CoaReport;
+use App\Models\ProductProfile;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\Product;
 
 class CoaReportResource extends Resource
 {
@@ -34,6 +37,20 @@ class CoaReportResource extends Resource
                 Forms\Components\Section::make('Product')
                     ->description('The product this certificate belongs to, and how it is listed on the Lab Reports page.')
                     ->schema([
+                        Forms\Components\Select::make('product_id')
+                            ->label('Product')
+                            ->options(fn (?Model $record): array => static::productOptions($record))
+                            ->searchable()
+                            ->required()
+                            ->live()
+                            ->disabledOn('edit')
+                            ->dehydrated()
+                            ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
+                                if ($state) {
+                                    $set('product_label', Product::find($state)?->translateAttribute('name'));
+                                }
+                            })
+                            ->helperText('Each product has one current batch. Products that already have a batch record are not listed here — edit theirs instead.'),
                         Forms\Components\TextInput::make('product_label')
                             ->label('Product name shown on the site')
                             ->required()
@@ -43,11 +60,13 @@ class CoaReportResource extends Resource
                             ->options([
                                 CoaReport::STATUS_PASS => 'Pass — certificate published',
                                 CoaReport::STATUS_TESTING => 'Additional testing in progress',
+                                CoaReport::STATUS_FAIL => 'Did not pass — not released',
                                 CoaReport::STATUS_PENDING => 'Documentation pending',
                             ])
                             ->required()
                             ->live()
-                            ->helperText('Only "Pass" shows batch details, a purity figure, and the COA on the website. The other two show a status message and hide everything else.'),
+                            ->helperText('Only "Pass" shows batch details, a purity figure, and the COA on the website. The other statuses show a status message and hide everything else.')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Current batch and certificate')
@@ -112,11 +131,13 @@ class CoaReportResource extends Resource
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         CoaReport::STATUS_PASS => 'Pass',
                         CoaReport::STATUS_TESTING => 'Testing in progress',
+                        CoaReport::STATUS_FAIL => 'Did not pass',
                         default => 'Documentation pending',
                     })
                     ->color(fn (string $state): string => match ($state) {
                         CoaReport::STATUS_PASS => 'success',
                         CoaReport::STATUS_TESTING => 'warning',
+                        CoaReport::STATUS_FAIL => 'danger',
                         default => 'gray',
                     }),
                 Tables\Columns\IconColumn::make('pdf_path')
@@ -138,7 +159,34 @@ class CoaReportResource extends Resource
     {
         return [
             'index' => Pages\ListCoaReports::route('/'),
+            'create' => Pages\CreateCoaReport::route('/create'),
             'edit' => Pages\EditCoaReport::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Products that can be given a batch record: on create, only those
+     * without one; on edit, the record's own product.
+     *
+     * @return array<int, string>
+     */
+    private static function productOptions(?Model $record): array
+    {
+        $taken = CoaReport::query()
+            ->when($record, fn ($query) => $query->whereKeyNot($record->getKey()))
+            ->pluck('product_id')
+            ->filter()
+            ->all();
+
+        // Research collections never carry their own batch; their pages list
+        // the batches of the compounds they contain.
+        $collections = ProductProfile::query()->where('kind', 'stack')->pluck('product_id')->all();
+
+        return Product::query()
+            ->whereNotIn('id', [...$taken, ...$collections])
+            ->get()
+            ->mapWithKeys(fn (Product $product) => [$product->id => (string) $product->translateAttribute('name')])
+            ->sort()
+            ->all();
     }
 }
