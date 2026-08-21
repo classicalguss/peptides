@@ -47,7 +47,7 @@ return [
     'global.trust_3_title' => $item('Shared Site Content', 'Trust Bar', 'Third promise heading', 'Fast Discreet Shipping', 'Third promise in the four-item trust bar.', 'home', 180),
     'global.trust_3_detail' => $item('Shared Site Content', 'Trust Bar', 'Third promise details', 'Ships within 24 hours', 'Details below the third trust-bar promise.', 'home', 190),
     'global.trust_4_title' => $item('Shared Site Content', 'Trust Bar', 'Fourth promise heading', 'Cold Chain Packed', 'Fourth promise in the four-item trust bar.', 'home', 200),
-    'global.trust_4_detail' => $item('Shared Site Content', 'Trust Bar', 'Fourth promise details', 'Temperature controlled', 'Details below the fourth trust-bar promise.', 'home', 210),
+    'global.trust_4_detail' => $item('Shared Site Content', 'Trust Bar', 'Fourth promise details', 'Testing under an ISO/IEC 17025 quality management system', 'Details below the fourth trust-bar promise.', 'home', 210),
 
     // Home page.
     'home.meta_title' => $item('Home Page', 'Search & Sharing', 'Search result title', 'Powered Up Peptides — Research Peptides & Stack Protocols', 'Browser tab, search result, and link-preview title.', 'home', 10),
@@ -68,7 +68,7 @@ return [
     'home.why_description' => $item('Home Page', 'Why Powered Up', 'Section description', 'Most suppliers ask you to take their word for it. We publish the receipts.', 'Short paragraph above the three trust cards.', 'home', 160),
     'home.why_1_stat' => $item('Home Page', 'Why Powered Up', 'Card 1 figure', '100%', 'Large accent figure on the first trust card.', 'home', 161),
     'home.why_1_title' => $item('Home Page', 'Why Powered Up', 'Card 1 heading', 'Every Batch Tested', 'Heading of the first trust card.', 'home', 162),
-    'home.why_1_body' => $item('Home Page', 'Why Powered Up', 'Card 1 text', 'Independent ISO-accredited HPLC analysis on every single batch — not a one-off sample from two years ago.', 'Description on the first trust card.', 'home', 163),
+    'home.why_1_body' => $item('Home Page', 'Why Powered Up', 'Card 1 text', 'Independent laboratory testing performed under an ISO/IEC 17025 quality management system on every single batch — not a one-off sample from two years ago.', 'Description on the first trust card.', 'home', 163),
     'home.why_2_stat' => $item('Home Page', 'Why Powered Up', 'Card 2 figure', 'Public', 'Large accent figure on the second trust card.', 'home', 164),
     'home.why_2_title' => $item('Home Page', 'Why Powered Up', 'Card 2 heading', 'COA Published First', 'Heading of the second trust card.', 'home', 165),
     'home.why_2_body' => $item('Home Page', 'Why Powered Up', 'Card 2 text', 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.', 'Description on the second trust card.', 'home', 166),
