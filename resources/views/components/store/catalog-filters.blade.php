@@ -32,8 +32,8 @@
         <select name="sort" id="sort" onchange="this.form.submit()"
                 class="rounded-full border border-white/12 bg-panel px-4 py-2 text-xs font-semibold text-white/80 outline-none focus:border-gold/50">
             <option value="featured" @selected($sort === 'featured')>Featured</option>
-            <option value="price-asc" @selected($sort === 'price-asc')>Price: Low to High</option>
-            <option value="price-desc" @selected($sort === 'price-desc')>Price: High to Low</option>
+            <option value="price-asc" @selected($sort === 'price-asc')>{{ site_text('global.sort_price_low') }}</option>
+            <option value="price-desc" @selected($sort === 'price-desc')>{{ site_text('global.sort_price_high') }}</option>
             <option value="name" @selected($sort === 'name')>Name: A&ndash;Z</option>
         </select>
     </form>

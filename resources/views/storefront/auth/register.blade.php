@@ -1,4 +1,4 @@
-<x-layouts.storefront title="Create Account — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('register.meta_title')">
 
     <div class="mx-auto flex max-w-md flex-col justify-center px-4 py-20">
         <h1 class="display-title text-center text-4xl text-white">

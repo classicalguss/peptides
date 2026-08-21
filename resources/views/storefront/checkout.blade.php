@@ -5,7 +5,7 @@
     $defaultCountry = old('country_id', \Lunar\Models\Country::where('iso2', 'US')->value('id'));
 @endphp
 
-<x-layouts.storefront title="Checkout — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('checkout.meta_title')">
 
     <div class="mx-auto max-w-7xl px-4 py-12">
         <nav class="flex items-center gap-2 text-xs text-white/40">
@@ -20,7 +20,7 @@
 
         @if ($errors->any())
             <div class="mt-6 rounded-xl border border-red-500/30 bg-red-500/[0.07] px-5 py-4">
-                <p class="text-sm font-bold text-red-300">Please fix the following:</p>
+                <p class="text-sm font-bold text-red-300">{{ site_text('checkout.error_heading') }}</p>
                 <ul class="mt-2 space-y-1 text-xs text-red-200/80">
                     @foreach ($errors->all() as $error)
                         <li>&middot; {{ $error }}</li>
@@ -193,8 +193,7 @@
                 </button>
 
                 <p class="mt-4 text-center text-[11px] text-white/35">
-                    No payment is taken in this build &mdash; the order is created in Lunar as
-                    awaiting payment.
+                    {{ site_text('checkout.payment_note') }}
                 </p>
             </aside>
         </form>

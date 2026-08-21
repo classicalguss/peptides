@@ -123,10 +123,10 @@
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> Third-party HPLC tested</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> Ships within 24 hours</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> Lyophilised powder</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> Free shipping over $200</li>
+                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_1') }}</li>
+                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_2') }}</li>
+                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_3') }}</li>
+                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_4') }}</li>
                             </ul>
                         </form>
                     </div>

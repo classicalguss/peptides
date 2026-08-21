@@ -1,6 +1,6 @@
 @php $categoryLabel = $categories[$activeCategory]['label'] ?? null; @endphp
 
-<x-layouts.storefront :title="$categoryLabel ? $categoryLabel.' Protocols — Powered Up Peptides' : site_text('collections.meta_title')"
+<x-layouts.storefront :title="$categoryLabel ? $categoryLabel.' — Powered Up Peptides' : site_text('collections.meta_title')"
                       :description="site_text('collections.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
