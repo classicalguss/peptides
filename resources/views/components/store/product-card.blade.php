@@ -15,9 +15,9 @@
        'group relative flex flex-col overflow-hidden rounded-2xl panel hover-lift hover:accent-ring',
    ]) }}>
 
-    @if ($profile->save_up_to)
+    @if (\App\Support\Catalog::saveUpTo($profile) > 0)
         <span class="absolute top-3.5 right-3.5 z-10 rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-extrabold tracking-wider text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
-            Save {{ rtrim(rtrim(number_format($profile->save_up_to, 1), '0'), '.') }}%
+            Save {{ rtrim(rtrim(number_format(\App\Support\Catalog::saveUpTo($profile), 1), '0'), '.') }}%
         </span>
     @endif
 

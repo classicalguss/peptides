@@ -21,7 +21,6 @@ class ProductProfile extends Model
         'pillars' => 'array',
         'audience' => 'array',
         'faq' => 'array',
-        'save_up_to' => 'float',
     ];
 
     public function product(): BelongsTo

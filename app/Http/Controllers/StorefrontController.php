@@ -77,6 +77,7 @@ class StorefrontController extends Controller
             'activeCategory' => $category === '' ? 'all' : $category,
             'sort' => $sort,
             'tiers' => StackTier::whereIn('product_id', $productIds)
+                ->with('variant.prices')
                 ->orderBy('position')
                 ->get()
                 ->groupBy('product_id'),
@@ -174,6 +175,7 @@ class StorefrontController extends Controller
         $activeIndex = min(max((int) $request->integer('image'), 0), max($images->count() - 1, 0));
 
         $tiers = StackTier::where('product_id', $profile->product_id)
+            ->with('variant.prices')
             ->orderBy('position')
             ->get();
 
@@ -196,7 +198,8 @@ class StorefrontController extends Controller
             'tiers' => $tiers,
             'components' => $components,
             'componentProfiles' => $componentProfiles,
-            'retailValues' => $this->retailValues($tiers, $components, $componentProfiles),
+            'retailValues' => $retailValues = Catalog::retailValues($tiers, $components, $componentProfiles),
+            'savings' => Catalog::savings($tiers, $retailValues),
             'coas' => CoaReport::whereIn('product_id', $components->pluck('component_product_id'))
                 ->orderBy('product_label')
                 ->get(),
@@ -204,25 +207,5 @@ class StorefrontController extends Controller
                 ->reject(fn (ProductProfile $item) => $item->id === $profile->id)
                 ->take(3),
         ]);
-    }
-
-    /**
-     * Cost of buying every vial in a tier separately, keyed by tier code.
-     *
-     * @return array<string, int>
-     */
-    protected function retailValues(Collection $tiers, Collection $components, Collection $componentProfiles): array
-    {
-        $unitPrices = $componentProfiles->mapWithKeys(
-            fn (ProductProfile $profile) => [$profile->product_id => Catalog::unitPrice($profile)]
-        );
-
-        return $tiers->mapWithKeys(fn (StackTier $tier) => [
-            $tier->code => $components->sum(
-                fn (StackComponent $component) => ($unitPrices[$component->component_product_id] ?? 0)
-                    * $component->base_quantity
-                    * $tier->multiplier()
-            ),
-        ])->all();
     }
 }

@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
-use Lunar\Models\AttributeGroup;
 use Lunar\Models\Brand;
 use Lunar\Models\Channel;
 use Lunar\Models\Collection as LunarCollection;
@@ -350,10 +349,7 @@ class CatalogSeeder extends Seeder
                     'product_variant_id' => $variant->id,
                     'code' => $tier['code'],
                     'label' => $tier['label'],
-                    'price' => (int) round($tier['price'] * 100),
-                    'subscribe_price' => (int) round($tier['subscribe'] * 100),
                     'supply_days' => $tier['days'],
-                    'save_percent' => $tier['save'],
                     'position' => $tierIndex,
                 ]);
             }
@@ -388,7 +384,6 @@ class CatalogSeeder extends Seeder
                 'benefits' => $data['benefits'],
                 'pillars' => $data['pillars'],
                 'audience' => $data['audience'],
-                'save_up_to' => $data['save_up_to'],
                 'position' => $position,
             ]);
 
@@ -415,9 +410,10 @@ class CatalogSeeder extends Seeder
                 ->min('price.value');
         }
 
+        // Savings are no longer stored: the storefront derives them from live
+        // prices. Only Lunar's compare price is seeded, for the admin's benefit.
         foreach ($this->stacks as $product) {
             $components = StackComponent::where('stack_product_id', $product->id)->get();
-            $best = 0.0;
 
             foreach (StackTier::where('product_id', $product->id)->get() as $tier) {
                 $retail = $components->sum(
@@ -426,18 +422,8 @@ class CatalogSeeder extends Seeder
                         * $tier->multiplier()
                 );
 
-                // Clamped at zero: a negative figure means the bundle costs more
-                // than its parts, which is a pricing error rather than a discount.
-                $save = $retail > 0 ? max(0.0, round((1 - ($tier->price / $retail)) * 100, 1)) : 0.0;
-
-                $tier->update(['save_percent' => $save]);
-
                 $tier->variant?->prices()->update(['compare_price' => $retail]);
-
-                $best = max($best, $save);
             }
-
-            ProductProfile::where('product_id', $product->id)->update(['save_up_to' => $best]);
         }
     }
 
