@@ -37,7 +37,10 @@ class LabReportsTest extends TestCase
     {
         CoaReport::create([
             'product_label' => 'NAD+ 1000mg',
-            'status' => CoaReport::STATUS_TESTING,
+            'status' => CoaReport::STATUS_UNPUBLISHED,
+            'status_label' => 'Additional Testing in Progress',
+            'status_note' => 'Updated analytical documentation will be published upon completion of testing.',
+            'status_color' => 'amber',
         ]);
 
         $this->get('/lab-reports')
@@ -52,7 +55,9 @@ class LabReportsTest extends TestCase
     {
         CoaReport::create([
             'product_label' => 'BAC Water 10ml',
-            'status' => CoaReport::STATUS_PENDING,
+            'status' => CoaReport::STATUS_UNPUBLISHED,
+            'status_label' => 'Documentation Pending',
+            'status_color' => 'gray',
         ]);
 
         $this->get('/lab-reports')
@@ -68,14 +73,17 @@ class LabReportsTest extends TestCase
         CoaReport::create([
             'product_label' => 'NAD+ 1000mg',
             'purity' => '88.22%',
-            'status' => CoaReport::STATUS_FAIL,
+            'status' => CoaReport::STATUS_UNPUBLISHED,
+            'status_label' => 'Did Not Pass',
+            'status_note' => 'This batch was not released for sale.',
+            'status_color' => 'red',
         ]);
 
         $this->get('/lab-reports')
             ->assertOk()
             ->assertSee('NAD+ 1000mg')
             ->assertSee('Did Not Pass')
-            ->assertSee('has not been released for sale')
+            ->assertSee('was not released for sale')
             ->assertDontSee('88.22%')
             ->assertDontSee('View COA');
     }

@@ -159,12 +159,12 @@ When a new batch is tested:
 3. Upload the new certificate PDF (this replaces the one linked on the website).
 4. Keep **Testing status** on **Pass** and save.
 
-The **Testing status** field controls what visitors see:
+The **Publication status** field controls what visitors see:
 
-- **Pass — certificate published**: shows all batch details, the purity figure, a PASS badge, and the View COA button.
-- **Additional testing in progress**: hides everything and shows "Additional Testing in Progress" with a note that documentation will be published after testing. Use this when a batch is being retested.
-- **Did not pass — not released**: hides everything and shows "Did Not Pass" with a note that the batch was not released for sale. Use this for a batch that failed testing.
-- **Documentation pending**: hides everything and shows "Documentation Pending". Use this when a batch is released but the paperwork hasn't arrived yet.
+- **Pass**: shows all batch details, the purity figure, a PASS badge, and the View COA button.
+- **Not published**: hides all of that and shows your own **Status message** in the colour you choose (amber, red or grey), plus an optional note underneath. Use this for a batch being retested ("Additional Testing in Progress"), one awaiting paperwork ("Documentation Pending"), or one that failed ("Did Not Pass").
+
+Never enter estimated or placeholder values — if a result isn't confirmed by a certificate in hand, use "Not published" with an honest status message instead.
 
 **Adding a brand-new product:** click **Add product batch**, pick the product (only products without a batch record are listed), and fill in the same fields. The Lab Reports page and the product's Current Batch box pick it up immediately — no developer needed.
 

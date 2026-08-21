@@ -209,9 +209,9 @@
                                     </div>
                                 @else
                                     @php
-                                        $tone = match ($coa->status) {
-                                            'testing' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
-                                            'fail' => 'bg-red-400/10 text-red-300 ring-red-400/30',
+                                        $tone = match ($coa->status_color) {
+                                            'amber' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
+                                            'red' => 'bg-red-400/10 text-red-300 ring-red-400/30',
                                             default => 'bg-white/5 text-white/40 ring-white/15',
                                         };
                                     @endphp

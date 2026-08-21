@@ -56,16 +56,33 @@ class CoaReportResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('status')
-                            ->label('Testing status')
+                            ->label('Publication status')
                             ->options([
-                                CoaReport::STATUS_PASS => 'Pass — certificate published',
-                                CoaReport::STATUS_TESTING => 'Additional testing in progress',
-                                CoaReport::STATUS_FAIL => 'Did not pass — not released',
-                                CoaReport::STATUS_PENDING => 'Documentation pending',
+                                CoaReport::STATUS_PASS => 'Pass — batch details and certificate published',
+                                CoaReport::STATUS_UNPUBLISHED => 'Not published — show a status message instead',
                             ])
                             ->required()
                             ->live()
-                            ->helperText('Only "Pass" shows batch details, a purity figure, and the COA on the website. The other statuses show a status message and hide everything else.')
+                            ->helperText('Only "Pass" shows batch details, a purity figure, and the COA on the website. "Not published" hides all of that and shows the status message below.')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('status_label')
+                            ->label('Status message')
+                            ->placeholder('e.g. Additional Testing in Progress, Did Not Pass')
+                            ->maxLength(255)
+                            ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
+                            ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
+                        Forms\Components\Select::make('status_color')
+                            ->label('Status colour')
+                            ->options(CoaReport::COLORS)
+                            ->default('gray')
+                            ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
+                            ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
+                        Forms\Components\Textarea::make('status_note')
+                            ->label('Status note (optional)')
+                            ->placeholder('e.g. Updated analytical documentation will be published upon completion of testing.')
+                            ->rows(2)
+                            ->maxLength(1000)
+                            ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -128,16 +145,10 @@ class CoaReportResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        CoaReport::STATUS_PASS => 'Pass',
-                        CoaReport::STATUS_TESTING => 'Testing in progress',
-                        CoaReport::STATUS_FAIL => 'Did not pass',
-                        default => 'Documentation pending',
-                    })
-                    ->color(fn (string $state): string => match ($state) {
-                        CoaReport::STATUS_PASS => 'success',
-                        CoaReport::STATUS_TESTING => 'warning',
-                        CoaReport::STATUS_FAIL => 'danger',
+                    ->formatStateUsing(fn (string $state, CoaReport $record): string => $record->isPass() ? 'Pass' : $record->statusLabel())
+                    ->color(fn (string $state, CoaReport $record): string => $record->isPass() ? 'success' : match ($record->status_color) {
+                        'amber' => 'warning',
+                        'red' => 'danger',
                         default => 'gray',
                     }),
                 Tables\Columns\IconColumn::make('pdf_path')
