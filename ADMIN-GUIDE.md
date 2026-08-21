@@ -13,7 +13,7 @@ The left-hand menu is organized into four groups:
 
 - **Catalog** — Products, Brands, Collection Groups (this is where "Research Collections" and shop categories live)
 - **Sales** — Orders, Customers, Discounts
-- **Website** — Website Text (section 3), Website Lists (section 6b), and Lab Reports (COAs) (section 7) — the screens for day-to-day wording, list, and certificate changes
+- **Website** — Website Text (section 3), Website Lists (section 6b), Lab Reports (COAs) (section 7), and Policies (section 7b) — the screens for day-to-day wording, list, certificate, and policy changes
 - **Settings** — Staff accounts, taxes, currencies, and other store configuration
 
 ### The search box
@@ -168,6 +168,14 @@ Never enter estimated or placeholder values — if a result isn't confirmed by a
 **Adding a brand-new product:** click **Add product batch**, pick the product (only compounds without a batch record are listed — research collections show their components' batches automatically), and fill in the same fields. The Lab Reports page and the product's Current Batch box pick it up immediately — no developer needed.
 
 The **Name as printed on the certificate** field is how the product is listed on the Lab Reports page; it is pre-filled from the product name and can differ from the shop listing (for example "CJC-1295 / Ipamorelin 20mg").
+
+---
+
+## 7b. Policy pages (Terms, Privacy, Shipping, Returns, Research Use Only)
+
+**Website → Policies**
+
+The five policy pages linked in the footer. Open one and edit the text in the editor — headings, paragraphs and bullet lists are supported — then save; the page updates immediately and **View page** opens it. Page titles can be changed too. The web addresses are fixed so that links to the policies never break.
 
 ---
 
