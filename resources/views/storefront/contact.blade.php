@@ -151,7 +151,7 @@
 
         {{-- FAQ --}}
         <section id="faq" class="mt-16 scroll-mt-28">
-            <x-store.section-heading eyebrow="Common Questions" title='Before You <span class="text-foil">Ask</span>' />
+            <x-store.section-heading :eyebrow="site_text('contact.faq_eyebrow')" :title="foil_last_words(site_text('contact.faq_title'))" />
 
             <div class="mx-auto mt-10 max-w-3xl space-y-3">
                 @foreach (site_list('contact.faq') as $item)
