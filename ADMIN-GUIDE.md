@@ -162,7 +162,7 @@ When a new batch is tested:
 The **Publication status** field controls what visitors see:
 
 - **Pass**: shows all batch details, the purity figure, a PASS badge, and the View COA button.
-- **Not published**: hides all of that and shows your own **Status message** in the colour you pick with the colour picker, plus an optional note underneath. Use this for a batch being retested ("Additional Testing in Progress"), one awaiting paperwork ("Documentation Pending"), or one that failed ("Did Not Pass").
+- **Not published**: hides all of that and shows your own status pill instead — click it to type the wording and pick one of the preset colours — plus an optional note underneath. Use this for a batch being retested ("Additional Testing in Progress"), one awaiting paperwork ("Documentation Pending"), or one that failed ("Did Not Pass").
 
 Never enter estimated or placeholder values — if a result isn't confirmed by a certificate in hand, use "Not published" with an honest status message instead.
 
