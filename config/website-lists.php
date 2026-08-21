@@ -34,7 +34,7 @@ return [
         'defaults' => [
             ['extra' => '100%', 'heading' => 'Every Batch Tested', 'body' => 'Independent laboratory testing performed under an ISO/IEC 17025 quality management system on every single batch — not a one-off sample from two years ago.'],
             ['extra' => 'Public', 'heading' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.'],
-            ['extra' => '24h', 'heading' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.'],
+            ['extra' => '24h', 'heading' => 'Discreet Dispatch', 'body' => 'Lyophilized powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.'],
         ],
     ],
     'about.stats' => [
@@ -116,7 +116,7 @@ return [
         'defaults' => [
             ['heading' => 'How fast do orders ship?', 'body' => 'Orders placed before 2pm on a business day are packed and dispatched within 24 hours. You will get tracking by email as soon as the label is created.'],
             ['heading' => 'Do you ship internationally?', 'body' => 'We ship to most countries. Customs rules for research chemicals vary, and the buyer is responsible for confirming that import is permitted at their destination.'],
-            ['heading' => 'How are the peptides shipped?', 'body' => 'Everything is supplied as lyophilised powder in sealed vials, packed in discreet outer packaging with no product branding on the exterior.'],
+            ['heading' => 'How are the peptides shipped?', 'body' => 'Everything is supplied as lyophilized powder in sealed vials, packed in discreet outer packaging with no product branding on the exterior.'],
             ['heading' => 'Can I get a certificate for my batch?', 'body' => 'Yes. Every batch we sell is third-party tested and published on the lab reports page. Search the batch number printed on your vial label.'],
             ['heading' => 'What is your return policy?', 'body' => 'Because these are research materials, sealed vials cannot be returned once shipped. If an order arrives damaged or incorrect, contact us within 7 days and we will replace it.'],
             ['heading' => 'Do you offer bulk or wholesale pricing?', 'body' => 'Yes. Volume pricing already applies automatically at 3, 5 and 10 vials. For larger laboratory supply agreements, send us your expected monthly volume.'],
@@ -161,7 +161,22 @@ return [
         'defaults' => [
             ['body' => 'Third-party HPLC tested'],
             ['body' => 'Ships within 24 hours'],
-            ['body' => 'Lyophilised powder'],
+            ['body' => 'Lyophilized powder'],
+            ['body' => 'Free shipping over $200'],
+        ],
+    ],
+    'supply_product.trust' => [
+        'page' => 'Individual Compound Product Pages',
+        'section' => 'Buy Box (laboratory supplies)',
+        'label' => 'Checkmark lines — laboratory supplies',
+        'location_hint' => 'Checkmarked lines under the add-to-cart button on laboratory supply pages such as BAC Water, instead of the compound lines.',
+        'route_name' => 'shop',
+        'fields' => ['body' => 'Line'],
+        'legacy_keys' => [],
+        'defaults' => [
+            ['body' => 'Third-party tested'],
+            ['body' => 'Ships within 24 hours'],
+            ['body' => 'Sterile solution'],
             ['body' => 'Free shipping over $200'],
         ],
     ],

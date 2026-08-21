@@ -38,6 +38,15 @@ class ProductProfile extends Model
         return $this->kind === self::KIND_STACK;
     }
 
+    /**
+     * Laboratory supplies (currently bacteriostatic water) are sold as
+     * compounds but are liquids, so they carry their own checkmark lines.
+     */
+    public function isSupply(): bool
+    {
+        return $this->handle === 'bac-water-10ml';
+    }
+
     public function accentHex(): string
     {
         return config("theme.accents.{$this->accent}.hex", config('theme.brand.gold'));

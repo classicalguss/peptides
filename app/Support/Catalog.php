@@ -26,7 +26,7 @@ class Catalog
     {
         return static::profiles(ProductProfile::KIND_COMPOUND)
             ->when(! $includeSupplies, fn (Collection $items) => $items->reject(
-                fn (ProductProfile $profile) => $profile->handle === 'bac-water-10ml'
+                fn (ProductProfile $profile) => $profile->isSupply()
             ))
             ->values();
     }
