@@ -44,7 +44,7 @@ class FlatRateShipping extends ShippingModifier
 
             ShippingManifest::addOption(new ShippingOption(
                 name: 'Express Shipping',
-                description: '1-2 business days, cold chain packed',
+                description: '1-2 business days',
                 identifier: 'EXPRESS',
                 price: new Price(self::EXPRESS_RATE, $currency, 1),
                 taxClass: $taxClass,

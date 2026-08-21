@@ -13,7 +13,7 @@ The left-hand menu is organized into four groups:
 
 - **Catalog** — Products, Brands, Collection Groups (this is where "Research Collections" and shop categories live)
 - **Sales** — Orders, Customers, Discounts
-- **Website** — Website Text (see section 3 — this is the most important screen for day-to-day wording changes)
+- **Website** — Website Text (section 3), Website Lists (section 6b), and Lab Reports (COAs) (section 7) — the screens for day-to-day wording, list, and certificate changes
 - **Settings** — Staff accounts, taxes, currencies, and other store configuration
 
 ### The search box
@@ -61,9 +61,8 @@ Every product's edit page has a **Website Page Text** section (scroll down past 
 - The main description
 - Research background, storage & handling
 - Highlights list
-- FAQs
 
-Changes here only affect that one product's page.
+Changes here only affect that one product's page. (The checkmark lines under the add-to-cart button are shared across products — see Website Lists.)
 
 ### Editing a Research Collection's "What's Included" table
 
@@ -91,14 +90,14 @@ A collection only appears as a filter on the Shop page if it has at least one pr
 
 ## 3. Website Text — the fastest way to change wording
 
-**Website → Website Text** is a list of roughly 130 short pieces of copy that appear across the site: navigation labels, the top announcement bar, trust-bar promises, footer text, disclaimers, button labels, page headings, and the entry pop-up shown to first-time visitors.
+**Website → Website Text** is a list of roughly 160 pieces of copy that appear across the site: navigation labels, the top announcement bar, trust-bar promises, footer text, disclaimers, button labels, page headings, and the entry pop-up shown to first-time visitors.
 
 Each row shows:
 - **Page** and **Section** — where on the site it appears
 - **Label** — a plain-English description of what it is
 - **Value** — the current text (click to edit)
 
-This is almost always faster than asking a developer, and it's the first place to check for any text that isn't specific to one product.
+This is almost always faster than asking a developer, and it's the first place to check for any text that isn't specific to one product. Every piece of website text of four words or more is editable here or in Website Lists; on the edit screen, **Preview Page** opens the live page and **Restore Original Text** puts the original wording back.
 
 ---
 
@@ -157,7 +156,7 @@ When a new batch is tested:
 1. Open the product's row and click **Edit**.
 2. Update the batch number, analysis date, purity, and laboratory to match the new certificate.
 3. Upload the new certificate PDF (this replaces the one linked on the website).
-4. Keep **Testing status** on **Pass** and save.
+4. Keep **Publication status** on **Pass** and save.
 
 The **Publication status** field controls what visitors see:
 
@@ -166,9 +165,9 @@ The **Publication status** field controls what visitors see:
 
 Never enter estimated or placeholder values — if a result isn't confirmed by a certificate in hand, use "Not published" with an honest status message instead.
 
-**Adding a brand-new product:** click **Add product batch**, pick the product (only products without a batch record are listed), and fill in the same fields. The Lab Reports page and the product's Current Batch box pick it up immediately — no developer needed.
+**Adding a brand-new product:** click **Add product batch**, pick the product (only compounds without a batch record are listed — research collections show their components' batches automatically), and fill in the same fields. The Lab Reports page and the product's Current Batch box pick it up immediately — no developer needed.
 
-Never enter estimated or placeholder values — if a result isn't confirmed by a certificate in hand, use one of the two non-pass statuses instead.
+The **Name as printed on the certificate** field is how the product is listed on the Lab Reports page; it is pre-filled from the product name and can differ from the shop listing (for example "CJC-1295 / Ipamorelin 20mg").
 
 ---
 
@@ -183,13 +182,13 @@ Never enter estimated or placeholder values — if a result isn't confirmed by a
 
 ---
 
-## 9. What not to touch
+## 9. Take extra care
 
-A few areas are easy to break and rarely need changing. Leave these alone unless a developer asks you to touch them:
+Everything in the admin is yours to change. A few settings simply have wider effects than they look, so it's worth pausing before editing them:
 
-- **Taxes, currencies, and channels** (Settings) — store-wide configuration, not per-product settings
-- **Tax class** on individual products — it changes how the product is taxed at checkout
-- **Orders** — don't delete them; they are your sales records. Products and collections can be deleted safely (everything attached to them on the website is removed with them), but hiding is usually the better choice if the product may come back.
+- **Taxes, currencies, and channels** (Settings) — store-wide configuration that affects every price and checkout
+- **Tax class** on individual products — changes how that product is taxed at checkout
+- **Orders** — keep them rather than deleting; they are your sales records
 
 If a screen looks unfamiliar or technical, it's safer to stop and ask than to guess.
 

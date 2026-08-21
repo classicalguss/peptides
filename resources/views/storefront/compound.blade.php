@@ -123,7 +123,7 @@
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
-                                @foreach (site_list('compound_product.trust') as $line)
+                                @foreach (site_list($profile->isSupply() ? 'supply_product.trust' : 'compound_product.trust') as $line)
                                     <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ $line->body }}</li>
                                 @endforeach
                             </ul>

@@ -58,7 +58,7 @@ class CoaReportResource extends Resource
                                 default => 'Only compounds without a batch record are listed (each has one current batch). Research collections are never listed: their pages show the batches of the compounds they contain.',
                             }),
                         Forms\Components\TextInput::make('product_label')
-                            ->label('Product name shown on the site')
+                            ->label('Name as printed on the certificate')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Grid::make(2)
