@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -55,28 +56,31 @@ class CoaReportResource extends Resource
                             ->label('Product name shown on the site')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('status')
-                            ->label('Publication status')
-                            ->options([
-                                CoaReport::STATUS_PASS => 'Pass — batch details and certificate published',
-                                CoaReport::STATUS_UNPUBLISHED => 'Not published — show a status message instead',
+                        Forms\Components\Grid::make(3)
+                            ->schema([
+                                Forms\Components\Select::make('status')
+                                    ->label('Publication status')
+                                    ->options([
+                                        CoaReport::STATUS_PASS => 'Pass — published',
+                                        CoaReport::STATUS_UNPUBLISHED => 'Not published',
+                                    ])
+                                    ->required()
+                                    ->live()
+                                    ->helperText('"Pass" shows batch details, purity and the COA. "Not published" shows the status message instead.'),
+                                Forms\Components\TextInput::make('status_label')
+                                    ->label('Status message')
+                                    ->placeholder('e.g. Additional Testing in Progress')
+                                    ->maxLength(255)
+                                    ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
+                                    ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
+                                Forms\Components\ColorPicker::make('status_color')
+                                    ->label('Status colour')
+                                    ->default(CoaReport::DEFAULT_STATUS_COLOR)
+                                    ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
+                                    ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
+                                    ->regex('/^#[0-9a-fA-F]{6}$/'),
                             ])
-                            ->required()
-                            ->live()
-                            ->helperText('Only "Pass" shows batch details, a purity figure, and the COA on the website. "Not published" hides all of that and shows the status message below.')
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('status_label')
-                            ->label('Status message')
-                            ->placeholder('e.g. Additional Testing in Progress, Did Not Pass')
-                            ->maxLength(255)
-                            ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
-                            ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
-                        Forms\Components\Select::make('status_color')
-                            ->label('Status colour')
-                            ->options(CoaReport::COLORS)
-                            ->default('gray')
-                            ->visible(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED)
-                            ->required(fn (Get $get): bool => $get('status') === CoaReport::STATUS_UNPUBLISHED),
                         Forms\Components\Textarea::make('status_note')
                             ->label('Status note (optional)')
                             ->placeholder('e.g. Updated analytical documentation will be published upon completion of testing.')
@@ -146,11 +150,7 @@ class CoaReportResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(fn (string $state, CoaReport $record): string => $record->isPass() ? 'Pass' : $record->statusLabel())
-                    ->color(fn (string $state, CoaReport $record): string => $record->isPass() ? 'success' : match ($record->status_color) {
-                        'amber' => 'warning',
-                        'red' => 'danger',
-                        default => 'gray',
-                    }),
+                    ->color(fn (string $state, CoaReport $record): string|array => $record->isPass() ? 'success' : Color::hex($record->statusColor())),
                 Tables\Columns\IconColumn::make('pdf_path')
                     ->label('COA attached')
                     ->boolean(),

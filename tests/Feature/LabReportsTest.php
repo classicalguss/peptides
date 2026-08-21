@@ -40,7 +40,7 @@ class LabReportsTest extends TestCase
             'status' => CoaReport::STATUS_UNPUBLISHED,
             'status_label' => 'Additional Testing in Progress',
             'status_note' => 'Updated analytical documentation will be published upon completion of testing.',
-            'status_color' => 'amber',
+            'status_color' => '#fbbf24',
         ]);
 
         $this->get('/lab-reports')
@@ -57,7 +57,7 @@ class LabReportsTest extends TestCase
             'product_label' => 'BAC Water 10ml',
             'status' => CoaReport::STATUS_UNPUBLISHED,
             'status_label' => 'Documentation Pending',
-            'status_color' => 'gray',
+            'status_color' => '#9ca3af',
         ]);
 
         $this->get('/lab-reports')
@@ -76,7 +76,7 @@ class LabReportsTest extends TestCase
             'status' => CoaReport::STATUS_UNPUBLISHED,
             'status_label' => 'Did Not Pass',
             'status_note' => 'This batch was not released for sale.',
-            'status_color' => 'red',
+            'status_color' => '#f87171',
         ]);
 
         $this->get('/lab-reports')

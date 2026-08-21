@@ -68,11 +68,6 @@
                             @php
                                 $slug = $report->product?->urls->first()?->slug;
                                 $expandable = $report->isPass() || $report->statusNote() !== null;
-                                $tone = match ($report->status_color) {
-                                    'amber' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
-                                    'red' => 'bg-red-400/10 text-red-300 ring-red-400/30',
-                                    default => 'bg-white/5 text-white/40 ring-white/15',
-                                };
                             @endphp
                             <tr @if ($expandable) data-coa-row @endif class="transition hover:bg-white/[0.02]">
                                 <td class="px-3 py-4 sm:px-5">
@@ -91,7 +86,7 @@
                                     @if ($report->isPass())
                                         <span class="inline-block rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest whitespace-nowrap text-emerald-300 uppercase ring-1 ring-emerald-400/30">Pass</span>
                                     @else
-                                        <span class="inline-block rounded-full {{ $tone }} px-2 py-1.5 sm:px-3 text-[10px] font-extrabold tracking-widest uppercase ring-1">{{ $report->statusLabel() }}</span>
+                                        <span class="inline-block rounded-full px-2 py-1.5 sm:px-3 text-[10px] font-extrabold tracking-widest uppercase" style="{{ $report->statusStyle() }}">{{ $report->statusLabel() }}</span>
                                         @if ($report->statusNote())
                                             <span class="mt-2 hidden max-w-56 text-[11px] leading-relaxed normal-case text-white/35 sm:block">{{ $report->statusNote() }}</span>
                                         @endif
