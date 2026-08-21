@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         LunarPanel::panel(
             fn ($panel) => $panel
                 ->brandName('Powered Up Peptides')
+                ->favicon(asset('favicon-32x32.png'))
                 ->colors([
                     'primary' => Color::Amber,
                 ])
