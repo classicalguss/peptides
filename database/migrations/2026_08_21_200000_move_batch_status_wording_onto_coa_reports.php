@@ -19,15 +19,15 @@ return new class extends Migration
         Schema::table('coa_reports', function (Blueprint $table) {
             $table->string('status_label')->nullable()->after('status');
             $table->text('status_note')->nullable()->after('status_label');
-            $table->string('status_color')->default('gray')->after('status_note');
+            $table->string('status_color', 7)->default('#9ca3af')->after('status_note');
         });
 
         $text = DB::table('website_texts')->pluck('value', 'key');
 
         $presets = [
-            'testing' => ['label' => $text['labs.testing_label'] ?? 'Additional Testing in Progress', 'note' => $text['labs.testing_note'] ?? null, 'color' => 'amber'],
-            'pending' => ['label' => $text['labs.pending_label'] ?? 'Documentation Pending', 'note' => null, 'color' => 'gray'],
-            'fail' => ['label' => 'Did Not Pass', 'note' => null, 'color' => 'red'],
+            'testing' => ['label' => $text['labs.testing_label'] ?? 'Additional Testing in Progress', 'note' => $text['labs.testing_note'] ?? null, 'color' => '#fbbf24'],
+            'pending' => ['label' => $text['labs.pending_label'] ?? 'Documentation Pending', 'note' => null, 'color' => '#9ca3af'],
+            'fail' => ['label' => 'Did Not Pass', 'note' => null, 'color' => '#f87171'],
         ];
 
         foreach ($presets as $status => $preset) {

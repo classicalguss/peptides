@@ -248,14 +248,7 @@
                                                 View COA
                                             </a>
                                         @else
-                                            @php
-                                                $tone = match ($coa->status_color) {
-                                                    'amber' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
-                                                    'red' => 'bg-red-400/10 text-red-300 ring-red-400/30',
-                                                    default => 'bg-white/5 text-white/40 ring-white/15',
-                                                };
-                                            @endphp
-                                            <span class="rounded-full {{ $tone }} px-2.5 py-1 text-[10px] font-extrabold tracking-widest uppercase ring-1">{{ $coa->statusLabel() }}</span>
+                                            <span class="rounded-full px-2.5 py-1 text-[10px] font-extrabold tracking-widest uppercase" style="{{ $coa->statusStyle() }}">{{ $coa->statusLabel() }}</span>
                                         @endif
                                     </td>
                                 </tr>

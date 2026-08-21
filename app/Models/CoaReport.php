@@ -13,7 +13,7 @@ class CoaReport extends Model
 
     public const STATUS_UNPUBLISHED = 'unpublished';
 
-    public const COLORS = ['amber' => 'Amber', 'red' => 'Red', 'gray' => 'Grey'];
+    public const DEFAULT_STATUS_COLOR = '#9ca3af';
 
     protected $guarded = [];
 
@@ -42,6 +42,25 @@ class CoaReport extends Model
     public function statusNote(): ?string
     {
         return $this->status_note ?: null;
+    }
+
+    /**
+     * Hex colour chosen in the admin for the unpublished-status pill.
+     */
+    public function statusColor(): string
+    {
+        return preg_match('/^#[0-9a-f]{6}$/i', (string) $this->status_color) ? $this->status_color : self::DEFAULT_STATUS_COLOR;
+    }
+
+    /**
+     * Inline style for the status pill: tinted background, solid text, and a
+     * faint ring, all derived from the chosen colour.
+     */
+    public function statusStyle(): string
+    {
+        $color = $this->statusColor();
+
+        return "background-color: {$color}1a; color: {$color}; box-shadow: inset 0 0 0 1px {$color}4d;";
     }
 
     public function pdfUrl(): ?string

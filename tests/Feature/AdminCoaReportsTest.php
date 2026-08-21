@@ -39,7 +39,7 @@ class AdminCoaReportsTest extends TestCase
     {
         $this->signInAsAdmin();
         $product = $this->makeProduct('BPC-157 20mg');
-        $report = CoaReport::create(['product_id' => $product->id, 'product_label' => 'BPC-157 20mg', 'status' => CoaReport::STATUS_UNPUBLISHED, 'status_label' => 'Additional Testing in Progress', 'status_color' => 'amber']);
+        $report = CoaReport::create(['product_id' => $product->id, 'product_label' => 'BPC-157 20mg', 'status' => CoaReport::STATUS_UNPUBLISHED, 'status_label' => 'Additional Testing in Progress', 'status_color' => '#fbbf24']);
 
         $this->get('/lunar/coa-reports')->assertOk()->assertSee('BPC-157 20mg')->assertSee('Add product batch');
         $this->get('/lunar/coa-reports/create')->assertOk();
