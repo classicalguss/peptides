@@ -2,18 +2,6 @@
 
 namespace App\Providers;
 
-use App\Filament\Clusters\WebsiteLists\Pages\AboutCommitmentsList;
-use App\Filament\Clusters\WebsiteLists\Pages\AboutProcessList;
-use App\Filament\Clusters\WebsiteLists\Pages\AboutStatsList;
-use App\Filament\Clusters\WebsiteLists\Pages\CartTrustList;
-use App\Filament\Clusters\WebsiteLists\Pages\CollectionProductTrustList;
-use App\Filament\Clusters\WebsiteLists\Pages\CompoundProductTrustList;
-use App\Filament\Clusters\WebsiteLists\Pages\ConfirmationStepsList;
-use App\Filament\Clusters\WebsiteLists\Pages\ContactFaqList;
-use App\Filament\Clusters\WebsiteLists\Pages\ContactWriteTipsList;
-use App\Filament\Clusters\WebsiteLists\Pages\GlobalTrustList;
-use App\Filament\Clusters\WebsiteLists\Pages\HomeWhyList;
-use App\Filament\Clusters\WebsiteLists\Pages\LabsHowList;
 use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
 use App\Filament\Resources\CoaReportResource;
@@ -49,20 +37,6 @@ class AppServiceProvider extends ServiceProvider
                     ProductTextSearchResource::class,
                 ])
                 ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
-                ->pages([
-                    GlobalTrustList::class,
-                    AboutStatsList::class,
-                    AboutCommitmentsList::class,
-                    AboutProcessList::class,
-                    HomeWhyList::class,
-                    LabsHowList::class,
-                    ContactFaqList::class,
-                    ContactWriteTipsList::class,
-                    CartTrustList::class,
-                    CompoundProductTrustList::class,
-                    CollectionProductTrustList::class,
-                    ConfirmationStepsList::class,
-                ])
                 ->navigationGroups([
                     'Website',
                 ])
