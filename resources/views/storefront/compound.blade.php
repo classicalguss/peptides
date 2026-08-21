@@ -207,21 +207,23 @@
                                             All Batch Records
                                         </a>
                                     </div>
-                                @elseif ($coa->isTesting())
-                                    <p class="mt-4 text-sm">
-                                        <span class="text-[10px] tracking-widest text-white/40 uppercase">Status</span>
-                                        <span class="mt-1 block">
-                                            <span class="rounded-full bg-amber-400/10 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-amber-300 uppercase ring-1 ring-amber-400/30">{{ site_text('labs.testing_label') }}</span>
-                                        </span>
-                                    </p>
-                                    <p class="mt-4 text-sm leading-relaxed text-white/55">{{ site_text('labs.testing_note') }}</p>
                                 @else
+                                    @php
+                                        $tone = match ($coa->status) {
+                                            'testing' => 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
+                                            'fail' => 'bg-red-400/10 text-red-300 ring-red-400/30',
+                                            default => 'bg-white/5 text-white/40 ring-white/15',
+                                        };
+                                    @endphp
                                     <p class="mt-4 text-sm">
                                         <span class="text-[10px] tracking-widest text-white/40 uppercase">Status</span>
                                         <span class="mt-1 block">
-                                            <span class="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-white/40 uppercase ring-1 ring-white/15">{{ site_text('labs.pending_label') }}</span>
+                                            <span class="rounded-full {{ $tone }} px-2.5 py-1 text-[10px] font-extrabold tracking-widest uppercase ring-1">{{ $coa->statusLabel() }}</span>
                                         </span>
                                     </p>
+                                    @if ($coa->statusNote())
+                                        <p class="mt-4 text-sm leading-relaxed text-white/55">{{ $coa->statusNote() }}</p>
+                                    @endif
                                 @endif
                             </div>
                         @endif

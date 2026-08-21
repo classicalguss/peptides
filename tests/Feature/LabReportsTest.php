@@ -63,6 +63,23 @@ class LabReportsTest extends TestCase
             ->assertDontSee('Pending Upload');
     }
 
+    public function test_a_failed_batch_shows_only_the_did_not_pass_status(): void
+    {
+        CoaReport::create([
+            'product_label' => 'NAD+ 1000mg',
+            'purity' => '88.22%',
+            'status' => CoaReport::STATUS_FAIL,
+        ]);
+
+        $this->get('/lab-reports')
+            ->assertOk()
+            ->assertSee('NAD+ 1000mg')
+            ->assertSee('Did Not Pass')
+            ->assertSee('has not been released for sale')
+            ->assertDontSee('88.22%')
+            ->assertDontSee('View COA');
+    }
+
     public function test_batch_search_matches_the_new_batch_numbers(): void
     {
         CoaReport::create([
