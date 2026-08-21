@@ -91,18 +91,12 @@
             <div class="rounded-2xl panel p-6">
                 <h2 class="text-[11px] font-extrabold tracking-widest text-gold uppercase">{{ site_text('confirmation.steps_title') }}</h2>
                 <ol class="mt-4 space-y-3 text-sm text-white/60">
-                    <li class="flex gap-3">
-                        <span class="font-mono text-xs text-gold">01</span>
-                        {{ site_text('confirmation.step_1') }}
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="font-mono text-xs text-gold">02</span>
-                        {{ site_text('confirmation.step_2') }}
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="font-mono text-xs text-gold">03</span>
-                        {{ site_text('confirmation.step_3') }}
-                    </li>
+                    @foreach (site_list('confirmation.steps') as $step)
+                        <li class="flex gap-3">
+                            <span class="font-mono text-xs text-gold">{{ sprintf('%02d', $loop->iteration) }}</span>
+                            {{ $step->body }}
+                        </li>
+                    @endforeach
                 </ol>
                 <p class="mt-5 border-t border-white/8 pt-4 text-xs text-white/40">
                     Status: <span class="font-bold text-white/70">{{ Str::headline($order->status) }}</span>

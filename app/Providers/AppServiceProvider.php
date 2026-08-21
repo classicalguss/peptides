@@ -6,6 +6,7 @@ use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
 use App\Filament\Resources\CoaReportResource;
 use App\Filament\Resources\ProductTextSearchResource;
+use App\Filament\Resources\WebsiteListResource;
 use App\Filament\Resources\WebsiteTextResource;
 use App\Models\ProductProfile;
 use App\Shipping\FlatRateShipping;
@@ -33,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 ])
                 ->resources([
                     WebsiteTextResource::class,
+                    WebsiteListResource::class,
                     CoaReportResource::class,
                     ProductTextSearchResource::class,
                 ])

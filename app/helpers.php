@@ -1,6 +1,8 @@
 <?php
 
+use App\Support\WebsiteList;
 use App\Support\WebsiteText;
+use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 if (! function_exists('site_text')) {
@@ -10,6 +12,18 @@ if (! function_exists('site_text')) {
     function site_text(string $key, ?string $fallback = null): string
     {
         return WebsiteText::get($key, $fallback);
+    }
+}
+
+if (! function_exists('site_list')) {
+    /**
+     * Return the admin-managed items of a repeating content list.
+     *
+     * @return Collection<int, object{heading: ?string, body: ?string, extra: ?string}>
+     */
+    function site_list(string $key): Collection
+    {
+        return WebsiteList::items($key);
     }
 }
 
