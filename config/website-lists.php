@@ -60,12 +60,16 @@ return [
         'route_name' => 'about',
         'fields' => ['heading' => 'Heading', 'body' => 'Description'],
         'legacy_keys' => ['heading' => 'about.commitment_{i}_title', 'body' => 'about.commitment_{i}_body'],
-        'seed_from' => 'defaults',
+        'overrides' => [
+            1 => ['body' => 'Third-party analytical testing with current batch documentation available through our Lab Reports.'],
+            2 => ['heading' => 'Transparent Results', 'body' => 'Current batch testing results are documented and made available through our Lab Reports section.'],
+            3 => ['body' => 'Current batch documentation and corresponding certificates of analysis are available through our Lab Reports section.'],
+        ],
         'defaults' => [
-            ['heading' => 'Every Batch Tested', 'body' => 'Third-party analytical testing with current batch documentation available through our Lab Reports.'],
+            ['heading' => 'Every batch tested', 'body' => 'Third-party analytical testing with current batch documentation available through our Lab Reports.'],
             ['heading' => 'Transparent Results', 'body' => 'Current batch testing results are documented and made available through our Lab Reports section.'],
-            ['heading' => 'Batch Documentation', 'body' => 'Current batch documentation and corresponding certificates of analysis are available through our Lab Reports section.'],
-            ['heading' => 'Honest Pricing', 'body' => 'Volume discounts are applied automatically. No inflated list price to make a fake sale look generous.'],
+            ['heading' => 'Batch documentation', 'body' => 'Current batch documentation and corresponding certificates of analysis are available through our Lab Reports section.'],
+            ['heading' => 'Honest pricing', 'body' => 'Volume discounts are applied automatically. No inflated list price to make a fake sale look generous.'],
         ],
     ],
     'about.process' => [
@@ -76,7 +80,10 @@ return [
         'route_name' => 'about',
         'fields' => ['heading' => 'Step heading', 'body' => 'Step description'],
         'legacy_keys' => ['heading' => 'about.process_{i}_title', 'body' => 'about.process_{i}_body'],
-        'seed_from' => 'defaults',
+        'overrides' => [
+            2 => ['body' => 'Samples from each batch are submitted to an independent laboratory for analytical testing, including HPLC analysis where applicable.'],
+            3 => ['body' => 'Results are reviewed against our ≥95% HPLC purity standard. Current batch documentation and corresponding test results are published in our Lab Reports section.'],
+        ],
         'defaults' => [
             ['heading' => 'Sourcing', 'body' => 'We work with a small number of vetted synthesis partners operating under documented quality systems. New suppliers go through sample testing long before they get an order.'],
             ['heading' => 'Independent testing', 'body' => 'Samples from each batch are submitted to an independent laboratory for analytical testing, including HPLC analysis where applicable.'],
