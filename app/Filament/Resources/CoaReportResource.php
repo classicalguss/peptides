@@ -54,8 +54,8 @@ class CoaReportResource extends Resource
                             })
                             ->helperText(fn (?Model $record, string $operation): string => match (true) {
                                 $operation === 'edit' => 'Each product has one current batch; to change a batch, edit its fields below.',
-                                static::productOptions($record) === [] => 'Every product already has a batch record — edit it from the Lab Reports list. To add a brand-new product, create it under Catalog → Products first, then come back here.',
-                                default => 'Only products without a batch record are listed. Each product has one current batch.',
+                                static::productOptions($record) === [] => 'Every compound already has a batch record — edit it from the Lab Reports list. To add a brand-new compound, create it under Catalog → Products first, then come back here. Research collections are never listed: their pages show the batches of the compounds they contain.',
+                                default => 'Only compounds without a batch record are listed (each has one current batch). Research collections are never listed: their pages show the batches of the compounds they contain.',
                             }),
                         Forms\Components\TextInput::make('product_label')
                             ->label('Product name shown on the site')
