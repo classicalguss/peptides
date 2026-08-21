@@ -23,6 +23,20 @@ return [
             ['heading' => 'Independent Labs', 'body' => 'Testing under an ISO/IEC 17025 quality management system'],
         ],
     ],
+    'home.why' => [
+        'page' => 'Home Page',
+        'section' => 'Why Powered Up',
+        'label' => 'Trust cards',
+        'location_hint' => 'The three cards in the "Why Powered Up" section of the homepage.',
+        'route_name' => 'home',
+        'fields' => ['extra' => 'Large figure', 'heading' => 'Heading', 'body' => 'Description'],
+        'legacy_keys' => ['extra' => 'home.why_{i}_stat', 'heading' => 'home.why_{i}_title', 'body' => 'home.why_{i}_body'],
+        'defaults' => [
+            ['extra' => '100%', 'heading' => 'Every Batch Tested', 'body' => 'Independent laboratory testing performed under an ISO/IEC 17025 quality management system on every single batch — not a one-off sample from two years ago.'],
+            ['extra' => 'Public', 'heading' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.'],
+            ['extra' => '24h', 'heading' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.'],
+        ],
+    ],
     'about.stats' => [
         'page' => 'About Page',
         'section' => 'Stats Row',
@@ -68,20 +82,6 @@ return [
             ['heading' => 'Independent testing', 'body' => 'Samples from each batch are submitted to an independent laboratory for analytical testing, including HPLC analysis where applicable.'],
             ['heading' => 'Review', 'body' => 'Results are reviewed against our ≥95% HPLC purity standard. Current batch documentation and corresponding test results are published in our Lab Reports section.'],
             ['heading' => 'Dispatch', 'body' => 'Vials are packed in plain outer packaging with no product branding, and dispatched typically within 24 hours.'],
-        ],
-    ],
-    'home.why' => [
-        'page' => 'Home Page',
-        'section' => 'Why Powered Up',
-        'label' => 'Trust cards',
-        'location_hint' => 'The three cards in the "Why Powered Up" section of the homepage.',
-        'route_name' => 'home',
-        'fields' => ['extra' => 'Large figure', 'heading' => 'Heading', 'body' => 'Description'],
-        'legacy_keys' => ['extra' => 'home.why_{i}_stat', 'heading' => 'home.why_{i}_title', 'body' => 'home.why_{i}_body'],
-        'defaults' => [
-            ['extra' => '100%', 'heading' => 'Every Batch Tested', 'body' => 'Independent laboratory testing performed under an ISO/IEC 17025 quality management system on every single batch — not a one-off sample from two years ago.'],
-            ['extra' => 'Public', 'heading' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.'],
-            ['extra' => '24h', 'heading' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.'],
         ],
     ],
     'labs.how' => [

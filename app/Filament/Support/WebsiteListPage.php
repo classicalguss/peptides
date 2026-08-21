@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Clusters\WebsiteLists\Pages;
+namespace App\Filament\Support;
 
 use App\Filament\Clusters\WebsiteLists;
 use App\Models\WebsiteListItem;
@@ -53,6 +53,15 @@ abstract class WebsiteListPage extends Page implements HasForms
     public static function getNavigationGroup(): ?string
     {
         return static::definition()['page'] ?? null;
+    }
+
+    /**
+     * Keep the sub-navigation in the order lists are declared in config,
+     * which follows the order of pages on the site.
+     */
+    public static function getNavigationSort(): ?int
+    {
+        return array_search(static::$listKey, array_keys(WebsiteList::definitions()), true) ?: 0;
     }
 
     public function getTitle(): string
