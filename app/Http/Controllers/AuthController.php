@@ -54,7 +54,7 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
             'research_use_confirmed' => ['accepted'],
         ], [
-            'research_use_confirmed.accepted' => 'You must confirm you are a qualified researcher.',
+            'research_use_confirmed.accepted' => 'You must confirm that you are 21 years of age or older and that all products are for laboratory research use only.',
         ]);
 
         $user = DB::transaction(function () use ($data) {
