@@ -129,7 +129,7 @@
         </section>
 
         {{-- What's included --}}
-        <section class="border-y border-white/5 bg-black/40 py-20">
+        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
@@ -196,7 +196,7 @@
         </section>
 
         {{-- Compounds in this stack --}}
-        <section class="border-y border-white/5 bg-black/40 py-20">
+        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
@@ -204,7 +204,7 @@
                     :title="foil_last_words(site_text('collection_product.compounds_title'), 1, 'text-accent-foil')"
                     :subtitle="site_text('collection_product.compounds_description')" />
 
-                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-4">
                     @foreach ($componentProfiles as $componentProfile)
                         <x-store.product-card :profile="$componentProfile" />
                     @endforeach
@@ -214,7 +214,7 @@
 
         {{-- Lab results --}}
         @if ($coas->isNotEmpty())
-            <section class="mx-auto max-w-7xl px-4 py-20">
+            <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
                 <x-store.section-heading
                     align="left"
                     :eyebrow="site_text('collection_product.lab_eyebrow')"
@@ -257,13 +257,13 @@
         @endif
 
         {{-- Other protocols --}}
-        <section class="mx-auto max-w-7xl px-4 py-20">
+        <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
             <x-store.section-heading
                 align="left"
                 eyebrow="Keep Looking"
                 :title="foil_last_words(site_text('collection_product.other_title'))" />
 
-            <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-3">
                 @foreach ($otherStacks as $other)
                     <x-store.product-card :profile="$other" />
                 @endforeach
