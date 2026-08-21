@@ -42,17 +42,21 @@ class CoaReportResource extends Resource
                         Forms\Components\Select::make('product_id')
                             ->label('Product')
                             ->options(fn (?Model $record): array => static::productOptions($record))
-                            ->searchable()
+                            ->placeholder(fn (?Model $record): string => static::productOptions($record) === [] ? 'No products without a batch record' : 'Select a product')
+                            ->disabled(fn (?Model $record, string $operation): bool => $operation === 'edit' || static::productOptions($record) === [])
                             ->required()
                             ->live()
-                            ->disabledOn('edit')
                             ->dehydrated()
                             ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
                                 if ($state) {
                                     $set('product_label', Product::find($state)?->translateAttribute('name'));
                                 }
                             })
-                            ->helperText('Each product has one current batch. Products that already have a batch record are not listed here — edit theirs instead.'),
+                            ->helperText(fn (?Model $record, string $operation): string => match (true) {
+                                $operation === 'edit' => 'Each product has one current batch; to change a batch, edit its fields below.',
+                                static::productOptions($record) === [] => 'Every product already has a batch record — edit it from the Lab Reports list. To add a brand-new product, create it under Catalog → Products first, then come back here.',
+                                default => 'Only products without a batch record are listed. Each product has one current batch.',
+                            }),
                         Forms\Components\TextInput::make('product_label')
                             ->label('Product name shown on the site')
                             ->required()
