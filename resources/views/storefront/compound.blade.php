@@ -44,7 +44,7 @@
                         @if ($images->count() > 1)
                             <div class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
                                 @foreach ($images as $index => $image)
-                                    <a href="{{ route('compound', [$profile->handle, 'image' => $index]) }}"
+                                    <a href="{{ route('compound', [$profile->product->urls->first()?->slug ?? $profile->handle, 'image' => $index]) }}"
                                        class="relative aspect-square overflow-hidden rounded-xl border bg-black/50 transition
                                               {{ $index === $activeIndex ? 'border-[var(--accent)]' : 'border-white/8 hover:border-white/25' }}">
                                         <img src="{{ $image->getUrl('small') }}" alt=""

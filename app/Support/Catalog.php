@@ -119,15 +119,23 @@ class Catalog
         return $collection ? $collection->products()->pluck('lunar_products.id')->all() : [];
     }
 
-    public static function findByHandle(string $handle): ?ProductProfile
+    /**
+     * Resolve a storefront page by the product's Lunar URL slug — the value
+     * links are built from and the one admins can edit — falling back to the
+     * profile handle so older links keep working.
+     */
+    public static function findByHandle(string $slug): ?ProductProfile
     {
-        return ProductProfile::where('handle', $handle)
-            ->with([
-                'product.media',
-                'product.urls',
-                'product.variants.prices',
-            ])
-            ->first();
+        $query = ProductProfile::with([
+            'product.media',
+            'product.urls',
+            'product.variants.prices',
+        ]);
+
+        return (clone $query)
+            ->whereHas('product.urls', fn ($urls) => $urls->where('slug', $slug))
+            ->first()
+            ?? (clone $query)->where('handle', $slug)->first();
     }
 
     /**
