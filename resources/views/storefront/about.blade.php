@@ -57,7 +57,7 @@
                 <p class="eyebrow text-gold">The Commitments</p>
                 <ul class="mt-6 space-y-5">
                     @foreach ([
-                        ['Every batch tested', 'Independent HPLC and mass spec analysis, published against the batch number on your vial.'],
+                        ['Every batch tested', 'Independent HPLC purity, identity and quantitation analysis, published against the batch number on your vial.'],
                         ['No hidden failures', 'Reports stay public regardless of the result. Batches under threshold are destroyed, not discounted.'],
                         ['Batch documentation', 'Lyophilised and sealed, with the certificate of analysis published against the batch number.'],
                         ['Honest pricing', 'Volume discounts are applied automatically. No inflated list price to make a fake sale look generous.'],
@@ -83,7 +83,7 @@
             <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     ['01', 'Sourcing', 'We work with a small number of vetted synthesis partners operating under documented quality systems. New suppliers go through sample testing long before they get an order.'],
-                    ['02', 'Independent testing', 'Every batch goes to a third-party lab. HPLC establishes purity, mass spectrometry confirms the compound is what it claims to be.'],
+                    ['02', 'Independent testing', 'Every batch goes to a third-party lab, where HPLC analysis establishes purity, identity and quantitation against the labeled content.'],
                     ['03', 'Review', 'Results are checked against our 99% threshold. Anything that falls short is rejected outright. Passing batches get their COA published.'],
                     ['04', 'Dispatch', 'Vials are packed in plain outer packaging with no product branding, and dispatched typically within 24 hours.'],
                 ] as $i => [$num, $title, $body])
