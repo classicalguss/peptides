@@ -19,8 +19,8 @@
             </h1>
 
             <p class="mt-5 text-[15px] leading-relaxed text-white/55">
-                Thanks{{ $shipping?->first_name ? ', '.$shipping->first_name : '' }} &mdash; your order is in.
-                A confirmation has been sent to
+                Thanks{{ $shipping?->first_name ? ', '.$shipping->first_name : '' }} &mdash; {{ site_text('confirmation.intro') }}
+                {{ site_text('confirmation.email_note') }}
                 <span class="text-white/80">{{ $shipping?->contact_email }}</span>.
             </p>
 
@@ -89,19 +89,19 @@
 
             {{-- Status --}}
             <div class="rounded-2xl panel p-6">
-                <h2 class="text-[11px] font-extrabold tracking-widest text-gold uppercase">What Happens Next</h2>
+                <h2 class="text-[11px] font-extrabold tracking-widest text-gold uppercase">{{ site_text('confirmation.steps_title') }}</h2>
                 <ol class="mt-4 space-y-3 text-sm text-white/60">
                     <li class="flex gap-3">
                         <span class="font-mono text-xs text-gold">01</span>
-                        We confirm payment and pull your batch.
+                        {{ site_text('confirmation.step_1') }}
                     </li>
                     <li class="flex gap-3">
                         <span class="font-mono text-xs text-gold">02</span>
-                        Packed and dispatched within 24 hours.
+                        {{ site_text('confirmation.step_2') }}
                     </li>
                     <li class="flex gap-3">
                         <span class="font-mono text-xs text-gold">03</span>
-                        Tracking is emailed as soon as the label is created.
+                        {{ site_text('confirmation.step_3') }}
                     </li>
                 </ol>
                 <p class="mt-5 border-t border-white/8 pt-4 text-xs text-white/40">
@@ -113,7 +113,7 @@
         <div class="mt-10 flex flex-wrap justify-center gap-3">
             <a href="{{ route('lab-reports') }}"
                class="rounded-full border border-white/15 px-7 py-3.5 text-xs font-extrabold tracking-widest text-white uppercase transition hover:border-gold/50 hover:text-gold">
-                View Batch Lab Reports
+                {{ site_text('confirmation.lab_reports_button') }}
             </a>
             <a href="{{ route('shop') }}"
                class="rounded-full bg-gold px-7 py-3.5 text-xs font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">

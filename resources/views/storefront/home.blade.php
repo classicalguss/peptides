@@ -135,12 +135,15 @@
             :subtitle="site_text('home.why_description')" />
 
         <div class="mt-14 grid gap-6 lg:grid-cols-3">
-            @foreach ([
-                ['title' => 'Every Batch Tested', 'body' => 'Independent ISO-accredited HPLC analysis on every single batch — not a one-off sample from two years ago.', 'stat' => '100%'],
-                ['title' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.', 'stat' => 'Public'],
-                ['title' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.', 'stat' => '24h'],
-            ] as $i => $item)
-                <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ $i * 90 }}ms">
+            @foreach (range(1, 3) as $i)
+                @php
+                    $item = [
+                        'stat' => site_text("home.why_{$i}_stat"),
+                        'title' => site_text("home.why_{$i}_title"),
+                        'body' => site_text("home.why_{$i}_body"),
+                    ];
+                @endphp
+                <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ ($i - 1) * 90 }}ms">
                     <p class="display-title text-4xl text-foil">{{ $item['stat'] }}</p>
                     <h3 class="mt-5 text-lg font-extrabold tracking-wide text-white uppercase">{{ $item['title'] }}</h3>
                     <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item['body'] }}</p>

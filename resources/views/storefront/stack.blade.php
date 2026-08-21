@@ -120,16 +120,16 @@
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
                                 <li class="flex items-center gap-2">
-                                    <span class="text-[var(--accent)]">&#10003;</span> Bacteriostatic water included
+                                    <span class="text-[var(--accent)]">&#10003;</span> {{ site_text('collection_product.trust_1') }}
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-[var(--accent)]">&#10003;</span> COA published per batch
+                                    <span class="text-[var(--accent)]">&#10003;</span> {{ site_text('collection_product.trust_2') }}
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-[var(--accent)]">&#10003;</span> Ships within 24 hours
+                                    <span class="text-[var(--accent)]">&#10003;</span> {{ site_text('collection_product.trust_3') }}
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-[var(--accent)]">&#10003;</span> Free shipping over $200
+                                    <span class="text-[var(--accent)]">&#10003;</span> {{ site_text('collection_product.trust_4') }}
                                 </li>
                             </ul>
                         </form>
@@ -188,7 +188,7 @@
                         <tfoot class="border-t border-white/8 bg-black/40">
                             <tr>
                                 <td class="px-5 py-4 text-[10px] font-extrabold tracking-widest text-white/45 uppercase" colspan="2">
-                                    Retail value if bought separately
+                                    {{ site_text('collection_product.retail_value_label') }}
                                 </td>
                                 @foreach ($tiers as $tier)
                                     <td class="px-5 py-4 text-center whitespace-nowrap">

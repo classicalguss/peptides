@@ -20,7 +20,7 @@
             <div>
                 <h3 class="eyebrow text-gold">Transparency</h3>
                 <ul class="mt-4 space-y-2.5 text-sm text-white/55">
-                    <li><a href="{{ route('lab-reports') }}" class="transition hover:text-gold">Lab Reports &amp; COAs</a></li>
+                    <li><a href="{{ route('lab-reports') }}" class="transition hover:text-gold">{{ site_text('global.footer_labs_link') }}</a></li>
                     <li><a href="{{ route('lab-reports') }}" class="transition hover:text-gold">Batch Lookup</a></li>
                     <li><a href="{{ route('about') }}#process" class="transition hover:text-gold">How We Test</a></li>
                 </ul>

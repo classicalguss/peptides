@@ -1,6 +1,6 @@
 @php $categoryLabel = $categories[$activeCategory]['label'] ?? null; @endphp
 
-<x-layouts.storefront :title="($categoryLabel ?? 'Shop Peptides').' — Powered Up Peptides'"
+<x-layouts.storefront :title="$categoryLabel ? $categoryLabel.' — Powered Up Peptides' : site_text('shop.meta_title')"
                       :description="site_text('shop.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
@@ -51,7 +51,7 @@
         @if ($profiles->isEmpty())
             <div class="mt-10 rounded-2xl panel p-14 text-center">
                 <p class="display-title text-2xl text-white">Nothing here yet</p>
-                <p class="mt-3 text-sm text-white/50">Try a different category.</p>
+                <p class="mt-3 text-sm text-white/50">{{ site_text('shop.empty_description') }}</p>
                 <a href="{{ route('shop') }}"
                    class="mt-7 inline-block rounded-full bg-gold px-6 py-3 text-xs font-extrabold tracking-widest text-black uppercase">
                     Show All Compounds

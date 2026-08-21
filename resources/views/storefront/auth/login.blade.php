@@ -1,11 +1,11 @@
-<x-layouts.storefront title="Sign In — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('login.meta_title')">
 
     <div class="mx-auto flex max-w-md flex-col justify-center px-4 py-20">
         <h1 class="display-title text-center text-4xl text-white">
             Sign <span class="text-foil">In</span>
         </h1>
         <p class="mt-3 text-center text-sm text-white/50">
-            Access your orders, batch certificates and reorder in one click.
+            {{ site_text('login.introduction') }}
         </p>
 
         @if (session('status'))
@@ -38,7 +38,7 @@
             <label class="flex cursor-pointer items-center gap-2.5 pt-1">
                 <input type="checkbox" name="remember" value="1"
                        class="size-4 appearance-none rounded border-2 border-white/25 transition checked:border-gold checked:bg-gold">
-                <span class="text-xs text-white/50">Keep me signed in</span>
+                <span class="text-xs text-white/50">{{ site_text('login.remember_label') }}</span>
             </label>
 
             <button type="submit"

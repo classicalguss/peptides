@@ -39,10 +39,9 @@
     <div class="mx-auto max-w-7xl px-4 pt-6 pb-14">
         @if ($reports->isEmpty())
             <div class="rounded-2xl panel p-14 text-center">
-                <p class="display-title text-2xl text-white">No matching batch</p>
+                <p class="display-title text-2xl text-white">{{ site_text('labs.empty_title') }}</p>
                 <p class="mt-3 text-sm text-white/50">
-                    Check the number printed on your vial label, or contact us and we will send the
-                    certificate directly.
+                    {{ site_text('labs.empty_description') }}
                 </p>
                 <a href="{{ route('contact') }}"
                    class="mt-7 inline-block rounded-full bg-gold px-6 py-3 text-xs font-extrabold tracking-widest text-black uppercase">
@@ -166,11 +165,14 @@
 
         {{-- How we test --}}
         <div class="mt-16 grid gap-6 lg:grid-cols-3">
-            @foreach ([
-                ['step' => '01', 'title' => 'Independent Sampling', 'body' => 'A sealed vial is pulled at random from each production batch and shipped directly to the lab. We never send a prepared sample.'],
-                ['step' => '02', 'title' => 'Purity, Identity & Quantitation', 'body' => 'Purity, identity and quantitation are established by high performance liquid chromatography (HPLC), verified against the labeled content of each vial.'],
-                ['step' => '03', 'title' => 'Published Before Sale', 'body' => 'The certificate is uploaded against the batch number here before that batch is released for purchase. If it fails, it does not ship.'],
-            ] as $item)
+            @foreach (range(1, 3) as $i)
+                @php
+                    $item = [
+                        'step' => sprintf('%02d', $i),
+                        'title' => site_text("labs.how_{$i}_title"),
+                        'body' => site_text("labs.how_{$i}_body"),
+                    ];
+                @endphp
                 <div class="rounded-2xl panel p-7">
                     <p class="display-title text-3xl text-foil">{{ $item['step'] }}</p>
                     <h3 class="mt-5 text-base font-extrabold tracking-wide text-white uppercase">{{ $item['title'] }}</h3>

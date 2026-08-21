@@ -7,7 +7,7 @@
     $progress = $freeShippingThreshold > 0 ? min(100, (int) round($subTotal / $freeShippingThreshold * 100)) : 100;
 @endphp
 
-<x-layouts.storefront title="Your Cart — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('cart.meta_title')">
 
     <div class="mx-auto max-w-7xl px-4 py-12">
         <nav class="flex items-center gap-2 text-xs text-white/40">
@@ -34,7 +34,7 @@
 
         @if ($lines->isEmpty())
             <div class="mt-10 rounded-2xl panel p-16 text-center">
-                <p class="display-title text-3xl text-white">Nothing in here yet</p>
+                <p class="display-title text-3xl text-white">{{ site_text('cart.empty_title') }}</p>
                 <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/50">
                     {{ site_text('cart.empty_description') }}
                 </p>
@@ -66,7 +66,7 @@
                         </div>
                     @else
                         <div class="rounded-2xl border border-gold/25 bg-gold/[0.06] p-5">
-                            <p class="text-sm font-bold text-gold">Free standard shipping unlocked.</p>
+                            <p class="text-sm font-bold text-gold">{{ site_text('cart.shipping_unlocked') }}</p>
                         </div>
                     @endif
 
@@ -211,9 +211,9 @@
                     </form>
 
                     <ul class="mt-6 space-y-2.5 text-xs text-white/45">
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> Third-party tested, COA per batch</li>
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> Discreet, temperature-controlled packing</li>
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> Ships within 24 hours</li>
+                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_1') }}</li>
+                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_2') }}</li>
+                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_3') }}</li>
                     </ul>
 
                 </aside>

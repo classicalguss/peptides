@@ -1,6 +1,6 @@
 @php use App\Support\Catalog; @endphp
 
-<x-layouts.storefront title="Your Account — Powered Up Peptides">
+<x-layouts.storefront :title="site_text('account.meta_title')">
 
     <div class="mx-auto max-w-6xl px-4 py-12">
         <nav class="flex items-center gap-2 text-xs text-white/40">
