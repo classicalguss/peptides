@@ -36,7 +36,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 pt-6 pb-14">
+    <div class="mx-auto max-w-7xl px-4 pt-6 pb-8">
         @if ($reports->isEmpty())
             <div class="rounded-2xl panel p-14 text-center">
                 <p class="display-title text-2xl text-white">{{ site_text('labs.empty_title') }}</p>

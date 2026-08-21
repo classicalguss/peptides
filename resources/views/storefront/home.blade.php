@@ -88,13 +88,13 @@
     <x-store.trust-bar />
 
     {{-- Stack protocols --}}
-    <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:py-12">
         <x-store.section-heading
             :eyebrow="site_text('home.collections_eyebrow')"
             :title="foil_last_words(site_text('home.collections_title'))"
             :subtitle="site_text('home.collections_description')" />
 
-        <div class="mt-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+        <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
             @foreach ($stacks as $i => $stack)
                 <x-store.product-card :profile="$stack"
                                       class="reveal" style="{{ $stack->accentStyle() }} --reveal-delay: {{ ($i % 3) * 90 }}ms" />
@@ -103,7 +103,7 @@
     </section>
 
     {{-- Individual compounds --}}
-    <section class="border-y border-white/5 bg-black/40 py-20 sm:py-24">
+    <section class="border-y border-white/5 bg-black/40 py-10 sm:py-12">
         <div class="mx-auto max-w-7xl px-4">
             <div class="flex flex-wrap items-end justify-between gap-6">
                 <x-store.section-heading
@@ -118,7 +118,7 @@
                 </a>
             </div>
 
-            <div class="mt-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+            <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 @foreach ($compounds as $i => $compound)
                     <x-store.product-card :profile="$compound"
                                           class="reveal" style="{{ $compound->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />
@@ -128,13 +128,13 @@
     </section>
 
     {{-- Why us --}}
-    <section class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:py-12">
         <x-store.section-heading
             :eyebrow="site_text('home.why_eyebrow')"
             :title="foil_last_words(site_text('home.why_title'))"
             :subtitle="site_text('home.why_description')" />
 
-        <div class="mt-14 grid gap-6 lg:grid-cols-3">
+        <div class="mt-10 grid gap-6 lg:grid-cols-3">
             @foreach (site_list('home.why') as $item)
                 <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ $loop->index * 90 }}ms">
                     <p class="display-title text-4xl text-foil">{{ $item->extra }}</p>
@@ -147,7 +147,7 @@
 
     {{-- Closing CTA --}}
     <section class="relative overflow-hidden">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:py-24">
+        <div class="mx-auto max-w-7xl px-4 py-10 sm:py-12">
             <div class="relative overflow-hidden rounded-3xl panel gold-ring px-6 py-14 text-center sm:px-14">
                 <div class="absolute inset-0 bg-electric opacity-70"></div>
                 <div class="relative">

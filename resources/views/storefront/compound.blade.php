@@ -7,7 +7,7 @@
 
         {{-- Hero / buy box --}}
         <section class="relative overflow-hidden bg-accent-electric">
-            <div class="relative mx-auto max-w-7xl px-4 pt-8 pb-16 lg:pb-24">
+            <div class="relative mx-auto max-w-7xl px-4 pt-8 pb-8 lg:pb-24">
 
                 <nav class="flex items-center gap-2 text-xs text-white/40">
                     <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
@@ -134,7 +134,7 @@
         </section>
 
         {{-- Highlights + research detail --}}
-        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
+        <section class="border-y border-white/5 bg-black/40 py-8 sm:py-10">
             <div class="mx-auto max-w-7xl px-4">
                 <div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
                     <div>
@@ -227,7 +227,7 @@
 
         {{-- Used in stacks --}}
         @if ($usedInStacks->isNotEmpty())
-            <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
+            <section class="mx-auto max-w-7xl px-4 py-8 sm:py-10">
                 <x-store.section-heading
                     align="left"
                     :eyebrow="site_text('compound_product.collections_eyebrow')"
@@ -243,7 +243,7 @@
         @endif
 
         {{-- Related --}}
-        <section class="border-t border-white/5 bg-black/40 py-12 sm:py-20">
+        <section class="border-t border-white/5 bg-black/40 py-8 sm:py-10">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading align="left" eyebrow="Keep Looking" :title="foil_last_words(site_text('compound_product.related_title'))" />
 

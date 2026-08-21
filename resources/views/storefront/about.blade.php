@@ -2,7 +2,7 @@
                       :description="site_text('about.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
-        <div class="mx-auto max-w-7xl px-4 pt-10 pb-20">
+        <div class="mx-auto max-w-7xl px-4 pt-10 pb-10">
             <nav class="flex items-center gap-2 text-xs text-white/40">
                 <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
                 <span>/</span>
@@ -32,7 +32,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 py-16">
+    <div class="mx-auto max-w-7xl px-4 py-8">
 
         {{-- Story --}}
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
@@ -65,7 +65,7 @@
         </section>
 
         {{-- Process --}}
-        <section id="process" class="mt-20 scroll-mt-28">
+        <section id="process" class="mt-10 scroll-mt-28">
             <x-store.section-heading :eyebrow="site_text('about.process_eyebrow')"
                                      :title="foil_last_words(site_text('about.process_title'), 3)"
                                      :subtitle="site_text('about.process_subtitle')" />
@@ -82,7 +82,7 @@
         </section>
 
         {{-- Compliance --}}
-        <section class="mt-20">
+        <section class="mt-10">
             <div class="mx-auto max-w-2xl rounded-2xl border border-gold/25 bg-gold/[0.04] p-8">
                 <p class="eyebrow text-gold">{{ site_text('about.compliance_eyebrow') }}</p>
                 <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('about.compliance_title') }}</h2>
@@ -95,7 +95,7 @@
         </section>
 
         {{-- CTA --}}
-        <section class="mt-20 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-16">
+        <section class="mt-10 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-16">
             <h2 class="display-title text-4xl text-white sm:text-5xl">
                 {!! foil_last_words(site_text('about.cta_title'), 3) !!}
             </h2>

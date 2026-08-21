@@ -4,7 +4,7 @@
                       :description="site_text('collections.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
-        <div class="mx-auto max-w-7xl px-4 pt-10 pb-14">
+        <div class="mx-auto max-w-7xl px-4 pt-10 pb-8">
             <nav class="flex items-center gap-2 text-xs text-white/40">
                 <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
                 <span>/</span>
@@ -36,7 +36,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 py-12">
+    <div class="mx-auto max-w-7xl px-4 py-6">
 
         <x-store.catalog-filters route="stacks" :all-label="site_text('collections.all_filter')"
                                  :categories="$categories" :active-category="$activeCategory"
@@ -171,7 +171,7 @@
         @endif
 
         {{-- Cross-sell to compounds --}}
-        <section class="mt-16 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-14">
+        <section class="mt-8 overflow-hidden rounded-3xl bg-electric p-10 text-center sm:p-14">
             <h2 class="display-title text-3xl text-white sm:text-4xl">
                 {!! foil_last_words(site_text('collections.cross_sell_title'), 3) !!}
             </h2>
