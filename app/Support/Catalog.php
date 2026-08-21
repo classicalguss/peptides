@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\ProductProfile;
+use App\Models\StackComponent;
 use App\Models\StackTier;
 use Illuminate\Support\Collection;
 use Lunar\Models\Collection as LunarCollection;
@@ -128,6 +129,75 @@ class Catalog
                 'product.variants.prices',
             ])
             ->first();
+    }
+
+    /**
+     * Cost of buying every vial in each tier separately, in cents, keyed by
+     * tier code.
+     *
+     * @param  Collection<int, StackTier>  $tiers
+     * @param  Collection<int, StackComponent>  $components
+     * @param  Collection<int, ProductProfile>  $componentProfiles
+     * @return array<string, int>
+     */
+    public static function retailValues(Collection $tiers, Collection $components, Collection $componentProfiles): array
+    {
+        $unitPrices = $componentProfiles->mapWithKeys(
+            fn (ProductProfile $profile) => [$profile->product_id => static::unitPrice($profile)]
+        );
+
+        return $tiers->mapWithKeys(fn (StackTier $tier) => [
+            $tier->code => $components->sum(
+                fn (StackComponent $component) => ($unitPrices[$component->component_product_id] ?? 0)
+                    * $component->base_quantity
+                    * $tier->multiplier()
+            ),
+        ])->all();
+    }
+
+    /**
+     * Percentage saved per tier against buying the vials separately, keyed
+     * by tier code. Derived from live prices, never stored.
+     *
+     * @param  Collection<int, StackTier>  $tiers
+     * @param  array<string, int>  $retailValues
+     * @return array<string, float>
+     */
+    public static function savings(Collection $tiers, array $retailValues): array
+    {
+        return $tiers->mapWithKeys(function (StackTier $tier) use ($retailValues): array {
+            $retail = $retailValues[$tier->code] ?? 0;
+            $price = $tier->priceValue();
+
+            return [$tier->code => $retail > $price && $retail > 0 ? round((1 - $price / $retail) * 100, 1) : 0.0];
+        })->all();
+    }
+
+    /**
+     * Largest tier saving for a collection, for "Save up to" badges.
+     * Memoised per request because cards call it in loops.
+     */
+    public static function saveUpTo(ProductProfile $profile): float
+    {
+        static $memo = [];
+
+        if (! $profile->isStack()) {
+            return 0.0;
+        }
+
+        if (array_key_exists($profile->id, $memo)) {
+            return $memo[$profile->id];
+        }
+
+        $tiers = StackTier::where('product_id', $profile->product_id)->with('variant.prices')->get();
+        $components = StackComponent::where('stack_product_id', $profile->product_id)->get();
+        $componentProfiles = ProductProfile::whereIn('product_id', $components->pluck('component_product_id'))
+            ->with('product.variants.prices')
+            ->get();
+
+        $savings = static::savings($tiers, static::retailValues($tiers, $components, $componentProfiles));
+
+        return $memo[$profile->id] = (float) (max($savings ?: [0.0]));
     }
 
     /**

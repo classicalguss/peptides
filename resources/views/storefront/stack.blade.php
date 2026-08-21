@@ -29,9 +29,9 @@
                                          class="absolute inset-0 size-full object-contain p-8">
                                 @endif
                             </div>
-                            @if ($profile->save_up_to > 0)
+                            @if (Catalog::saveUpTo($profile) > 0)
                                 <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
-                                    Save up to {{ rtrim(rtrim(number_format($profile->save_up_to, 1), '0'), '.') }}%
+                                    Save up to {{ rtrim(rtrim(number_format(Catalog::saveUpTo($profile), 1), '0'), '.') }}%
                                 </span>
                             @endif
                         </div>
@@ -96,18 +96,15 @@
                                                     <span class="rounded-full bg-[var(--accent)]/15 px-2 py-0.5 text-[9px] font-extrabold tracking-widest text-[var(--accent)] uppercase">Popular</span>
                                                 @endif
                                             </div>
-                                            @if ($tier->save_percent > 0)
+                                            @if (($savings[$tier->code] ?? 0) > 0)
                                                 <p class="mt-1 text-xs text-white/45">
-                                                    save {{ rtrim(rtrim(number_format($tier->save_percent, 1), '0'), '.') }}%
+                                                    save {{ rtrim(rtrim(number_format($savings[$tier->code], 1), '0'), '.') }}%
                                                 </p>
                                             @endif
                                         </div>
 
                                         <div class="shrink-0 text-right">
-                                            <p class="display-title text-2xl text-white">{{ Catalog::money($tier->price) }}</p>
-                                            <p class="text-[11px] text-white/40">
-                                                or {{ Catalog::money($tier->subscribe_price) }} on a scheduled reorder
-                                            </p>
+                                            <p class="display-title text-2xl text-white">{{ Catalog::money($tier->priceValue()) }}</p>
                                         </div>
                                     </label>
                                 @endforeach
@@ -185,10 +182,10 @@
                                 </td>
                                 @foreach ($tiers as $tier)
                                     <td class="px-5 py-4 text-center whitespace-nowrap">
-                                        @if ($tier->save_percent > 0)
+                                        @if (($savings[$tier->code] ?? 0) > 0)
                                             <span class="text-white/35 line-through">{{ Catalog::money($retailValues[$tier->code]) }}</span>
                                         @endif
-                                        <span class="ml-1.5 font-bold text-[var(--accent)]">{{ Catalog::money($tier->price) }}</span>
+                                        <span class="ml-1.5 font-bold text-[var(--accent)]">{{ Catalog::money($tier->priceValue()) }}</span>
                                     </td>
                                 @endforeach
                             </tr>

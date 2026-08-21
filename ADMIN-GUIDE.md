@@ -45,7 +45,7 @@ Both are edited from the same place: **Catalog → Products**, then click the pr
 2. Go to the **Variants** tab, click a variant, then **Pricing** or **Inventory**
 3. Save, then check the live page
 
-Note: the *price of each Research Collection size* ("HP Core", "Z Plus", "S Max") is not yet editable from this screen — that's still a developer task. The **Collection Sizes** section on a collection's edit page (see below) only lets you rename the sizes, not reprice them.
+This works the same for Research Collections: each size ("HP Core", "Z Plus", "S Max") is a variant, and its price in **Variants → Pricing** is what the collection page shows and what the cart charges. The "save X%" figures are calculated automatically from the component prices.
 
 ### Changing a product image
 
@@ -188,8 +188,8 @@ Never enter estimated or placeholder values — if a result isn't confirmed by a
 A few areas are easy to break and rarely need changing. Leave these alone unless a developer asks you to touch them:
 
 - **Taxes, currencies, and channels** (Settings) — store-wide configuration, not per-product settings
-- **SKU codes, Product Type, and tax class** on individual products — changing these can affect pricing and order history
-- **Deleting** products, collections, staff accounts, or orders — hide/deactivate instead if you need something to stop appearing
+- **Tax class** on individual products — it changes how the product is taxed at checkout
+- **Orders** — don't delete them; they are your sales records. Products and collections can be deleted safely (everything attached to them on the website is removed with them), but hiding is usually the better choice if the product may come back.
 
 If a screen looks unfamiliar or technical, it's safer to stop and ask than to guess.
 

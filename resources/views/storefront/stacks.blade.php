@@ -140,9 +140,9 @@
                                     {{ \App\Support\Catalog::money($from) }}
                                 </p>
 
-                                @if ($profile->save_up_to > 0)
+                                @if (\App\Support\Catalog::saveUpTo($profile) > 0)
                                     <p class="mt-1.5 text-[11px] font-bold tracking-wide text-gold uppercase">
-                                        Save up to {{ (int) $profile->save_up_to }}%
+                                        Save up to {{ (int) \App\Support\Catalog::saveUpTo($profile) }}%
                                     </p>
                                 @endif
 
@@ -152,7 +152,7 @@
                                             <li class="flex items-baseline justify-between gap-3 text-xs">
                                                 <span class="text-white/50">{{ $tier->code }} {{ $tier->label }}</span>
                                                 <span class="font-bold text-white/80">
-                                                    {{ \App\Support\Catalog::money($tier->price) }}
+                                                    {{ \App\Support\Catalog::money($tier->priceValue()) }}
                                                 </span>
                                             </li>
                                         @endforeach
