@@ -130,6 +130,8 @@ return [
     'contact.certificate_help_title' => $item('Contact Page', 'Faster Answers', 'Certificate link heading', 'Looking for a certificate?', 'First shortcut card in the Faster Answers box.', 'contact', 42),
     'contact.certificate_help_description' => $item('Contact Page', 'Faster Answers', 'Certificate link description', 'Search any batch number on the lab reports page.', 'Description in the first Faster Answers shortcut card.', 'contact', 44),
     'contact.account_help_description' => $item('Contact Page', 'Faster Answers', 'Order link description', 'Order history and status live in your account.', 'Description in the second Faster Answers shortcut card.', 'contact', 46),
+    'contact.faq_eyebrow' => $item('Contact Page', 'FAQ', 'Section eyebrow', 'Common Questions', 'Small gold label above the FAQ heading.', 'contact', 69),
+    'contact.faq_title' => $item('Contact Page', 'FAQ', 'Section heading', 'Before You Ask', 'Large heading above the FAQ accordion. The last word is shown in the accent colour.', 'contact', 70),
     'contact.response_email' => $item('Contact Page', 'Response Times', 'Email response time', 'Within 1 business day', 'Value shown beside "Email" in the Response Times box.', 'contact', 62),
 
     // Cart and checkout compliance text.
