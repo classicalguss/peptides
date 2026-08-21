@@ -135,12 +135,14 @@ This is almost always faster than asking a developer, and it's the first place t
 
 **Website → Website Lists**
 
-Some sections are lists rather than single pieces of text: the FAQ on the Contact page, the trust-bar promises, the "How It Works" steps and "Commitments" on the About page, the homepage trust cards, and the checkmark lines under add-to-cart and checkout buttons. These live here so you can change *how many* items there are, not just their wording.
+Some sections are lists rather than single pieces of text: the FAQ on the Contact page, the trust-bar promises, the "How It Works" steps and "Commitments" on the About page, the homepage trust cards, and the checkmark lines under add-to-cart and checkout buttons. Each list has its own page here, grouped by the website page it appears on, so you can change *how many* items there are — not just their wording.
 
-- **Add item** (top right) — choose the list, fill in the fields it uses, save. New items go to the end.
-- **Reorder** — drag the handle at the left of a row up or down within its list.
-- **Remove** — use the Delete action on a row. The page closes the gap automatically; numbered steps renumber themselves.
-- Each list shows a "Where it appears" note, and the edit screen has a **Preview Page** button.
+On a list's page:
+
+- Each item is a card. Click a card's title bar to collapse or expand it.
+- **Add item** adds a new card at the bottom; the trash icon removes one.
+- Use the **up / down arrows** on a card to change the order.
+- Press **Save changes** — the website updates immediately, numbered steps renumber themselves, and the **Preview Page** button shows the result.
 
 ---
 
