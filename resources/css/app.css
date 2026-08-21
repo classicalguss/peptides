@@ -195,3 +195,58 @@
         transform: none;
     }
 }
+
+/* Policy / legal pages: body HTML comes from the admin editor. */
+.policy-prose {
+    color: rgb(255 255 255 / 0.6);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+}
+.policy-prose h2 {
+    margin-top: 2.25rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: white;
+}
+.policy-prose h3 {
+    margin-top: 1.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+}
+.policy-prose p {
+    margin-top: 1rem;
+}
+.policy-prose ul,
+.policy-prose ol {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+}
+.policy-prose ul {
+    list-style: disc;
+}
+.policy-prose ol {
+    list-style: decimal;
+}
+.policy-prose li {
+    margin-top: 0.4rem;
+    padding-left: 0.25rem;
+}
+.policy-prose li::marker {
+    color: var(--color-gold);
+}
+.policy-prose strong {
+    color: white;
+    font-weight: 700;
+}
+.policy-prose a {
+    color: var(--color-gold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.policy-prose > :first-child {
+    margin-top: 0;
+}

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
 use App\Filament\Resources\CoaReportResource;
+use App\Filament\Resources\PolicyResource;
 use App\Filament\Resources\ProductTextSearchResource;
 use App\Filament\Resources\WebsiteTextResource;
 use App\Models\ProductProfile;
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
                 ->resources([
                     WebsiteTextResource::class,
                     CoaReportResource::class,
+                    PolicyResource::class,
                     ProductTextSearchResource::class,
                 ])
                 ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')

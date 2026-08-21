@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\StorefrontController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,7 @@ Route::get('/shop', [StorefrontController::class, 'shop'])->name('shop');
 Route::get('/stacks', [StorefrontController::class, 'stacks'])->name('stacks');
 Route::get('/stacks/{slug}', [StorefrontController::class, 'stack'])->name('stack');
 Route::get('/peptides/{slug}', [StorefrontController::class, 'compound'])->name('compound');
+Route::get('/policies/{policy}', [PolicyController::class, 'show'])->name('policy');
 Route::get('/lab-reports', [StorefrontController::class, 'labReports'])->name('lab-reports');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');

@@ -1,6 +1,6 @@
 <footer class="mt-24 border-t border-white/5 bg-black">
     <div class="mx-auto max-w-7xl px-4 py-14">
-        <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.1fr]">
             <div>
                 <img src="{{ asset('assets/brand/logo-wordmark.png') }}" alt="Powered Up Peptides" class="h-11 w-auto">
                 <p class="mt-5 max-w-sm text-sm leading-relaxed text-white/45">
@@ -34,6 +34,15 @@
                     <li><a href="{{ route('contact') }}#faq" class="transition hover:text-gold">Shipping &amp; FAQ</a></li>
                 </ul>
             </div>
+
+            <div>
+                <h3 class="eyebrow text-gold">Policies</h3>
+                <ul class="mt-4 space-y-2.5 text-sm text-white/55">
+                    @foreach (\App\Models\Policy::navigation() as $policy)
+                        <li><a href="{{ route('policy', $policy['slug']) }}" class="transition hover:text-gold">{{ $policy['title'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
 
         <div class="mt-12 rounded-xl border border-gold/20 bg-gold/[0.04] p-5">
@@ -45,7 +54,13 @@
 
         <div class="mt-8 flex flex-col gap-3 border-t border-white/5 pt-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; {{ now()->year }} Powered Up Peptides. All rights reserved.</p>
-            <p>Terms &middot; Privacy &middot; Compliance</p>
+            <p class="flex flex-wrap gap-x-3 gap-y-1">
+                <a href="{{ route('policy', 'terms-and-conditions') }}" class="transition hover:text-gold">Terms</a>
+                <span aria-hidden="true">&middot;</span>
+                <a href="{{ route('policy', 'privacy-policy') }}" class="transition hover:text-gold">Privacy</a>
+                <span aria-hidden="true">&middot;</span>
+                <a href="{{ route('policy', 'research-use-only-policy') }}" class="transition hover:text-gold">Research Use Only</a>
+            </p>
         </div>
     </div>
 </footer>
