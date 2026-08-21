@@ -134,7 +134,7 @@
         </section>
 
         {{-- Highlights + research detail --}}
-        <section class="border-y border-white/5 bg-black/40 py-20">
+        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
             <div class="mx-auto max-w-7xl px-4">
                 <div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
                     <div>
@@ -227,14 +227,14 @@
 
         {{-- Used in stacks --}}
         @if ($usedInStacks->isNotEmpty())
-            <section class="mx-auto max-w-7xl px-4 py-20">
+            <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
                 <x-store.section-heading
                     align="left"
                     :eyebrow="site_text('compound_product.collections_eyebrow')"
                     :title="foil_last_words(site_text('compound_product.collections_title'), 1, 'text-accent-foil')"
                     :subtitle="site_text('compound_product.collections_description')" />
 
-                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-3">
                     @foreach ($usedInStacks as $stack)
                         <x-store.product-card :profile="$stack" />
                     @endforeach
@@ -243,11 +243,11 @@
         @endif
 
         {{-- Related --}}
-        <section class="border-t border-white/5 bg-black/40 py-20">
+        <section class="border-t border-white/5 bg-black/40 py-12 sm:py-20">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading align="left" eyebrow="Keep Looking" :title="foil_last_words(site_text('compound_product.related_title'))" />
 
-                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-4">
                     @foreach ($related as $item)
                         <x-store.product-card :profile="$item" />
                     @endforeach
