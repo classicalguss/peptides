@@ -15,7 +15,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-4 py-8 lg:py-10">
         <div class="grid gap-10 lg:grid-cols-[14rem_1fr] lg:gap-16">
             <aside class="lg:sticky lg:top-28 lg:self-start">
                 <p class="eyebrow text-white/35">All policies</p>

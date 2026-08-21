@@ -7,7 +7,7 @@
 
 <x-layouts.storefront :title="site_text('checkout.meta_title')">
 
-    <div class="mx-auto max-w-7xl px-4 py-12">
+    <div class="mx-auto max-w-7xl px-4 py-6">
         <nav class="flex items-center gap-2 text-xs text-white/40">
             <a href="{{ route('cart') }}" class="transition hover:text-gold">Cart</a>
             <span>/</span>

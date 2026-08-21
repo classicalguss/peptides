@@ -7,7 +7,7 @@
 
         {{-- Hero / buy box --}}
         <section class="relative overflow-hidden bg-accent-electric">
-            <div class="relative mx-auto max-w-7xl px-4 pt-8 pb-16 lg:pb-24">
+            <div class="relative mx-auto max-w-7xl px-4 pt-8 pb-8 lg:pb-24">
 
                 <nav class="flex items-center gap-2 text-xs text-white/40">
                     <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
@@ -129,7 +129,7 @@
         </section>
 
         {{-- What's included --}}
-        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
+        <section class="border-y border-white/5 bg-black/40 py-8 sm:py-10">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
@@ -196,7 +196,7 @@
         </section>
 
         {{-- Compounds in this stack --}}
-        <section class="border-y border-white/5 bg-black/40 py-12 sm:py-20">
+        <section class="border-y border-white/5 bg-black/40 py-8 sm:py-10">
             <div class="mx-auto max-w-7xl px-4">
                 <x-store.section-heading
                     align="left"
@@ -214,7 +214,7 @@
 
         {{-- Lab results --}}
         @if ($coas->isNotEmpty())
-            <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
+            <section class="mx-auto max-w-7xl px-4 py-8 sm:py-10">
                 <x-store.section-heading
                     align="left"
                     :eyebrow="site_text('collection_product.lab_eyebrow')"
@@ -257,7 +257,7 @@
         @endif
 
         {{-- Other protocols --}}
-        <section class="mx-auto max-w-7xl px-4 py-12 sm:py-20">
+        <section class="mx-auto max-w-7xl px-4 py-8 sm:py-10">
             <x-store.section-heading
                 align="left"
                 eyebrow="Keep Looking"

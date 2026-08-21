@@ -2,7 +2,7 @@
                       :description="site_text('contact.meta_description')">
 
     <section class="relative overflow-hidden bg-electric">
-        <div class="mx-auto max-w-7xl px-4 pt-10 pb-16">
+        <div class="mx-auto max-w-7xl px-4 pt-10 pb-8">
             <nav class="flex items-center gap-2 text-xs text-white/40">
                 <a href="{{ route('home') }}" class="transition hover:text-gold">Home</a>
                 <span>/</span>
@@ -19,7 +19,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 py-14">
+    <div class="mx-auto max-w-7xl px-4 py-8">
         <div class="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
 
             {{-- Form --}}
@@ -150,7 +150,7 @@
         </div>
 
         {{-- FAQ --}}
-        <section id="faq" class="mt-16 scroll-mt-28">
+        <section id="faq" class="mt-8 scroll-mt-28">
             <x-store.section-heading :eyebrow="site_text('contact.faq_eyebrow')" :title="foil_last_words(site_text('contact.faq_title'))" />
 
             <div class="mx-auto mt-10 max-w-3xl space-y-3">
