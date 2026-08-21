@@ -58,7 +58,7 @@
                 </a>
             </div>
         @else
-            <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 @foreach ($profiles as $i => $profile)
                     <x-store.product-card :profile="$profile"
                                           class="reveal" style="{{ $profile->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />

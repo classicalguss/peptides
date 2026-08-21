@@ -94,7 +94,7 @@
             :title="foil_last_words(site_text('home.collections_title'))"
             :subtitle="site_text('home.collections_description')" />
 
-        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
             @foreach ($stacks as $i => $stack)
                 <x-store.product-card :profile="$stack"
                                       class="reveal" style="{{ $stack->accentStyle() }} --reveal-delay: {{ ($i % 3) * 90 }}ms" />
@@ -118,7 +118,7 @@
                 </a>
             </div>
 
-            <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mt-14 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 @foreach ($compounds as $i => $compound)
                     <x-store.product-card :profile="$compound"
                                           class="reveal" style="{{ $compound->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />

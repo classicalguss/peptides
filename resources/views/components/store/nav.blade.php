@@ -3,23 +3,14 @@
     $cartCount = \Lunar\Facades\CartSession::current(calculate: false)?->lines->sum('quantity') ?? 0;
 @endphp
 
-<header class="group sticky top-0 z-50 border-b border-white/5 bg-ink/85 backdrop-blur-xl">
-    {{-- Drives the mobile drawer purely with CSS; no JavaScript needed.
-         Stays keyboard focusable so the menu can be opened without a pointer. --}}
-    <input type="checkbox" id="nav-toggle" class="peer sr-only" aria-label="Toggle navigation menu">
+{{-- Drives the mobile drawer purely with CSS; no JavaScript needed. The checkbox sits
+     outside the blurred header so the drawer and backdrop position against the viewport. --}}
+<div class="group/nav">
+<input type="checkbox" id="nav-toggle" class="peer sr-only" aria-label="Toggle navigation menu">
+
+<header class="sticky top-0 z-50 border-b border-white/5 bg-ink/85 backdrop-blur-xl">
 
     <nav class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3.5">
-        <label for="nav-toggle"
-               class="-ml-1 cursor-pointer rounded-full border border-white/10 p-2.5 text-white/70 transition
-                      peer-focus-visible:border-gold peer-focus-visible:text-gold
-                      hover:border-gold/40 hover:text-gold lg:hidden">
-            <svg class="size-5 group-has-checked:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
-            </svg>
-            <svg class="hidden size-5 group-has-checked:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
-            </svg>
-        </label>
 
         <a href="{{ route('home') }}" class="shrink-0" aria-label="Powered Up Peptides home">
             <img src="{{ asset('assets/brand/logo-wordmark.png') }}" alt="Powered Up Peptides"
@@ -66,17 +57,32 @@
                     </span>
                 @endif
             </a>
+
+        <label for="nav-toggle"
+               class="cursor-pointer rounded-full border border-white/10 p-2.5 text-white/70 transition
+                      peer-focus-visible:border-gold peer-focus-visible:text-gold
+                      hover:border-gold/40 hover:text-gold lg:hidden">
+            <svg class="size-5 group-has-checked/nav:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
+            </svg>
+            <svg class="hidden size-5 group-has-checked/nav:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+            </svg>
+        </label>
         </div>
     </nav>
+</header>
 
     {{-- Tapping the backdrop unchecks the toggle and closes the drawer. --}}
     <label for="nav-toggle" aria-hidden="true"
-           class="invisible fixed inset-0 z-40 bg-black/70 opacity-0 backdrop-blur-sm transition-opacity duration-300
+           class="invisible fixed top-0 left-0 z-40 h-dvh w-screen bg-black/70 opacity-0 backdrop-blur-sm transition-opacity duration-300
                   peer-checked:visible peer-checked:opacity-100 lg:hidden"></label>
 
-    <div class="fixed top-0 left-0 z-50 flex h-dvh w-[19rem] max-w-[85vw] translate-x-[-100%] flex-col
-                border-r border-white/8 bg-ink shadow-2xl transition-transform duration-300 ease-out
-                peer-checked:translate-x-0 lg:hidden">
+    {{-- The wrapper clips the drawer while it sits off-screen, so it can never widen the page. --}}
+    <div class="pointer-events-none fixed top-0 left-0 z-50 h-dvh w-screen overflow-hidden lg:hidden">
+    <div class="pointer-events-auto absolute top-0 right-0 flex h-full w-[19rem] max-w-[85vw] translate-x-full flex-col
+                border-l border-white/8 bg-ink shadow-2xl transition-transform duration-300 ease-out
+                group-has-checked/nav:translate-x-0">
 
         <div class="flex items-center justify-between border-b border-white/8 px-5 py-4">
             <img src="{{ asset('assets/brand/logo-wordmark.png') }}" alt="Powered Up Peptides" class="h-8 w-auto">
@@ -155,4 +161,5 @@
             <p class="mt-3 text-center text-[10px] tracking-wide text-white/30 uppercase">Research use only</p>
         </div>
     </div>
-</header>
+    </div>
+</div>
