@@ -165,18 +165,11 @@
 
         {{-- How we test --}}
         <div class="mt-16 grid gap-6 lg:grid-cols-3">
-            @foreach (range(1, 3) as $i)
-                @php
-                    $item = [
-                        'step' => sprintf('%02d', $i),
-                        'title' => site_text("labs.how_{$i}_title"),
-                        'body' => site_text("labs.how_{$i}_body"),
-                    ];
-                @endphp
+            @foreach (site_list('labs.how') as $item)
                 <div class="rounded-2xl panel p-7">
-                    <p class="display-title text-3xl text-foil">{{ $item['step'] }}</p>
-                    <h3 class="mt-5 text-base font-extrabold tracking-wide text-white uppercase">{{ $item['title'] }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item['body'] }}</p>
+                    <p class="display-title text-3xl text-foil">{{ sprintf('%02d', $loop->iteration) }}</p>
+                    <h3 class="mt-5 text-base font-extrabold tracking-wide text-white uppercase">{{ $item->heading }}</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item->body }}</p>
                 </div>
             @endforeach
         </div>

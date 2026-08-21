@@ -23,14 +23,10 @@
     {{-- Stats --}}
     <section class="border-y border-white/5 bg-black/40">
         <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 py-10 sm:grid-cols-4">
-            @foreach (range(1, 4) as $i)
-                @php
-                    $stat = site_text("about.stat_{$i}_value");
-                    $label = site_text("about.stat_{$i}_label");
-                @endphp
-                <div class="reveal px-2 text-center" style="--reveal-delay: {{ ($i - 1) * 90 }}ms">
-                    <p class="display-title text-4xl text-gold sm:text-5xl">{{ $stat }}</p>
-                    <p class="mt-2 text-[11px] leading-relaxed tracking-wide text-white/40 uppercase">{{ $label }}</p>
+            @foreach (site_list('about.stats') as $stat)
+                <div class="reveal px-2 text-center" style="--reveal-delay: {{ $loop->index * 90 }}ms">
+                    <p class="display-title text-4xl text-gold sm:text-5xl">{{ $stat->extra }}</p>
+                    <p class="mt-2 text-[11px] leading-relaxed tracking-wide text-white/40 uppercase">{{ $stat->body }}</p>
                 </div>
             @endforeach
         </div>
@@ -55,16 +51,12 @@
             <div class="reveal rounded-2xl panel p-8">
                 <p class="eyebrow text-gold">{{ site_text('about.commitments_eyebrow') }}</p>
                 <ul class="mt-6 space-y-5">
-                    @foreach (range(1, 4) as $i)
-                        @php
-                            $title = site_text("about.commitment_{$i}_title");
-                            $body = site_text("about.commitment_{$i}_body");
-                        @endphp
-                        <li class="reveal flex gap-4" style="--reveal-delay: {{ ($i - 1) * 80 }}ms">
+                    @foreach (site_list('about.commitments') as $commitment)
+                        <li class="reveal flex gap-4" style="--reveal-delay: {{ $loop->index * 80 }}ms">
                             <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-gold/15 text-xs font-black text-gold">&#10003;</span>
                             <div>
-                                <p class="text-sm font-bold text-white">{{ $title }}</p>
-                                <p class="mt-1 text-[13px] leading-relaxed text-white/50">{{ $body }}</p>
+                                <p class="text-sm font-bold text-white">{{ $commitment->heading }}</p>
+                                <p class="mt-1 text-[13px] leading-relaxed text-white/50">{{ $commitment->body }}</p>
                             </div>
                         </li>
                     @endforeach
@@ -79,16 +71,11 @@
                                      :subtitle="site_text('about.process_subtitle')" />
 
             <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach (range(1, 4) as $i)
-                    @php
-                        $num = sprintf('%02d', $i);
-                        $title = site_text("about.process_{$i}_title");
-                        $body = site_text("about.process_{$i}_body");
-                    @endphp
-                    <div class="reveal hover-lift rounded-2xl panel p-6 hover:gold-ring" style="--reveal-delay: {{ ($i - 1) * 90 }}ms">
-                        <p class="display-title text-3xl text-gold/30">{{ $num }}</p>
-                        <h3 class="mt-3 text-base font-extrabold text-white">{{ $title }}</h3>
-                        <p class="mt-2.5 text-[13px] leading-relaxed text-white/50">{{ $body }}</p>
+                @foreach (site_list('about.process') as $step)
+                    <div class="reveal hover-lift rounded-2xl panel p-6 hover:gold-ring" style="--reveal-delay: {{ $loop->index * 90 }}ms">
+                        <p class="display-title text-3xl text-gold/30">{{ sprintf('%02d', $loop->iteration) }}</p>
+                        <h3 class="mt-3 text-base font-extrabold text-white">{{ $step->heading }}</h3>
+                        <p class="mt-2.5 text-[13px] leading-relaxed text-white/50">{{ $step->body }}</p>
                     </div>
                 @endforeach
             </div>

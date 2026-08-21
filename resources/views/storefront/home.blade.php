@@ -135,18 +135,11 @@
             :subtitle="site_text('home.why_description')" />
 
         <div class="mt-14 grid gap-6 lg:grid-cols-3">
-            @foreach (range(1, 3) as $i)
-                @php
-                    $item = [
-                        'stat' => site_text("home.why_{$i}_stat"),
-                        'title' => site_text("home.why_{$i}_title"),
-                        'body' => site_text("home.why_{$i}_body"),
-                    ];
-                @endphp
-                <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ ($i - 1) * 90 }}ms">
-                    <p class="display-title text-4xl text-foil">{{ $item['stat'] }}</p>
-                    <h3 class="mt-5 text-lg font-extrabold tracking-wide text-white uppercase">{{ $item['title'] }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item['body'] }}</p>
+            @foreach (site_list('home.why') as $item)
+                <div class="reveal hover-lift rounded-2xl panel p-7 hover:gold-ring" style="--reveal-delay: {{ $loop->index * 90 }}ms">
+                    <p class="display-title text-4xl text-foil">{{ $item->extra }}</p>
+                    <h3 class="mt-5 text-lg font-extrabold tracking-wide text-white uppercase">{{ $item->heading }}</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-white/50">{{ $item->body }}</p>
                 </div>
             @endforeach
         </div>

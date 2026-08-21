@@ -141,9 +141,9 @@
                 <div class="rounded-2xl border border-gold/25 bg-gold/[0.04] p-6">
                     <h2 class="text-[11px] font-extrabold tracking-widest text-gold uppercase">Before You Write</h2>
                     <ul class="mt-4 space-y-2.5 text-xs leading-relaxed text-white/55">
-                        <li class="flex gap-2.5"><span class="text-gold">&#10003;</span> {{ site_text('contact.write_tip_1') }}</li>
-                        <li class="flex gap-2.5"><span class="text-gold">&#10003;</span> {{ site_text('contact.write_tip_2') }}</li>
-                        <li class="flex gap-2.5"><span class="text-gold">&#10003;</span> {{ site_text('contact.write_tip_3') }}</li>
+                        @foreach (site_list('contact.write_tips') as $tip)
+                            <li class="flex gap-2.5"><span class="text-gold">&#10003;</span> {{ $tip->body }}</li>
+                        @endforeach
                     </ul>
                 </div>
             </aside>
@@ -154,15 +154,9 @@
             <x-store.section-heading eyebrow="Common Questions" title='Before You <span class="text-foil">Ask</span>' />
 
             <div class="mx-auto mt-10 max-w-3xl space-y-3">
-                @foreach (range(1, 6) as $i)
-                    @php
-                        $item = [
-                            'q' => site_text("contact.faq_{$i}_question"),
-                            'a' => site_text("contact.faq_{$i}_answer"),
-                        ];
-                    @endphp
-                    <x-store.accordion :question="$item['q']" :answer="$item['a']"
-                                       class="reveal" style="--reveal-delay: {{ ($i - 1) * 60 }}ms" />
+                @foreach (site_list('contact.faq') as $item)
+                    <x-store.accordion :question="$item->heading" :answer="$item->body"
+                                       class="reveal" style="--reveal-delay: {{ $loop->index * 60 }}ms" />
                 @endforeach
             </div>
         </section>

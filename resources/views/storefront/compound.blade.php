@@ -123,10 +123,9 @@
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_1') }}</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_2') }}</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_3') }}</li>
-                                <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ site_text('compound_product.trust_4') }}</li>
+                                @foreach (site_list('compound_product.trust') as $line)
+                                    <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ $line->body }}</li>
+                                @endforeach
                             </ul>
                         </form>
                     </div>

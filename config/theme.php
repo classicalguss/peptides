@@ -27,13 +27,6 @@ return [
         'cyan' => ['hex' => '#22D3EE', 'glow' => '#0A5A68'],
     ],
 
-    'trust' => [
-        ['label' => '3rd Party Tested', 'label_key' => 'global.trust_1_title', 'detail' => 'Every batch, HPLC verified', 'detail_key' => 'global.trust_1_detail'],
-        ['label' => '99%+ Purity', 'label_key' => 'global.trust_2_title', 'detail' => 'Published COA per batch', 'detail_key' => 'global.trust_2_detail'],
-        ['label' => 'Fast Discreet Shipping', 'label_key' => 'global.trust_3_title', 'detail' => 'Ships within 24 hours', 'detail_key' => 'global.trust_3_detail'],
-        ['label' => 'Cold Chain Packed', 'label_key' => 'global.trust_4_title', 'detail' => 'Temperature controlled', 'detail_key' => 'global.trust_4_detail'],
-    ],
-
     /*
      * `active` lists the route names that should light the tab up, so a product
      * detail page still highlights the section it belongs to.

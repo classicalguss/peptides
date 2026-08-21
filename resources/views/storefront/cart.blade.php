@@ -211,9 +211,9 @@
                     </form>
 
                     <ul class="mt-6 space-y-2.5 text-xs text-white/45">
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_1') }}</li>
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_2') }}</li>
-                        <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ site_text('cart.trust_3') }}</li>
+                        @foreach (site_list('cart.trust') as $line)
+                            <li class="flex items-center gap-2"><span class="text-gold">&#10003;</span> {{ $line->body }}</li>
+                        @endforeach
                     </ul>
 
                 </aside>
