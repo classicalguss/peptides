@@ -136,7 +136,7 @@
 
         <div class="mt-14 grid gap-6 lg:grid-cols-3">
             @foreach ([
-                ['title' => 'Every Batch Tested', 'body' => 'Independent ISO-accredited analysis by HPLC and mass spectrometry on every single batch — not a one-off sample from two years ago.', 'stat' => '100%'],
+                ['title' => 'Every Batch Tested', 'body' => 'Independent ISO-accredited HPLC analysis on every single batch — not a one-off sample from two years ago.', 'stat' => '100%'],
                 ['title' => 'COA Published First', 'body' => 'The certificate of analysis for your batch number is live on our Lab Reports page before the product goes on sale. Look it up any time.', 'stat' => 'Public'],
                 ['title' => 'Discreet Dispatch', 'body' => 'Lyophilised powder is shipped in plain, unbranded packaging within 24 hours of your order clearing.', 'stat' => '24h'],
             ] as $i => $item)

@@ -168,7 +168,7 @@
         <div class="mt-16 grid gap-6 lg:grid-cols-3">
             @foreach ([
                 ['step' => '01', 'title' => 'Independent Sampling', 'body' => 'A sealed vial is pulled at random from each production batch and shipped directly to the lab. We never send a prepared sample.'],
-                ['step' => '02', 'title' => 'HPLC + Mass Spec', 'body' => 'Purity is measured by high performance liquid chromatography, with mass spectrometry confirming the peptide sequence and molecular weight.'],
+                ['step' => '02', 'title' => 'Purity, Identity & Quantitation', 'body' => 'Purity, identity and quantitation are established by high performance liquid chromatography (HPLC), verified against the labeled content of each vial.'],
                 ['step' => '03', 'title' => 'Published Before Sale', 'body' => 'The certificate is uploaded against the batch number here before that batch is released for purchase. If it fails, it does not ship.'],
             ] as $item)
                 <div class="rounded-2xl panel p-7">
