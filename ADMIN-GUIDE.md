@@ -66,7 +66,7 @@ Changes here only affect that one product's page. (The checkmark lines under the
 
 ### Editing a Research Collection's "What's Included" table
 
-On a Research Collection's edit page, scroll to **What's Included table**. You can change how many vials of each compound are included at the base size (the tiered sizes scale automatically from this). The text description of each row comes from that compound's own "Short description" field (edited on the compound's own product page) — this keeps the description consistent everywhere that compound appears, so you only ever update it in one place.
+On a Research Collection's edit page, scroll to **What's Included table**. This is the collection's contents: pick each compound from the drop-down, set how many vials the base size contains, and use **Add compound**, the trash icon, and the up/down arrows to add, remove or reorder items — then save. The larger sizes scale the counts automatically, and the "Save X%" figures recalculate from the compounds' own prices. The short description of each row comes from that compound's own product page, so it stays consistent everywhere that compound appears.
 
 ### Editing a Research Collection's size names
 
