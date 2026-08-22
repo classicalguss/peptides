@@ -8,6 +8,7 @@ use App\Models\StackTier;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Lunar\Admin\Support\Extending\EditPageExtension;
 
 class EditProductPageExtension extends EditPageExtension
@@ -56,8 +57,7 @@ class EditProductPageExtension extends EditPageExtension
                 ->get()
                 ->map(fn (StackComponent $component) => [
                     'id' => $component->id,
-                    'name' => $component->component?->translateAttribute('name') ?? 'Item',
-                    'short_description' => $component->componentProfile?->subtitle,
+                    'component_product_id' => $component->component_product_id,
                     'base_quantity' => $component->base_quantity,
                 ])
                 ->all();
@@ -119,15 +119,7 @@ class EditProductPageExtension extends EditPageExtension
         }
 
         if ($this->pendingIncludedItems !== null) {
-            foreach ($this->pendingIncludedItems as $item) {
-                StackComponent::query()
-                    ->where('id', $item['id'] ?? 0)
-                    ->where('stack_product_id', $record->getKey())
-                    ->update([
-                        'base_quantity' => max(0, (int) ($item['base_quantity'] ?? 0)),
-                    ]);
-            }
-
+            $this->syncIncludedItems($record, $this->pendingIncludedItems);
             $this->pendingIncludedItems = null;
         }
 
@@ -164,6 +156,43 @@ class EditProductPageExtension extends EditPageExtension
             'highlights',
             'pillars',
         ];
+    }
+
+    /**
+     * Replace the collection's components with the submitted rows, in the
+     * submitted order. Rows are rewritten atomically so reordering or
+     * swapping compounds never collides with the unique (stack, compound)
+     * constraint part-way through.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    private function syncIncludedItems(Model $record, array $items): void
+    {
+        $stackId = $record->getKey();
+
+        DB::transaction(function () use ($stackId, $items): void {
+            StackComponent::query()->where('stack_product_id', $stackId)->delete();
+
+            $seen = [];
+
+            foreach (array_values($items) as $position => $item) {
+                $componentId = (int) ($item['component_product_id'] ?? 0);
+
+                if ($componentId <= 0 || in_array($componentId, $seen, true)) {
+                    continue;
+                }
+
+                $seen[] = $componentId;
+
+                StackComponent::create([
+                    'stack_product_id' => $stackId,
+                    'component_product_id' => $componentId,
+                    'base_quantity' => max(1, (int) ($item['base_quantity'] ?? 1)),
+                    'unit' => 'VIAL',
+                    'position' => $position + 1,
+                ]);
+            }
+        });
     }
 
     private function profile(): ?ProductProfile
