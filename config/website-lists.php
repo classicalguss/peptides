@@ -100,7 +100,7 @@ return [
         'fields' => ['heading' => 'Heading', 'body' => 'Description'],
         'legacy_keys' => ['heading' => 'labs.how_{i}_title', 'body' => 'labs.how_{i}_body'],
         'defaults' => [
-            ['heading' => 'Independent Sampling', 'body' => 'A sealed vial is pulled at random from each production batch and shipped directly to the lab. We never send a prepared sample.'],
+            ['heading' => 'Independent Testing', 'body' => 'Samples from each batch are submitted to an independent laboratory for analytical testing. Results for the tested samples are published in our Lab Reports section.'],
             ['heading' => 'Purity, Identity & Quantitation', 'body' => 'Purity, identity and quantitation are established by high performance liquid chromatography (HPLC), verified against the labeled content of each vial.'],
             ['heading' => 'Published Before Sale', 'body' => 'The certificate is uploaded against the batch number here before that batch is released for purchase. If it fails, it does not ship.'],
         ],
@@ -146,7 +146,6 @@ return [
         'legacy_keys' => ['body' => 'cart.trust_{i}'],
         'defaults' => [
             ['body' => 'Third-party tested, COA per batch'],
-            ['body' => 'Discreet, temperature-controlled packing'],
             ['body' => 'Ships within 24 hours'],
         ],
     ],

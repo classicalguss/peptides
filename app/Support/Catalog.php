@@ -94,7 +94,7 @@ class Catalog
      * @param  array<int, string>  $exclude
      * @return Collection<string, array{label: string, count: int}>
      */
-    public static function categoriesFor(Collection $products, array $exclude = ['stacks', 'compounds']): Collection
+    public static function categoriesFor(Collection $products, array $exclude = ['stacks', 'research-collections', 'compounds']): Collection
     {
         $productIds = $products->pluck('id')->all();
 
