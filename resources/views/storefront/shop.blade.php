@@ -43,12 +43,12 @@
                                  :sort="$sort" :total-count="$totalCount" />
 
         <p class="mt-6 text-xs text-white/40">
-            Showing <span class="font-bold text-white/70">{{ $profiles->count() }}</span>
-            {{ Str::plural('compound', $profiles->count()) }}
+            Showing <span class="font-bold text-white/70">{{ $products->count() }}</span>
+            {{ Str::plural('compound', $products->count()) }}
         </p>
 
         {{-- Grid --}}
-        @if ($profiles->isEmpty())
+        @if ($products->isEmpty())
             <div class="mt-10 rounded-2xl panel p-14 text-center">
                 <p class="display-title text-2xl text-white">Nothing here yet</p>
                 <p class="mt-3 text-sm text-white/50">{{ site_text('shop.empty_description') }}</p>
@@ -59,9 +59,9 @@
             </div>
         @else
             <div class="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-                @foreach ($profiles as $i => $profile)
-                    <x-store.product-card :profile="$profile"
-                                          class="reveal" style="{{ $profile->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />
+                @foreach ($products as $i => $product)
+                    <x-store.product-card :product="$product"
+                                          class="reveal" style="{{ $product->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />
                 @endforeach
             </div>
         @endif

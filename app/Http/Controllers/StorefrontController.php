@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CoaReport;
-use App\Models\ProductProfile;
+use App\Models\Product;
 use App\Models\StackComponent;
 use App\Models\StackTier;
 use App\Support\Catalog;
@@ -16,7 +16,7 @@ class StorefrontController extends Controller
     public function home(): View
     {
         $stacks = Catalog::stacks();
-        $featured = $stacks->firstWhere('handle', 'healing-stack') ?? $stacks->first();
+        $featured = $stacks->first(fn (Product $stack) => $stack->slug() === 'healing-stack') ?? $stacks->first();
 
         return view('storefront.home', [
             'stacks' => $stacks,
@@ -28,7 +28,7 @@ class StorefrontController extends Controller
     }
 
     /**
-     * Individual compounds and supplies. Stack protocols have their own page.
+     * Individual compounds and supplies. Research Collections have their own page.
      */
     public function shop(Request $request): View
     {
@@ -36,15 +36,15 @@ class StorefrontController extends Controller
         $sort = $request->string('sort')->toString() ?: 'featured';
 
         $all = Catalog::compounds();
-        $profiles = $all;
+        $products = $all;
 
         if ($category !== '' && $category !== 'all') {
             $ids = Catalog::productIdsInCategory($category);
-            $profiles = $profiles->whereIn('product_id', $ids)->values();
+            $products = $products->whereIn('id', $ids)->values();
         }
 
         return view('storefront.shop', [
-            'profiles' => $this->sortProfiles($profiles, $sort),
+            'products' => $this->sortProducts($products, $sort),
             'totalCount' => $all->count(),
             'categories' => Catalog::categoriesFor($all),
             'activeCategory' => $category === '' ? 'all' : $category,
@@ -53,7 +53,7 @@ class StorefrontController extends Controller
     }
 
     /**
-     * Stack protocol index.
+     * Research Collection index.
      */
     public function stacks(Request $request): View
     {
@@ -61,17 +61,17 @@ class StorefrontController extends Controller
         $sort = $request->string('sort')->toString() ?: 'featured';
 
         $all = Catalog::stacks();
-        $profiles = $all;
+        $products = $all;
 
         if ($category !== '' && $category !== 'all') {
             $ids = Catalog::productIdsInCategory($category);
-            $profiles = $profiles->whereIn('product_id', $ids)->values();
+            $products = $products->whereIn('id', $ids)->values();
         }
 
-        $productIds = $all->pluck('product_id');
+        $productIds = $all->pluck('id');
 
         return view('storefront.stacks', [
-            'profiles' => $this->sortProfiles($profiles, $sort),
+            'products' => $this->sortProducts($products, $sort),
             'totalCount' => $all->count(),
             'categories' => Catalog::categoriesFor($all),
             'activeCategory' => $category === '' ? 'all' : $category,
@@ -89,47 +89,45 @@ class StorefrontController extends Controller
     }
 
     /**
-     * @param  Collection<int, ProductProfile>  $profiles
-     * @return Collection<int, ProductProfile>
+     * @param  Collection<int, Product>  $products
+     * @return Collection<int, Product>
      */
-    protected function sortProfiles(Collection $profiles, string $sort): Collection
+    protected function sortProducts(Collection $products, string $sort): Collection
     {
         return match ($sort) {
-            'price-asc' => $profiles->sortBy(fn (ProductProfile $p) => Catalog::fromPrice($p))->values(),
-            'price-desc' => $profiles->sortByDesc(fn (ProductProfile $p) => Catalog::fromPrice($p))->values(),
-            'name' => $profiles->sortBy(fn (ProductProfile $p) => $p->product->translateAttribute('name'))->values(),
-            default => $profiles->values(),
+            'price-asc' => $products->sortBy(fn (Product $p) => Catalog::fromPrice($p))->values(),
+            'price-desc' => $products->sortByDesc(fn (Product $p) => Catalog::fromPrice($p))->values(),
+            'name' => $products->sortBy(fn (Product $p) => $p->translateAttribute('name'))->values(),
+            default => $products->values(),
         };
     }
 
     public function compound(Request $request, string $slug): View
     {
-        $profile = Catalog::findByHandle($slug);
+        $product = Catalog::findBySlug($slug);
 
-        abort_if(! $profile || $profile->isStack(), 404);
+        abort_if(! $product || $product->isStack(), 404);
 
-        $variant = $profile->product->variants->first();
-        $images = $profile->product->getMedia('images');
+        $variant = $product->variants->first();
+        $images = $product->getMedia('images');
         $activeIndex = min(max((int) $request->integer('image'), 0), max($images->count() - 1, 0));
 
         $tiers = $variant
             ? $variant->prices->sortBy('min_quantity')->values()
             : collect();
 
-        $unitPrice = Catalog::unitPrice($profile);
-
         return view('storefront.compound', [
-            'profile' => $profile,
+            'product' => $product,
             'variant' => $variant,
             'images' => $images,
             'activeIndex' => $activeIndex,
             'activeImage' => $images->get($activeIndex),
             'priceTiers' => $tiers,
-            'unitPrice' => $unitPrice,
-            'coa' => CoaReport::where('product_id', $profile->product_id)->first(),
-            'usedInStacks' => $this->stacksContaining($profile),
+            'unitPrice' => Catalog::unitPrice($product),
+            'coa' => CoaReport::where('product_id', $product->id)->first(),
+            'usedInStacks' => $this->stacksContaining($product),
             'related' => Catalog::compounds(includeSupplies: false)
-                ->reject(fn (ProductProfile $item) => $item->id === $profile->id)
+                ->reject(fn (Product $item) => $item->id === $product->id)
                 ->take(4),
         ]);
     }
@@ -155,56 +153,53 @@ class StorefrontController extends Controller
     }
 
     /**
-     * @return Collection<int, ProductProfile>
+     * @return Collection<int, Product>
      */
-    protected function stacksContaining(ProductProfile $profile): Collection
+    protected function stacksContaining(Product $product): Collection
     {
-        $stackIds = StackComponent::where('component_product_id', $profile->product_id)
+        $stackIds = StackComponent::where('component_product_id', $product->id)
             ->pluck('stack_product_id');
 
-        return Catalog::stacks()->whereIn('product_id', $stackIds)->values();
+        return Catalog::stacks()->whereIn('id', $stackIds)->values();
     }
 
     public function stack(Request $request, string $slug): View
     {
-        $profile = Catalog::findByHandle($slug);
+        $product = Catalog::findBySlug($slug);
 
-        abort_if(! $profile || ! $profile->isStack(), 404);
+        abort_if(! $product || ! $product->isStack(), 404);
 
-        $images = $profile->product->getMedia('images');
+        $images = $product->getMedia('images');
         $activeIndex = min(max((int) $request->integer('image'), 0), max($images->count() - 1, 0));
 
-        $tiers = StackTier::where('product_id', $profile->product_id)
+        $tiers = StackTier::where('product_id', $product->id)
             ->with('variant.prices')
             ->orderBy('position')
             ->get();
 
-        $components = StackComponent::where('stack_product_id', $profile->product_id)
+        $components = StackComponent::where('stack_product_id', $product->id)
             ->orderBy('position')
-            ->with(['component.urls', 'componentProfile'])
+            ->with('component.urls')
             ->get();
 
-        $componentProfiles = ProductProfile::whereIn('product_id', $components->pluck('component_product_id'))
-            ->with(['product.media', 'product.urls', 'product.variants.prices'])
-            ->orderBy('position')
-            ->get();
+        $componentProducts = Catalog::componentProducts($components);
 
         return view('storefront.stack', [
-            'profile' => $profile,
+            'product' => $product,
             'slug' => $slug,
             'images' => $images,
             'activeIndex' => $activeIndex,
             'activeImage' => $images->get($activeIndex),
             'tiers' => $tiers,
             'components' => $components,
-            'componentProfiles' => $componentProfiles,
-            'retailValues' => $retailValues = Catalog::retailValues($tiers, $components, $componentProfiles),
+            'componentProducts' => $componentProducts,
+            'retailValues' => $retailValues = Catalog::retailValues($tiers, $components, $componentProducts),
             'savings' => Catalog::savings($tiers, $retailValues),
             'coas' => CoaReport::whereIn('product_id', $components->pluck('component_product_id'))
                 ->orderBy('product_label')
                 ->get(),
             'otherStacks' => Catalog::stacks()
-                ->reject(fn (ProductProfile $item) => $item->id === $profile->id)
+                ->reject(fn (Product $item) => $item->id === $product->id)
                 ->take(3),
         ]);
     }

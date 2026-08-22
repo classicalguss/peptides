@@ -43,11 +43,11 @@
                                  :sort="$sort" :total-count="$totalCount" />
 
         <p class="mt-6 text-xs text-white/40">
-            Showing <span class="font-bold text-white/70">{{ $profiles->count() }}</span>
-            {{ $profiles->count() === 1 ? site_text('collections.item_singular') : site_text('collections.item_plural') }}
+            Showing <span class="font-bold text-white/70">{{ $products->count() }}</span>
+            {{ $products->count() === 1 ? site_text('collections.item_singular') : site_text('collections.item_plural') }}
         </p>
 
-        @if ($profiles->isEmpty())
+        @if ($products->isEmpty())
             <div class="mt-10 rounded-2xl panel p-14 text-center">
                 <p class="display-title text-2xl text-white">{{ site_text('collections.empty_title') }}</p>
                 <p class="mt-3 text-sm text-white/50">{{ site_text('collections.empty_description') }}</p>
@@ -59,17 +59,17 @@
         @else
             {{-- Wide protocol rows: a stack needs more explaining than a product tile. --}}
             <div class="mt-8 space-y-6">
-                @foreach ($profiles as $i => $profile)
+                @foreach ($products as $i => $product)
                     @php
-                        $slug = $profile->product->urls->first()?->slug;
+                        $slug = $product->slug();
                         $url = $slug ? route('stack', $slug) : route('stacks');
-                        $stackTiers = $tiers[$profile->product_id] ?? collect();
-                        $from = \App\Support\Catalog::fromPrice($profile);
-                        $image = $profile->product->getFirstMedia('images');
-                        $componentCount = $componentCounts[$profile->product_id] ?? 0;
+                        $stackTiers = $tiers[$product->id] ?? collect();
+                        $from = \App\Support\Catalog::fromPrice($product);
+                        $image = $product->getFirstMedia('images');
+                        $componentCount = $componentCounts[$product->id] ?? 0;
                     @endphp
 
-                    <article style="{{ $profile->accentStyle() }} --reveal-delay: {{ $i * 70 }}ms"
+                    <article style="{{ $product->accentStyle() }} --reveal-delay: {{ $i * 70 }}ms"
                              class="reveal hover-lift group grid gap-6 overflow-hidden rounded-3xl panel accent-ring p-6 lg:grid-cols-[16rem_1fr_15rem] lg:p-7">
 
                         {{-- Image --}}
@@ -78,7 +78,7 @@
                                  style="background: radial-gradient(circle at 50% 45%, var(--accent-glow), transparent 68%);"></div>
                             @if ($image)
                                 <img src="{{ $image->getUrl('medium') }}"
-                                     alt="{{ $profile->product->translateAttribute('name') }}"
+                                     alt="{{ $product->translateAttribute('name') }}"
                                      class="relative mx-auto h-52 w-full object-contain p-4 transition-transform duration-500 ease-out group-hover:scale-[1.07]"
                                      loading="lazy">
                             @else
@@ -89,10 +89,10 @@
                         {{-- Detail --}}
                         <div class="flex flex-col">
                             <div class="flex flex-wrap items-center gap-2.5">
-                                @if ($profile->protocol_label)
+                                @if ($product->protocol_label)
                                     <span class="rounded-full px-2.5 py-1 text-[10px] font-extrabold tracking-widest uppercase"
                                           style="background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent);">
-                                        {{ $profile->protocol_label }}
+                                        {{ $product->protocol_label }}
                                     </span>
                                 @endif
                                 @if ($componentCount)
@@ -104,25 +104,25 @@
 
                             <h2 class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">
                                 <a href="{{ $url }}" class="transition hover:text-gold">
-                                    {{ $profile->product->translateAttribute('name') }}
+                                    {{ $product->translateAttribute('name') }}
                                 </a>
                             </h2>
 
-                            @if ($profile->tagline)
+                            @if ($product->tagline)
                                 <p class="mt-1.5 text-sm font-semibold" style="color: var(--accent);">
-                                    {{ $profile->tagline }}
+                                    {{ $product->tagline }}
                                 </p>
                             @endif
 
-                            @if ($profile->summary)
+                            @if ($product->summary)
                                 <p class="mt-3 line-clamp-2 text-sm leading-relaxed text-white/50">
-                                    {{ $profile->summary }}
+                                    {{ $product->summary }}
                                 </p>
                             @endif
 
-                            @if (filled($profile->pillars))
+                            @if (filled($product->pillars))
                                 <div class="mt-4 flex flex-wrap gap-2">
-                                    @foreach (array_slice($profile->pillars, 0, 4) as $pillar)
+                                    @foreach (array_slice($product->pillars, 0, 4) as $pillar)
                                         <span class="rounded-full border border-white/10 px-3 py-1 text-[11px] font-semibold text-white/55">
                                             {{ $pillar }}
                                         </span>
@@ -140,9 +140,9 @@
                                     {{ \App\Support\Catalog::money($from) }}
                                 </p>
 
-                                @if (\App\Support\Catalog::saveUpTo($profile) > 0)
+                                @if (\App\Support\Catalog::saveUpTo($product) > 0)
                                     <p class="mt-1.5 text-[11px] font-bold tracking-wide text-gold uppercase">
-                                        Save up to {{ (int) \App\Support\Catalog::saveUpTo($profile) }}%
+                                        Save up to {{ (int) \App\Support\Catalog::saveUpTo($product) }}%
                                     </p>
                                 @endif
 

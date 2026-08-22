@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Forms\Components\StatusPicker;
 use App\Filament\Resources\CoaReportResource\Pages;
 use App\Models\CoaReport;
-use App\Models\ProductProfile;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -14,7 +14,6 @@ use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Lunar\Models\Product;
 
 class CoaReportResource extends Resource
 {
@@ -196,7 +195,7 @@ class CoaReportResource extends Resource
 
         // Research collections never carry their own batch; their pages list
         // the batches of the compounds they contain.
-        $collections = ProductProfile::query()->where('kind', 'stack')->pluck('product_id')->all();
+        $collections = Product::query()->where('product_type_id', Product::typeId(Product::TYPE_COLLECTION))->pluck('id')->all();
 
         return Product::query()
             ->whereNotIn('id', [...$taken, ...$collections])
