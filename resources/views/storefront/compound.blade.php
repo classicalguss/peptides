@@ -1,9 +1,9 @@
 @php use App\Support\Catalog; @endphp
 
-<x-layouts.storefront :title="$profile->product->translateAttribute('name').' — Powered Up Peptides'"
-                      :description="$profile->summary">
+<x-layouts.storefront :title="$product->translateAttribute('name').' — Powered Up Peptides'"
+                      :description="$product->summary">
 
-    <div style="{{ $profile->accentStyle() }}">
+    <div style="{{ $product->accentStyle() }}">
 
         {{-- Hero / buy box --}}
         <section class="relative overflow-hidden bg-accent-electric">
@@ -14,7 +14,7 @@
                     <span>/</span>
                     <a href="{{ route('shop') }}" class="transition hover:text-gold">Shop</a>
                     <span>/</span>
-                    <span class="text-white/70">{{ $profile->product->translateAttribute('name') }}</span>
+                    <span class="text-white/70">{{ $product->translateAttribute('name') }}</span>
                 </nav>
 
                 <div class="mt-8 grid gap-12 lg:grid-cols-2 lg:gap-16">
@@ -25,11 +25,11 @@
                             <div class="relative aspect-square">
                                 @if ($activeImage)
                                     <img src="{{ $activeImage->getUrl('large') }}"
-                                         alt="{{ $profile->product->translateAttribute('name') }}"
+                                         alt="{{ $product->translateAttribute('name') }}"
                                          class="absolute inset-0 size-full object-contain p-8">
                                 @else
                                     <div class="absolute inset-0 grid place-items-center">
-                                        <span class="display-title text-5xl text-white/12">{{ $profile->dose }}</span>
+                                        <span class="display-title text-5xl text-white/12">{{ $product->dose }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -44,7 +44,7 @@
                         @if ($images->count() > 1)
                             <div class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
                                 @foreach ($images as $index => $image)
-                                    <a href="{{ route('compound', [$profile->product->urls->first()?->slug ?? $profile->handle, 'image' => $index]) }}"
+                                    <a href="{{ route('compound', [$product->slug(), 'image' => $index]) }}"
                                        class="relative aspect-square overflow-hidden rounded-xl border bg-black/50 transition
                                               {{ $index === $activeIndex ? 'border-[var(--accent)]' : 'border-white/8 hover:border-white/25' }}">
                                         <img src="{{ $image->getUrl('small') }}" alt=""
@@ -57,10 +57,10 @@
 
                     {{-- Buy box --}}
                     <div>
-                        <p class="eyebrow text-[var(--accent)]">{{ $profile->subtitle }}</p>
+                        <p class="eyebrow text-[var(--accent)]">{{ $product->subtitle }}</p>
 
                         <h1 class="display-title mt-3 text-4xl text-white sm:text-5xl">
-                            {{ $profile->product->translateAttribute('name') }}
+                            {{ $product->translateAttribute('name') }}
                         </h1>
 
                         <div class="mt-4 flex flex-wrap items-center gap-4">
@@ -69,7 +69,7 @@
                             @endif
                         </div>
 
-                        <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $profile->overview }}</p>
+                        <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $product->overview }}</p>
 
                         {{-- Quantity breaks --}}
                         <form method="POST" action="{{ route('cart.add') }}" class="mt-9">
@@ -123,7 +123,7 @@
                             </button>
 
                             <ul class="mt-5 grid gap-2.5 text-xs text-white/45 sm:grid-cols-2">
-                                @foreach (site_list($profile->isSupply() ? 'supply_product.trust' : 'compound_product.trust') as $line)
+                                @foreach (site_list($product->isSupply() ? 'supply_product.trust' : 'compound_product.trust') as $line)
                                     <li class="flex items-center gap-2"><span class="text-[var(--accent)]">&#10003;</span> {{ $line->body }}</li>
                                 @endforeach
                             </ul>
@@ -141,7 +141,7 @@
                         <p class="eyebrow text-[var(--accent)]">{{ site_text('compound_product.highlights_eyebrow') }}</p>
                         <h2 class="display-title mt-3 text-3xl text-white sm:text-4xl">{{ site_text('compound_product.highlights_title') }}</h2>
                         <ul class="mt-7 space-y-3">
-                            @foreach ($profile->highlights ?? [] as $highlight)
+                            @foreach ($product->highlights ?? [] as $highlight)
                                 <li class="flex gap-3.5 rounded-xl panel p-4">
                                     <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--accent)]/15 text-xs font-extrabold text-[var(--accent)]">&#10003;</span>
                                     <span class="text-sm leading-relaxed text-white/65">{{ $highlight }}</span>
@@ -151,17 +151,17 @@
                     </div>
 
                     <div class="space-y-5">
-                        @if (filled($profile->research_info))
+                        @if (filled($product->research_info))
                             <div class="rounded-2xl panel p-6">
                                 <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.research_heading') }}</h3>
-                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->research_info }}</p>
+                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $product->research_info }}</p>
                             </div>
                         @endif
 
-                        @if (filled($profile->storage))
+                        @if (filled($product->storage))
                             <div class="rounded-2xl panel p-6">
                                 <h3 class="text-[11px] font-extrabold tracking-widest text-[var(--accent)] uppercase">{{ site_text('compound_product.storage_heading') }}</h3>
-                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $profile->storage }}</p>
+                                <p class="mt-3 text-sm leading-relaxed text-white/60">{{ $product->storage }}</p>
                             </div>
                         @endif
 
@@ -236,7 +236,7 @@
 
                 <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-3">
                     @foreach ($usedInStacks as $stack)
-                        <x-store.product-card :profile="$stack" />
+                        <x-store.product-card :product="$stack" />
                     @endforeach
                 </div>
             </section>
@@ -249,7 +249,7 @@
 
                 <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-4">
                     @foreach ($related as $item)
-                        <x-store.product-card :profile="$item" />
+                        <x-store.product-card :product="$item" />
                     @endforeach
                 </div>
             </div>

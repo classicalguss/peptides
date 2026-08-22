@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\ProductProfile;
+use App\Models\Product;
+use App\Support\WebsitePageAttributes;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Model;
@@ -13,29 +14,17 @@ use Lunar\Admin\Filament\Resources\ProductResource;
  * Search-only resource: has no pages or navigation of its own. It lets the
  * admin global search box find product page text (descriptions, research
  * wording, highlights, included-items rows), tells the admin which
- * section the text lives in, and links to the product's edit page.
+ * "Website Page" field the text lives in, and links to the product's edit page.
  */
 class ProductTextSearchResource extends Resource
 {
-    protected static ?string $model = ProductProfile::class;
+    protected static ?string $model = Product::class;
 
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $modelLabel = 'product page text';
 
     protected static ?string $pluralModelLabel = 'Product Page Text';
-
-    /** Column => label of the admin section where it is edited. */
-    private const TEXT_COLUMNS = [
-        'subtitle' => 'Short description',
-        'tagline' => 'Tagline',
-        'summary' => 'Main description',
-        'overview' => 'Main description',
-        'research_info' => 'Research background',
-        'storage' => 'Storage and handling',
-        'highlights' => 'Highlights list',
-        'pillars' => 'Highlight pills',
-    ];
 
     public static function getGlobalSearchResults(string $search): Collection
     {
@@ -45,52 +34,52 @@ class ProductTextSearchResource extends Resource
             return collect();
         }
 
-        $query = ProductProfile::query()->with(['product', 'components.componentProfile']);
+        $products = Product::query()->with('components.component')->get();
 
-        foreach ($words as $word) {
-            $query->where(function ($constraint) use ($word) {
-                foreach (array_keys(self::TEXT_COLUMNS) as $column) {
-                    $constraint->orWhere($column, 'like', "%{$word}%");
-                }
-
-                $constraint->orWhereHas('components.componentProfile', fn ($c) => $c->where('subtitle', 'like', "%{$word}%"));
-            });
-        }
-
-        return $query->limit(50)->get()->map(fn (ProductProfile $record) => new GlobalSearchResult(
-            title: static::getGlobalSearchResultTitle($record),
-            url: static::getGlobalSearchResultUrl($record),
-            details: [
-                'Found in' => static::matchedSections($record, $words) ?: 'Product page text',
-                'Type' => $record->isStack() ? 'Research collection' : 'Individual compound',
-            ],
-        ));
+        return $products
+            ->map(fn (Product $product) => [$product, static::matchedFields($product, $words)])
+            ->filter(fn (array $pair) => $pair[1] !== [])
+            ->take(50)
+            ->map(fn (array $pair) => new GlobalSearchResult(
+                title: static::getGlobalSearchResultTitle($pair[0]),
+                url: static::getGlobalSearchResultUrl($pair[0]),
+                details: [
+                    'Found in' => implode(', ', $pair[1]),
+                    'Type' => $pair[0]->isStack() ? 'Research collection' : 'Individual compound',
+                ],
+            ))
+            ->values();
     }
 
     /**
-     * Human labels of the admin sections whose text matches every search word.
+     * Labels of the Website Page fields whose text contains every search word.
      *
      * @param  array<int, string>  $words
+     * @return array<int, string>
      */
-    private static function matchedSections(ProductProfile $record, array $words): string
+    private static function matchedFields(Product $product, array $words): array
     {
-        $sections = [];
+        $fields = [];
 
-        foreach (self::TEXT_COLUMNS as $column => $label) {
-            $value = $record->getRawOriginal($column);
+        foreach (WebsitePageAttributes::definitions() as $handle => $definition) {
+            $list = $product->pageList($handle);
+            $text = $list !== [] ? implode(' ', $list) : (string) $product->pageText($handle);
 
-            if ($value !== null && static::containsAllWords((string) $value, $words)) {
-                $sections[$label] = true;
+            if ($text !== '' && static::containsAllWords($text, $words)) {
+                $fields[] = $definition['name'];
             }
         }
 
-        $componentText = $record->components->map(fn ($c) => $c->componentProfile?->subtitle)->filter()->implode(' ');
+        $componentText = $product->components
+            ->map(fn ($component) => $component->component?->subtitle)
+            ->filter()
+            ->implode(' ');
 
         if ($componentText !== '' && static::containsAllWords($componentText, $words)) {
-            $sections["What's Included table (from each compound's Short description)"] = true;
+            $fields[] = "What's Included table (from each compound's Short description)";
         }
 
-        return implode(', ', array_keys($sections));
+        return $fields;
     }
 
     /**
@@ -109,12 +98,12 @@ class ProductTextSearchResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
-        return $record->product?->translateAttribute('name') ?? $record->handle;
+        return (string) ($record->translateAttribute('name') ?? $record->slug() ?? 'Product');
     }
 
     public static function getGlobalSearchResultUrl(Model $record): string
     {
-        return ProductResource::getUrl('edit', ['record' => $record->product_id]);
+        return ProductResource::getUrl('edit', ['record' => $record->getKey()]);
     }
 
     public static function getPages(): array

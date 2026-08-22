@@ -2,13 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\FieldTypes\Textarea;
+use App\FieldTypes\TextList;
 use App\Models\CoaReport;
-use App\Models\ProductProfile;
+use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\StackComponent;
 use App\Models\StackTier;
+use App\Support\WebsitePageAttributes;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Lunar\FieldTypes\Dropdown;
+use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
@@ -19,7 +24,6 @@ use Lunar\Models\CollectionGroup;
 use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
-use Lunar\Models\Product;
 use Lunar\Models\ProductOption;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
@@ -92,7 +96,6 @@ class CatalogSeeder extends Seeder
         CoaReport::query()->delete();
         StackComponent::query()->delete();
         StackTier::query()->delete();
-        ProductProfile::query()->delete();
 
         Product::query()->each(function (Product $product) {
             $product->urls()->delete();
@@ -114,14 +117,20 @@ class CatalogSeeder extends Seeder
 
     protected function seedProductTypes(): void
     {
-        $this->compoundType = ProductType::firstOrCreate(['name' => 'Research Compound']);
-        $this->stackType = ProductType::firstOrCreate(['name' => 'Stack Protocol']);
+        $this->compoundType = ProductType::firstOrCreate(['name' => Product::TYPE_COMPOUND]);
+        $this->stackType = ProductType::firstOrCreate(['name' => Product::TYPE_COLLECTION]);
 
-        $attributeIds = Attribute::where('attribute_type', (new Product)->getMorphClass())->pluck('id');
+        // Lunar's own product attributes (name, description) apply to both types;
+        // the Website Page group is mapped per type by WebsitePageAttributes.
+        $standardAttributeIds = Attribute::where('attribute_type', Product::morphName())
+            ->whereIn('handle', ['name', 'description'])
+            ->pluck('id');
 
         foreach ([$this->compoundType, $this->stackType] as $type) {
-            $type->mappedAttributes()->sync($attributeIds);
+            $type->mappedAttributes()->syncWithoutDetaching($standardAttributeIds);
         }
+
+        WebsitePageAttributes::ensure();
     }
 
     protected function seedCollections(): void
@@ -225,6 +234,15 @@ class CatalogSeeder extends Seeder
                 'attribute_data' => collect([
                     'name' => $this->translated($title),
                     'description' => $this->translated($data['overview']),
+                    'subtitle' => new Text($data['subtitle']),
+                    'dose' => new Text($data['dose']),
+                    'summary' => new Textarea($data['overview']),
+                    'overview' => new Textarea($data['overview']),
+                    'research_info' => new Textarea($data['research_info']),
+                    'storage' => new Textarea($data['storage']),
+                    'highlights' => new TextList($data['highlights']),
+                    'accent' => new Dropdown($data['accent']),
+                    'display_order' => new Number($position),
                 ]),
             ]);
 
@@ -253,24 +271,6 @@ class CatalogSeeder extends Seeder
                     'min_quantity' => $minQuantity,
                 ]);
             }
-
-            ProductProfile::create([
-                'product_id' => $product->id,
-                'kind' => ProductProfile::KIND_COMPOUND,
-                'handle' => $data['key'],
-                'accent' => $data['accent'],
-                'subtitle' => $data['subtitle'],
-                'dose' => $data['dose'],
-                'summary' => $data['overview'],
-                'overview' => $data['overview'],
-                'research_info' => $data['research_info'],
-                'dosage' => $data['dosage'],
-                'storage' => $data['storage'],
-                'benefits' => $data['benefits'],
-                'highlights' => $data['highlights'],
-                'faq' => $data['faq'],
-                'position' => $position,
-            ]);
 
             $this->compounds[$data['key']] = $product;
         }
@@ -309,6 +309,12 @@ class CatalogSeeder extends Seeder
                 'attribute_data' => collect([
                     'name' => $this->translated($data['name']),
                     'description' => $this->translated($data['description']),
+                    'protocol_label' => new Text($data['protocol']),
+                    'tagline' => new Text($data['tagline']),
+                    'summary' => new Textarea($data['description']),
+                    'pillars' => new TextList($data['pillars']),
+                    'accent' => new Dropdown($data['accent']),
+                    'display_order' => new Number($position),
                 ]),
             ]);
 
@@ -370,22 +376,6 @@ class CatalogSeeder extends Seeder
                     'position' => $index,
                 ]);
             }
-
-            ProductProfile::create([
-                'product_id' => $product->id,
-                'kind' => ProductProfile::KIND_STACK,
-                'handle' => $data['key'],
-                'accent' => $data['accent'],
-                'subtitle' => $data['tagline'],
-                'tagline' => $data['tagline'],
-                'protocol_label' => $data['protocol'],
-                'summary' => $data['description'],
-                'overview' => $data['description'],
-                'benefits' => $data['benefits'],
-                'pillars' => $data['pillars'],
-                'audience' => $data['audience'],
-                'position' => $position,
-            ]);
 
             $this->stacks[$data['key']] = $product;
         }

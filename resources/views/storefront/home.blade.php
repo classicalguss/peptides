@@ -51,8 +51,8 @@
             {{-- Featured stack --}}
             @if ($featured)
                 @php
-                    $featuredImage = $featured->product->getFirstMedia('images');
-                    $featuredSlug = $featured->product->urls->first()?->slug ?? $featured->handle;
+                    $featuredImage = $featured->getFirstMedia('images');
+                    $featuredSlug = $featured->slug();
                 @endphp
                 <div style="{{ $featured->accentStyle() }}" class="relative">
                     <div class="absolute -inset-8 rounded-full bg-[var(--accent)]/15 blur-3xl"></div>
@@ -61,7 +61,7 @@
                         <div class="relative aspect-[5/6] bg-accent-electric">
                             @if ($featuredImage)
                                 <img src="{{ $featuredImage->getUrl('large') }}"
-                                     alt="{{ $featured->product->translateAttribute('name') }}"
+                                     alt="{{ $featured->translateAttribute('name') }}"
                                      class="absolute inset-0 size-full object-contain p-6">
                             @endif
                             <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
@@ -71,7 +71,7 @@
                         <div class="flex items-center justify-between gap-4 border-t border-white/5 p-6">
                             <div>
                                 <p class="eyebrow text-[var(--accent)]">{{ $featured->protocol_label }}</p>
-                                <h2 class="display-title mt-1.5 text-2xl text-white">{{ $featured->product->translateAttribute('name') }}</h2>
+                                <h2 class="display-title mt-1.5 text-2xl text-white">{{ $featured->translateAttribute('name') }}</h2>
                                 <p class="mt-1 text-[13px] text-white/50">{{ $featured->tagline }}</p>
                             </div>
                             <div class="shrink-0 text-right">
@@ -96,7 +96,7 @@
 
         <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
             @foreach ($stacks as $i => $stack)
-                <x-store.product-card :profile="$stack"
+                <x-store.product-card :product="$stack"
                                       class="reveal" style="{{ $stack->accentStyle() }} --reveal-delay: {{ ($i % 3) * 90 }}ms" />
             @endforeach
         </div>
@@ -120,7 +120,7 @@
 
             <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 @foreach ($compounds as $i => $compound)
-                    <x-store.product-card :profile="$compound"
+                    <x-store.product-card :product="$compound"
                                           class="reveal" style="{{ $compound->accentStyle() }} --reveal-delay: {{ ($i % 4) * 80 }}ms" />
                 @endforeach
             </div>

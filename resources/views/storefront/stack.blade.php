@@ -1,9 +1,9 @@
 @php use App\Support\Catalog; @endphp
 
-<x-layouts.storefront :title="$profile->product->translateAttribute('name').' — Powered Up Peptides'"
-                      :description="$profile->summary">
+<x-layouts.storefront :title="$product->translateAttribute('name').' — Powered Up Peptides'"
+                      :description="$product->summary">
 
-    <div style="{{ $profile->accentStyle() }}">
+    <div style="{{ $product->accentStyle() }}">
 
         {{-- Hero / buy box --}}
         <section class="relative overflow-hidden bg-accent-electric">
@@ -14,7 +14,7 @@
                     <span>/</span>
                     <a href="{{ route('stacks') }}" class="transition hover:text-gold">{{ site_text('collection_product.breadcrumb') }}</a>
                     <span>/</span>
-                    <span class="text-white/70">{{ $profile->product->translateAttribute('name') }}</span>
+                    <span class="text-white/70">{{ $product->translateAttribute('name') }}</span>
                 </nav>
 
                 <div class="mt-8 grid gap-12 lg:grid-cols-2 lg:gap-16">
@@ -25,13 +25,13 @@
                             <div class="relative aspect-square">
                                 @if ($activeImage)
                                     <img src="{{ $activeImage->getUrl('large') }}"
-                                         alt="{{ $profile->product->translateAttribute('name') }}"
+                                         alt="{{ $product->translateAttribute('name') }}"
                                          class="absolute inset-0 size-full object-contain p-8">
                                 @endif
                             </div>
-                            @if (Catalog::saveUpTo($profile) > 0)
+                            @if (Catalog::saveUpTo($product) > 0)
                                 <span class="absolute top-5 left-5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-[var(--accent)] uppercase ring-1 ring-[var(--accent)]/40 backdrop-blur">
-                                    Save up to {{ rtrim(rtrim(number_format(Catalog::saveUpTo($profile), 1), '0'), '.') }}%
+                                    Save up to {{ rtrim(rtrim(number_format(Catalog::saveUpTo($product), 1), '0'), '.') }}%
                                 </span>
                             @endif
                         </div>
@@ -52,19 +52,19 @@
 
                     {{-- Buy box --}}
                     <div>
-                        <p class="eyebrow text-[var(--accent)]">{{ $profile->protocol_label }}</p>
+                        <p class="eyebrow text-[var(--accent)]">{{ $product->protocol_label }}</p>
 
                         <h1 class="display-title mt-3 text-4xl text-white sm:text-5xl">
-                            {{ $profile->product->translateAttribute('name') }}
+                            {{ $product->translateAttribute('name') }}
                         </h1>
 
-                        <p class="mt-3 text-lg font-semibold text-white/70">{{ $profile->tagline }}</p>
+                        <p class="mt-3 text-lg font-semibold text-white/70">{{ $product->tagline }}</p>
 
-                        <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $profile->summary }}</p>
+                        <p class="mt-6 text-[15px] leading-relaxed text-white/55">{{ $product->summary }}</p>
 
                         {{-- Pillars --}}
                         <div class="mt-7 flex flex-wrap gap-2">
-                            @foreach ($profile->pillars ?? [] as $pillar)
+                            @foreach ($product->pillars ?? [] as $pillar)
                                 <span class="rounded-full border border-[var(--accent)]/25 bg-[var(--accent)]/[0.07] px-3 py-1.5 text-[11px] font-bold tracking-wide text-[var(--accent)] uppercase">
                                     {{ $pillar }}
                                 </span>
@@ -161,7 +161,7 @@
                                             {{ $child->translateAttribute('name') }}
                                         </a>
                                     </td>
-                                    <td class="hidden px-5 py-4 text-white/45 md:table-cell">{{ $component->componentProfile?->subtitle }}</td>
+                                    <td class="hidden px-5 py-4 text-white/45 md:table-cell">{{ $component->component?->subtitle }}</td>
                                     @foreach ($tiers as $tier)
                                         <td class="px-5 py-4 text-center whitespace-nowrap">
                                             <span class="font-bold text-[var(--accent)]">
@@ -205,8 +205,8 @@
                     :subtitle="site_text('collection_product.compounds_description')" />
 
                 <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-4">
-                    @foreach ($componentProfiles as $componentProfile)
-                        <x-store.product-card :profile="$componentProfile" />
+                    @foreach ($componentProducts as $componentProduct)
+                        <x-store.product-card :product="$componentProduct" />
                     @endforeach
                 </div>
             </div>
@@ -265,7 +265,7 @@
 
             <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-3">
                 @foreach ($otherStacks as $other)
-                    <x-store.product-card :profile="$other" />
+                    <x-store.product-card :product="$other" />
                 @endforeach
             </div>
         </section>

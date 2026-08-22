@@ -2,7 +2,7 @@
 
 namespace App\Filament\Extensions;
 
-use App\Models\ProductProfile;
+use App\Models\Product;
 use App\Models\StackComponent;
 use App\Models\StackTier;
 use Filament\Actions;
@@ -13,9 +13,6 @@ use Lunar\Admin\Support\Extending\EditPageExtension;
 
 class EditProductPageExtension extends EditPageExtension
 {
-    /** @var array<string, mixed>|null */
-    private ?array $pendingPageText = null;
-
     /** @var array<int, array<string, mixed>>|null */
     private ?array $pendingIncludedItems = null;
 
@@ -24,9 +21,9 @@ class EditProductPageExtension extends EditPageExtension
 
     public function headerActions(array $actions): array
     {
-        $profile = $this->profile();
+        $url = $this->product()?->storefrontUrl();
 
-        if (! $profile) {
+        if (! $url) {
             return $actions;
         }
 
@@ -34,7 +31,7 @@ class EditProductPageExtension extends EditPageExtension
             Actions\Action::make('preview_storefront')
                 ->label('Preview Storefront Page')
                 ->icon('heroicon-o-arrow-top-right-on-square')
-                ->url(route($profile->isStack() ? 'stack' : 'compound', $profile->handle))
+                ->url($url)
                 ->openUrlInNewTab(),
             ...$actions,
         ];
@@ -42,57 +39,39 @@ class EditProductPageExtension extends EditPageExtension
 
     public function beforeFill(array $data): array
     {
-        $profile = $this->profile();
+        $product = $this->product();
 
-        if (! $profile) {
+        if (! $product?->isStack()) {
             return $data;
         }
 
-        $data['page_text'] = $profile->only($this->editableColumns());
+        $data['included_items']['components'] = StackComponent::query()
+            ->where('stack_product_id', $product->id)
+            ->orderBy('position')
+            ->get()
+            ->map(fn (StackComponent $component) => [
+                'id' => $component->id,
+                'component_product_id' => $component->component_product_id,
+                'base_quantity' => $component->base_quantity,
+            ])
+            ->all();
 
-        if ($profile->isStack()) {
-            $data['included_items']['components'] = StackComponent::query()
-                ->where('stack_product_id', $profile->product_id)
-                ->orderBy('position')
-                ->get()
-                ->map(fn (StackComponent $component) => [
-                    'id' => $component->id,
-                    'component_product_id' => $component->component_product_id,
-                    'base_quantity' => $component->base_quantity,
-                ])
-                ->all();
-
-            $data['collection_sizes']['tiers'] = StackTier::query()
-                ->where('product_id', $profile->product_id)
-                ->orderBy('position')
-                ->get(['id', 'code', 'label'])
-                ->map(fn (StackTier $tier) => [
-                    'id' => $tier->id,
-                    'code' => $tier->code,
-                    'label' => $tier->label,
-                ])
-                ->all();
-        }
+        $data['collection_sizes']['tiers'] = StackTier::query()
+            ->where('product_id', $product->id)
+            ->orderBy('position')
+            ->get(['id', 'code', 'label'])
+            ->map(fn (StackTier $tier) => [
+                'id' => $tier->id,
+                'code' => $tier->code,
+                'label' => $tier->label,
+            ])
+            ->all();
 
         return $data;
     }
 
     public function beforeUpdate(array $data, Model $record): array
     {
-        $pageText = Arr::pull($data, 'page_text');
-
-        if (! is_array($pageText)) {
-            return $data;
-        }
-
-        $profile = ProductProfile::query()->where('product_id', $record->getKey())->first();
-
-        if (! $profile) {
-            return $data;
-        }
-
-        $this->pendingPageText = Arr::only($pageText, $this->editableColumns());
-
         $includedItems = Arr::pull($data, 'included_items');
         $this->pendingIncludedItems = is_array($includedItems) ? ($includedItems['components'] ?? null) : null;
 
@@ -104,20 +83,6 @@ class EditProductPageExtension extends EditPageExtension
 
     public function afterUpdate(Model $record, array $data): Model
     {
-        if ($this->pendingPageText !== null) {
-            $profile = ProductProfile::query()->where('product_id', $record->getKey())->first();
-
-            if ($profile) {
-                $profile->fill($this->pendingPageText);
-
-                if ($profile->isDirty()) {
-                    $profile->save();
-                }
-            }
-
-            $this->pendingPageText = null;
-        }
-
         if ($this->pendingIncludedItems !== null) {
             $this->syncIncludedItems($record, $this->pendingIncludedItems);
             $this->pendingIncludedItems = null;
@@ -138,24 +103,6 @@ class EditProductPageExtension extends EditPageExtension
         }
 
         return $record;
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private function editableColumns(): array
-    {
-        return [
-            'subtitle',
-            'protocol_label',
-            'tagline',
-            'summary',
-            'overview',
-            'research_info',
-            'storage',
-            'highlights',
-            'pillars',
-        ];
     }
 
     /**
@@ -195,12 +142,10 @@ class EditProductPageExtension extends EditPageExtension
         });
     }
 
-    private function profile(): ?ProductProfile
+    private function product(): ?Product
     {
         $record = $this->caller?->getRecord();
 
-        return $record
-            ? ProductProfile::query()->where('product_id', $record->getKey())->first()
-            : null;
+        return $record ? Product::query()->with('urls')->find($record->getKey()) : null;
     }
 }

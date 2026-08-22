@@ -21,7 +21,7 @@ The left-hand menu is organized into four groups:
 Click the search icon (or press `Ctrl/Cmd + K`) at any time and type a word or phrase. It searches:
 
 - Product names and descriptions
-- Every editable text field on every product and collection page
+- Every Website Page field on every product and collection (it tells you which field matched)
 - Every shared site-text entry (navigation, footer, buttons, disclaimers)
 
 Each result tells you **which section of which screen** the text lives on and links you straight there. If you've ever seen a sentence on the live site and wondered "where do I even change that?" — search for a few words from it here first, before going hunting through menus.
@@ -32,12 +32,12 @@ Each result tells you **which section of which screen** the text lives on and li
 
 ### Individual compounds vs. Research Collections
 
-The store has two kinds of product:
+The store has two kinds of product, and the **Product Type** field at the top of the product edit screen is what decides which one a product is:
 
-- **Individual compounds** — a single peptide/material sold as its own vial (e.g. "BPC-157 20mg")
-- **Research Collections** — a bundle of several compounds sold together in a few different quantity sizes (e.g. "BPC-157 + TB-500 Research Collection")
+- **Research Compound** — a single peptide/material sold as its own vial (e.g. "BPC-157 20mg"). Listed on the Shop page at `/peptides/...`.
+- **Research Collection** — a bundle of several compounds sold together in a few different quantity sizes (e.g. "BPC-157 + TB-500 Research Collection"). Listed on the Research Collections page at `/stacks/...`.
 
-Both are edited from the same place: **Catalog → Products**, then click the product name.
+Both are edited from the same place: **Catalog → Products**, then click the product name. Changing a product's type moves it between the two listings and swaps which Website Page fields it shows.
 
 ### Changing a price or stock level
 
@@ -55,14 +55,19 @@ This works the same for Research Collections: each size ("HP Core", "Z Plus", "S
 
 ### Editing the wording on a product's own page
 
-Every product's edit page has a **Website Page Text** section (scroll down past the standard fields). This covers:
+Every product's edit page has a **Website Page** section directly under the Name and Description. The fields depend on the product type:
 
-- The short label shown above the product/collection name
-- The main description
-- Research background, storage & handling
-- Highlights list
+- **Compounds:** Short description, Dose label, Summary (used by search engines and link previews), Main compound description, Research background, Storage and handling, Highlights
+- **Collections:** Small label above collection name, Tagline, Summary (the main description on the collection page and cards), Collection highlight pills
+- **Both:** Accent colour (the colour of the product's labels, glow and buttons) and Display order (lower numbers appear first on listings and the homepage)
+
+Highlights and pills are lists: type an item and press Enter to add it, click the × to remove one, and drag to reorder. Leaving Research background or Storage empty hides that section on the page.
 
 Changes here only affect that one product's page. (The checkmark lines under the add-to-cart button are shared across products — see Website Lists.)
+
+### Adding a new product
+
+**Catalog → Products → New Product.** Give it a name, pick the **Product Type** (Research Compound or Research Collection), enter a SKU and base price, then create it. On the edit screen that opens, the matching Website Page fields are there to fill in; add an image under **Media**, a variant with a price under **Variants**, a web address under **URLs**, and put it in a shop category under **Collections**. Set the status to **Published** when it is ready; it then appears on the site on its own. For a new collection, also fill in the **What's Included table** (below) after the first save.
 
 ### Editing a Research Collection's "What's Included" table
 

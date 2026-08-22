@@ -2,9 +2,10 @@
 
 namespace App\Support;
 
-use App\Models\ProductProfile;
+use App\Models\Product;
 use App\Models\StackComponent;
 use App\Models\StackTier;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Lunar\Models\Collection as LunarCollection;
 use Lunar\Models\ProductVariant;
@@ -12,51 +13,57 @@ use Lunar\Models\ProductVariant;
 class Catalog
 {
     /**
-     * @return Collection<int, ProductProfile>
+     * Research Collections, in display order.
+     *
+     * @return Collection<int, Product>
      */
     public static function stacks(): Collection
     {
-        return static::profiles(ProductProfile::KIND_STACK);
+        return static::ofType(Product::TYPE_COLLECTION);
     }
 
     /**
-     * @return Collection<int, ProductProfile>
+     * Individual compounds (and, optionally, supplies), in display order.
+     *
+     * @return Collection<int, Product>
      */
     public static function compounds(bool $includeSupplies = true): Collection
     {
-        return static::profiles(ProductProfile::KIND_COMPOUND)
+        return static::ofType(Product::TYPE_COMPOUND)
             ->when(! $includeSupplies, fn (Collection $items) => $items->reject(
-                fn (ProductProfile $profile) => $profile->isSupply()
+                fn (Product $product) => $product->isSupply()
             ))
             ->values();
     }
 
     /**
-     * @return Collection<int, ProductProfile>
+     * @return Collection<int, Product>
      */
-    protected static function profiles(string $kind): Collection
+    protected static function ofType(string $typeName): Collection
     {
-        return ProductProfile::where('kind', $kind)
-            ->orderBy('position')
-            ->with([
-                'product.media',
-                'product.urls',
-                'product.variants.prices',
-            ])
-            ->get();
+        $typeId = Product::typeId($typeName);
+
+        if ($typeId === null) {
+            return collect();
+        }
+
+        return static::query()
+            ->where('product_type_id', $typeId)
+            ->get()
+            ->sortBy(fn (Product $product) => [$product->displayOrder(), $product->id])
+            ->values();
     }
 
     /**
-     * Stack protocols first, then individual compounds.
+     * Published products with everything the storefront cards need.
      *
-     * @return Collection<int, ProductProfile>
+     * @return Builder<Product>
      */
-    public static function all(): Collection
+    protected static function query(): Builder
     {
-        return ProductProfile::orderByRaw("case when kind = 'stack' then 0 else 1 end")
-            ->orderBy('position')
-            ->with(['product.media', 'product.urls', 'product.variants.prices'])
-            ->get();
+        return Product::query()
+            ->status('published')
+            ->with(['media', 'urls', 'variants.prices']);
     }
 
     /**
@@ -83,13 +90,13 @@ class Catalog
      * page can actually show. The `stacks` and `compounds` umbrella collections
      * are excluded by default; they duplicate the top-level navigation.
      *
-     * @param  Collection<int, ProductProfile>  $profiles
+     * @param  Collection<int, Product>  $products
      * @param  array<int, string>  $exclude
      * @return Collection<string, array{label: string, count: int}>
      */
-    public static function categoriesFor(Collection $profiles, array $exclude = ['stacks', 'compounds']): Collection
+    public static function categoriesFor(Collection $products, array $exclude = ['stacks', 'compounds']): Collection
     {
-        $productIds = $profiles->pluck('product_id')->all();
+        $productIds = $products->pluck('id')->all();
 
         if ($productIds === []) {
             return collect();
@@ -111,32 +118,32 @@ class Catalog
     }
 
     /**
-     * @return array<int, int> product ids
+     * Product ids in a Lunar collection, looked up once per request per slug.
+     *
+     * @return array<int, int>
      */
     public static function productIdsInCategory(string $slug): array
     {
-        $collection = LunarCollection::whereHas('urls', fn ($query) => $query->where('slug', $slug))->first();
+        static $memo = [];
 
-        return $collection ? $collection->products()->pluck('lunar_products.id')->all() : [];
+        if (! array_key_exists($slug, $memo)) {
+            $collection = LunarCollection::whereHas('urls', fn ($query) => $query->where('slug', $slug))->first();
+
+            $memo[$slug] = $collection ? $collection->products()->pluck('lunar_products.id')->map(fn ($id) => (int) $id)->all() : [];
+        }
+
+        return $memo[$slug];
     }
 
     /**
      * Resolve a storefront page by the product's Lunar URL slug — the value
-     * links are built from and the one admins can edit — falling back to the
-     * profile handle so older links keep working.
+     * links are built from and the one admins edit on the product.
      */
-    public static function findByHandle(string $slug): ?ProductProfile
+    public static function findBySlug(string $slug): ?Product
     {
-        $query = ProductProfile::with([
-            'product.media',
-            'product.urls',
-            'product.variants.prices',
-        ]);
-
-        return (clone $query)
-            ->whereHas('product.urls', fn ($urls) => $urls->where('slug', $slug))
-            ->first()
-            ?? (clone $query)->where('handle', $slug)->first();
+        return static::query()
+            ->whereHas('urls', fn ($urls) => $urls->where('slug', $slug))
+            ->first();
     }
 
     /**
@@ -145,13 +152,13 @@ class Catalog
      *
      * @param  Collection<int, StackTier>  $tiers
      * @param  Collection<int, StackComponent>  $components
-     * @param  Collection<int, ProductProfile>  $componentProfiles
+     * @param  Collection<int, Product>  $componentProducts
      * @return array<string, int>
      */
-    public static function retailValues(Collection $tiers, Collection $components, Collection $componentProfiles): array
+    public static function retailValues(Collection $tiers, Collection $components, Collection $componentProducts): array
     {
-        $unitPrices = $componentProfiles->mapWithKeys(
-            fn (ProductProfile $profile) => [$profile->product_id => static::unitPrice($profile)]
+        $unitPrices = $componentProducts->mapWithKeys(
+            fn (Product $product) => [$product->id => static::unitPrice($product)]
         );
 
         return $tiers->mapWithKeys(fn (StackTier $tier) => [
@@ -185,35 +192,48 @@ class Catalog
      * Largest tier saving for a collection, for "Save up to" badges.
      * Memoised per request because cards call it in loops.
      */
-    public static function saveUpTo(ProductProfile $profile): float
+    public static function saveUpTo(Product $product): float
     {
         static $memo = [];
 
-        if (! $profile->isStack()) {
+        if (! $product->isStack()) {
             return 0.0;
         }
 
-        if (array_key_exists($profile->id, $memo)) {
-            return $memo[$profile->id];
+        if (array_key_exists($product->id, $memo)) {
+            return $memo[$product->id];
         }
 
-        $tiers = StackTier::where('product_id', $profile->product_id)->with('variant.prices')->get();
-        $components = StackComponent::where('stack_product_id', $profile->product_id)->get();
-        $componentProfiles = ProductProfile::whereIn('product_id', $components->pluck('component_product_id'))
-            ->with('product.variants.prices')
-            ->get();
+        $tiers = StackTier::where('product_id', $product->id)->with('variant.prices')->get();
+        $components = StackComponent::where('stack_product_id', $product->id)->get();
+        $componentProducts = static::componentProducts($components);
 
-        $savings = static::savings($tiers, static::retailValues($tiers, $components, $componentProfiles));
+        $savings = static::savings($tiers, static::retailValues($tiers, $components, $componentProducts));
 
-        return $memo[$profile->id] = (float) (max($savings ?: [0.0]));
+        return $memo[$product->id] = (float) (max($savings ?: [0.0]));
+    }
+
+    /**
+     * The compounds referenced by a collection's components, in display order.
+     *
+     * @param  Collection<int, StackComponent>  $components
+     * @return Collection<int, Product>
+     */
+    public static function componentProducts(Collection $components): Collection
+    {
+        return static::query()
+            ->whereIn('id', $components->pluck('component_product_id'))
+            ->get()
+            ->sortBy(fn (Product $product) => [$product->displayOrder(), $product->id])
+            ->values();
     }
 
     /**
      * Cheapest unit price across every variant and quantity break, in cents.
      */
-    public static function fromPrice(ProductProfile $profile): int
+    public static function fromPrice(Product $product): int
     {
-        return (int) $profile->product->variants
+        return (int) $product->variants
             ->flatMap->prices
             ->min('price.value') ?: 0;
     }
@@ -221,12 +241,12 @@ class Catalog
     /**
      * Single-unit price, in cents.
      */
-    public static function unitPrice(ProductProfile $profile): int
+    public static function unitPrice(Product $product): int
     {
-        $prices = $profile->product->variants->flatMap->prices
+        $prices = $product->variants->flatMap->prices
             ->where('min_quantity', 1);
 
-        return (int) ($prices->min('price.value') ?: static::fromPrice($profile));
+        return (int) ($prices->min('price.value') ?: static::fromPrice($product));
     }
 
     /**
@@ -240,24 +260,16 @@ class Catalog
             return ['name' => 'Item no longer available', 'meta' => null, 'url' => null, 'image' => null, 'accent' => config('theme.brand.gold')];
         }
 
+        /** @var Product $product */
         $product = $variant->product;
-        $profile = ProductProfile::where('product_id', $product->id)->first();
-        $slug = $product->urls->first()?->slug;
-
-        $url = match (true) {
-            $slug === null => null,
-            (bool) $profile?->isStack() => route('stack', $slug),
-            default => route('compound', $slug),
-        };
-
         $tier = StackTier::where('product_variant_id', $variant->id)->first();
 
         return [
             'name' => $product->translateAttribute('name'),
-            'meta' => $tier ? "{$tier->code} — {$tier->label} · {$tier->supply_days}-day supply" : $profile?->dose,
-            'url' => $url,
+            'meta' => $tier ? "{$tier->code} — {$tier->label} · {$tier->supply_days}-day supply" : $product->dose,
+            'url' => $product->storefrontUrl(),
             'image' => $product->getFirstMedia('images')?->getUrl('small'),
-            'accent' => $profile?->accentHex() ?? config('theme.brand.gold'),
+            'accent' => $product->accentHex(),
         ];
     }
 
