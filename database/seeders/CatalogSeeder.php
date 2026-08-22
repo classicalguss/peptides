@@ -6,12 +6,10 @@ use App\FieldTypes\Textarea;
 use App\FieldTypes\TextList;
 use App\Models\CoaReport;
 use App\Models\Product;
-use App\Models\ProductReview;
 use App\Models\StackComponent;
 use App\Models\StackTier;
 use App\Support\WebsitePageAttributes;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Lunar\FieldTypes\Dropdown;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\Text;
@@ -25,11 +23,16 @@ use Lunar\Models\Currency;
 use Lunar\Models\CustomerGroup;
 use Lunar\Models\Language;
 use Lunar\Models\ProductOption;
+use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 use Lunar\Models\Url;
 
+/**
+ * Builds the catalog from database/data/*.php, which mirror the live site.
+ * Re-runnable: the existing catalog is removed first.
+ */
 class CatalogSeeder extends Seeder
 {
     protected Language $language;
@@ -46,7 +49,7 @@ class CatalogSeeder extends Seeder
 
     protected ProductType $compoundType;
 
-    protected ProductType $stackType;
+    protected ProductType $collectionType;
 
     protected CollectionGroup $collectionGroup;
 
@@ -75,9 +78,8 @@ class CatalogSeeder extends Seeder
         $this->seedCompounds();
         $this->seedStacks();
         $this->seedCoaReports();
-        $this->seedReviews();
 
-        $this->command->info('Catalog seeded: '.count($this->compounds).' compounds, '.count($this->stacks).' stacks.');
+        $this->command?->info('Catalog seeded: '.count($this->compounds).' compounds, '.count($this->stacks).' collections.');
     }
 
     protected function translated(string $value): TranslatedText
@@ -92,12 +94,11 @@ class CatalogSeeder extends Seeder
      */
     protected function clearExistingCatalog(): void
     {
-        ProductReview::query()->delete();
         CoaReport::query()->delete();
         StackComponent::query()->delete();
         StackTier::query()->delete();
 
-        Product::query()->each(function (Product $product) {
+        Product::query()->withTrashed()->each(function (Product $product) {
             $product->urls()->delete();
             $product->variants()->each(function (ProductVariant $variant) {
                 $variant->prices()->delete();
@@ -118,7 +119,7 @@ class CatalogSeeder extends Seeder
     protected function seedProductTypes(): void
     {
         $this->compoundType = ProductType::firstOrCreate(['name' => Product::TYPE_COMPOUND]);
-        $this->stackType = ProductType::firstOrCreate(['name' => Product::TYPE_COLLECTION]);
+        $this->collectionType = ProductType::firstOrCreate(['name' => Product::TYPE_COLLECTION]);
 
         // Lunar's own product attributes (name, description) apply to both types;
         // the Website Page group is mapped per type by WebsitePageAttributes.
@@ -126,7 +127,7 @@ class CatalogSeeder extends Seeder
             ->whereIn('handle', ['name', 'description'])
             ->pluck('id');
 
-        foreach ([$this->compoundType, $this->stackType] as $type) {
+        foreach ([$this->compoundType, $this->collectionType] as $type) {
             $type->mappedAttributes()->syncWithoutDetaching($standardAttributeIds);
         }
 
@@ -138,29 +139,24 @@ class CatalogSeeder extends Seeder
         $this->collectionGroup = CollectionGroup::firstWhere('handle', 'main')
             ?? CollectionGroup::create(['handle' => 'main', 'name' => 'Catalog']);
 
-        $definitions = array_merge(
-            ['stacks' => 'Stack Protocols', 'compounds' => 'Individual Compounds'],
-            (require database_path('data/lab.php'))['categories'],
-        );
-
-        foreach ($definitions as $handle => $label) {
+        foreach ((require database_path('data/lab.php'))['collections'] as $slug => $name) {
             $collection = LunarCollection::create([
                 'collection_group_id' => $this->collectionGroup->id,
                 'type' => 'static',
                 'attribute_data' => collect([
-                    'name' => $this->translated($label),
+                    'name' => $this->translated($name),
                 ]),
             ]);
 
-            $this->url($collection, $handle);
+            $this->url($collection, $slug);
 
-            $this->collections[$handle] = $collection;
+            $this->collections[$slug] = $collection;
         }
     }
 
     /**
      * Lunar auto-generates a slug from the product/collection name, so any
-     * generated URLs are replaced with the handle we want to route on.
+     * generated URLs are replaced with the slug we want to route on.
      */
     protected function url(Product|LunarCollection $model, string $slug): void
     {
@@ -175,7 +171,10 @@ class CatalogSeeder extends Seeder
         ]);
     }
 
-    protected function publish(Product $product, array $collectionHandles): void
+    /**
+     * @param  array<int, string>  $collectionSlugs
+     */
+    protected function publish(Product $product, array $collectionSlugs): void
     {
         $product->channels()->syncWithoutDetaching([
             $this->channel->id => ['enabled' => true, 'starts_at' => now()->subDay(), 'ends_at' => null],
@@ -191,8 +190,8 @@ class CatalogSeeder extends Seeder
             ],
         ]);
 
-        $ids = collect($collectionHandles)
-            ->map(fn ($handle) => $this->collections[$handle]->id ?? null)
+        $ids = collect($collectionSlugs)
+            ->map(fn ($slug) => $this->collections[$slug]->id ?? null)
             ->filter()
             ->all();
 
@@ -213,36 +212,51 @@ class CatalogSeeder extends Seeder
             return;
         }
 
-        $media = $product->addMedia($path)
+        $product->addMedia($path)
             ->preservingOriginal()
+            ->withCustomProperties(['primary' => $primary])
             ->toMediaCollection('images');
+    }
 
-        if ($primary) {
-            $media->setCustomProperty('primary', true)->save();
-        }
+    /**
+     * @param  array<string, mixed>  $options
+     */
+    protected function variant(Product $product, string $sku, int $stock, array $options = []): ProductVariant
+    {
+        return ProductVariant::create([
+            'product_id' => $product->id,
+            'tax_class_id' => $this->taxClass->id,
+            'sku' => $sku,
+            'unit_quantity' => 1,
+            'min_quantity' => 1,
+            'quantity_increment' => 1,
+            'stock' => $stock,
+            'backorder' => 0,
+            'purchasable' => 'always',
+            'shippable' => true,
+            ...$options,
+        ]);
     }
 
     protected function seedCompounds(): void
     {
-        foreach (require database_path('data/compounds.php') as $position => $data) {
-            $title = $data['name'].' '.$data['dose'];
-
+        foreach (require database_path('data/compounds.php') as $data) {
             $product = Product::create([
                 'product_type_id' => $this->compoundType->id,
                 'brand_id' => $this->brand->id,
                 'status' => 'published',
                 'attribute_data' => collect([
-                    'name' => $this->translated($title),
+                    'name' => $this->translated($data['name']),
                     'description' => $this->translated($data['overview']),
                     'subtitle' => new Text($data['subtitle']),
                     'dose' => new Text($data['dose']),
-                    'summary' => new Textarea($data['overview']),
+                    'summary' => new Textarea($data['summary']),
                     'overview' => new Textarea($data['overview']),
-                    'research_info' => new Textarea($data['research_info']),
+                    'research_info' => new Textarea($data['research_info'] ?? ''),
                     'storage' => new Textarea($data['storage']),
                     'highlights' => new TextList($data['highlights']),
                     'accent' => new Dropdown($data['accent']),
-                    'display_order' => new Number($position),
+                    'display_order' => new Number($data['display_order']),
                 ]),
             ]);
 
@@ -250,23 +264,13 @@ class CatalogSeeder extends Seeder
             $this->publish($product, array_merge(['compounds'], $data['categories']));
             $this->attachImage($product, $data['image'], true);
 
-            $variant = ProductVariant::create([
-                'product_id' => $product->id,
-                'tax_class_id' => $this->taxClass->id,
-                'sku' => $data['sku'],
-                'unit_quantity' => 1,
-                'min_quantity' => 1,
-                'quantity_increment' => 1,
-                'stock' => 250,
-                'backorder' => 0,
-                'purchasable' => 'always',
-                'shippable' => true,
-            ]);
+            $variant = $this->variant($product, $data['sku'], 250);
+            $unitPrice = (int) reset($data['prices']);
 
-            foreach ($data['tiers'] as $minQuantity => $unitPrice) {
+            foreach ($data['prices'] as $minQuantity => $price) {
                 $variant->prices()->create([
-                    'price' => (int) round($unitPrice * 100),
-                    'compare_price' => $minQuantity > 1 ? (int) round(reset($data['tiers']) * 100) : null,
+                    'price' => $price,
+                    'compare_price' => $minQuantity > 1 ? $unitPrice : null,
                     'currency_id' => $this->currency->id,
                     'min_quantity' => $minQuantity,
                 ]);
@@ -284,42 +288,25 @@ class CatalogSeeder extends Seeder
             'shared' => true,
         ]);
 
-        $optionValues = [];
-        $position = 0;
-
-        foreach ([
-            'HP' => 'HP — Beginner',
-            'Z' => 'Z — Intermediate',
-            'S' => 'S — Advanced',
-        ] as $code => $label) {
-            $position++;
-
-            $optionValues[$code] = $option->values()->where('position', $position)->first()
-                ?? $option->values()->create([
-                    'name' => [$this->language->code => $label],
-                    'position' => $position,
-                ]);
-        }
-
-        foreach (require database_path('data/stacks.php') as $position => $data) {
+        foreach (require database_path('data/stacks.php') as $data) {
             $product = Product::create([
-                'product_type_id' => $this->stackType->id,
+                'product_type_id' => $this->collectionType->id,
                 'brand_id' => $this->brand->id,
                 'status' => 'published',
                 'attribute_data' => collect([
                     'name' => $this->translated($data['name']),
                     'description' => $this->translated($data['description']),
-                    'protocol_label' => new Text($data['protocol']),
+                    'protocol_label' => new Text($data['protocol_label']),
                     'tagline' => new Text($data['tagline']),
-                    'summary' => new Textarea($data['description']),
+                    'summary' => new Textarea($data['summary']),
                     'pillars' => new TextList($data['pillars']),
                     'accent' => new Dropdown($data['accent']),
-                    'display_order' => new Number($position),
+                    'display_order' => new Number($data['display_order']),
                 ]),
             ]);
 
             $this->url($product, $data['key']);
-            $this->publish($product, array_merge(['stacks'], $data['categories']));
+            $this->publish($product, array_merge(['research-collections'], $data['categories']));
 
             foreach ($data['gallery'] as $index => $file) {
                 $this->attachImage($product, $file, $index === 0);
@@ -327,25 +314,13 @@ class CatalogSeeder extends Seeder
 
             $product->productOptions()->syncWithoutDetaching([$option->id => ['position' => 1]]);
 
-            foreach ($data['tiers'] as $tierIndex => $tier) {
-                $variant = ProductVariant::create([
-                    'product_id' => $product->id,
-                    'tax_class_id' => $this->taxClass->id,
-                    'sku' => 'PUP-'.Str::upper(Str::of($data['key'])->replace('-stack', '')->replace('-protocol', '')->slug('')).'-'.$tier['code'],
-                    'unit_quantity' => 1,
-                    'min_quantity' => 1,
-                    'quantity_increment' => 1,
-                    'stock' => 100,
-                    'backorder' => 0,
-                    'purchasable' => 'always',
-                    'shippable' => true,
-                ]);
+            foreach ($data['tiers'] as $position => $tier) {
+                $optionValue = $this->optionValue($option, $position + 1, "{$tier['code']} — {$tier['label']}");
 
-                $variant->values()->syncWithoutDetaching([$optionValues[$tier['code']]->id]);
-
+                $variant = $this->variant($product, $tier['sku'], 100);
+                $variant->values()->syncWithoutDetaching([$optionValue->id]);
                 $variant->prices()->create([
-                    'price' => (int) round($tier['price'] * 100),
-                    'compare_price' => (int) round($tier['price'] / (1 - ($tier['save'] / 100)) * 100),
+                    'price' => $tier['price'],
                     'currency_id' => $this->currency->id,
                     'min_quantity' => 1,
                 ]);
@@ -355,14 +330,14 @@ class CatalogSeeder extends Seeder
                     'product_variant_id' => $variant->id,
                     'code' => $tier['code'],
                     'label' => $tier['label'],
-                    'supply_days' => $tier['days'],
-                    'position' => $tierIndex,
+                    'supply_days' => $tier['supply_days'],
+                    'position' => $position,
                 ]);
             }
 
-            foreach (array_values($data['components']) as $index => $quantity) {
-                $key = array_keys($data['components'])[$index];
+            $position = 0;
 
+            foreach ($data['components'] as $key => $quantity) {
                 if (! isset($this->compounds[$key])) {
                     continue;
                 }
@@ -371,106 +346,45 @@ class CatalogSeeder extends Seeder
                     'stack_product_id' => $product->id,
                     'component_product_id' => $this->compounds[$key]->id,
                     'base_quantity' => $quantity,
-                    'unit' => $key === 'bac-water-10ml' ? 'VIAL' : 'VIAL',
-                    'benefit' => $this->componentBenefit($key),
-                    'position' => $index,
+                    'unit' => 'VIAL',
+                    'position' => $position++,
                 ]);
             }
 
             $this->stacks[$data['key']] = $product;
         }
+    }
 
-        $this->recalculateSavings();
+    protected function optionValue(ProductOption $option, int $position, string $name): ProductOptionValue
+    {
+        return $option->values()->where('position', $position)->first()
+            ?? $option->values()->create([
+                'name' => [$this->language->code => $name],
+                'position' => $position,
+            ]);
     }
 
     /**
-     * The mockup's advertised discounts do not reconcile with the per-vial
-     * prices, so savings are derived from the real cost of buying every
-     * component separately. This keeps cards, buy box and the included-items
-     * table all quoting the same number.
+     * Certificate PDFs are uploaded through the admin, so seeded batches
+     * carry their details without a file.
      */
-    protected function recalculateSavings(): void
-    {
-        $unitPrices = [];
-
-        foreach ($this->compounds as $key => $product) {
-            $unitPrices[$product->id] = (int) $product->variants
-                ->flatMap->prices
-                ->where('min_quantity', 1)
-                ->min('price.value');
-        }
-
-        // Savings are no longer stored: the storefront derives them from live
-        // prices. Only Lunar's compare price is seeded, for the admin's benefit.
-        foreach ($this->stacks as $product) {
-            $components = StackComponent::where('stack_product_id', $product->id)->get();
-
-            foreach (StackTier::where('product_id', $product->id)->get() as $tier) {
-                $retail = $components->sum(
-                    fn (StackComponent $component) => ($unitPrices[$component->component_product_id] ?? 0)
-                        * $component->base_quantity
-                        * $tier->multiplier()
-                );
-
-                $tier->variant?->prices()->update(['compare_price' => $retail]);
-            }
-        }
-    }
-
-    protected function componentBenefit(string $key): string
-    {
-        return match ($key) {
-            'bpc-157-20mg' => 'Tissue repair, tendon & ligament healing, gut & nerve support',
-            'tb-500-20mg' => 'Accelerates recovery, reduces inflammation, improves mobility',
-            'ghk-cu-100mg' => 'Collagen synthesis, skin remodelling, antioxidant support',
-            'nad-1000mg' => 'Cellular energy, DNA repair pathways, longevity signalling',
-            'mots-c-40mg' => 'Mitochondrial support, metabolic efficiency, endurance',
-            'cjc-1295-ipamorelin-20mg' => 'GH optimization, lean mass, deep sleep quality',
-            'retatrutide-15mg', 'retatrutide-30mg', 'retatrutide-60mg' => 'Appetite control, fat loss, metabolic optimization',
-            'bac-water-10ml' => 'Bacteriostatic water for safe reconstitution and storage',
-            default => 'Research compound',
-        };
-    }
-
     protected function seedCoaReports(): void
     {
-        $lab = require database_path('data/lab.php');
+        foreach ((require database_path('data/lab.php'))['coas'] as $coa) {
+            $product = isset($coa['compound']) ? ($this->compounds[$coa['compound']] ?? null) : null;
 
-        foreach ($lab['coas'] as $coa) {
-            $product = $this->compounds[$coa['compound']] ?? null;
-
-            CoaReport::updateOrCreate(['batch_number' => $coa['batch']], [
+            CoaReport::create([
                 'product_id' => $product?->id,
-                'product_label' => $product
-                    ? $product->translateAttribute('name')
-                    : Str::headline($coa['compound']),
-                'tested_on' => $coa['tested_on'],
-                'purity' => $coa['purity'],
-                'lab_name' => $coa['lab'],
+                'product_label' => $coa['label'],
+                'batch_number' => $coa['batch'] ?? null,
+                'tested_on' => $coa['tested_on'] ?? null,
+                'purity' => $coa['purity'] ?? null,
+                'lab_name' => $coa['lab'] ?? null,
                 'pdf_path' => null,
-            ]);
-        }
-    }
-
-    protected function seedReviews(): void
-    {
-        $lab = require database_path('data/lab.php');
-
-        foreach ($lab['reviews'] as $review) {
-            $product = $this->compounds[$review['product']] ?? $this->stacks[$review['product']] ?? null;
-
-            if (! $product) {
-                continue;
-            }
-
-            ProductReview::create([
-                'product_id' => $product->id,
-                'author_name' => $review['author'],
-                'rating' => $review['rating'],
-                'title' => $review['title'],
-                'body' => $review['body'],
-                'is_verified' => true,
-                'is_approved' => true,
+                'status' => $coa['status'] ?? 'pass',
+                'status_label' => $coa['status_label'] ?? null,
+                'status_note' => $coa['status_note'] ?? null,
+                'status_color' => $coa['status_color'] ?? 'gray',
             ]);
         }
     }
