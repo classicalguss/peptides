@@ -2,6 +2,9 @@
 
 namespace App\Filament\Extensions;
 
+use App\Filament\Support\Concerns\RoundsEnteredPrices;
+use App\Filament\Support\Pages\ManageProductPricing;
+use App\Filament\Support\RelationManagers\PriceRelationManager;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -9,7 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Admin\Filament\Resources\ProductResource\Pages\ManageProductPricing as LunarManageProductPricing;
 use Lunar\Admin\Support\Extending\ResourceExtension;
+use Lunar\Admin\Support\RelationManagers\PriceRelationManager as LunarPriceRelationManager;
 
 /**
  * Adds the Research Collection controls (contents and size names) to Lunar's
@@ -80,6 +85,48 @@ class ProductResourceExtension extends ResourceExtension
                         ->columnSpanFull(),
                 ]),
         ]);
+    }
+
+    /**
+     * Swap in our pricing page, which keeps quantity break prices at the
+     * exact cents entered. See {@see RoundsEnteredPrices}.
+     *
+     * @param  array<string, mixed>  $pages
+     * @return array<string, mixed>
+     */
+    public function extendPages(array $pages): array
+    {
+        $pages['pricing'] = ManageProductPricing::route('/{record}/pricing');
+
+        return $pages;
+    }
+
+    /**
+     * @param  array<int, class-string>  $pages
+     * @return array<int, class-string>
+     */
+    public function extendSubNavigation(array $pages): array
+    {
+        return array_map(
+            fn (string $page): string => $page === LunarManageProductPricing::class
+                ? ManageProductPricing::class
+                : $page,
+            $pages
+        );
+    }
+
+    /**
+     * @param  array<int, mixed>  $managers
+     * @return array<int, mixed>
+     */
+    public function getRelations(array $managers): array
+    {
+        return array_map(
+            fn (mixed $manager): mixed => $manager === LunarPriceRelationManager::class
+                ? PriceRelationManager::class
+                : $manager,
+            $managers
+        );
     }
 
     public function extendTable(Table $table): Table
