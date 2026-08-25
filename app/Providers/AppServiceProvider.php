@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\FieldTypes\Textarea;
 use App\FieldTypes\TextList;
+use App\Filament\Extensions\CustomerGroupPricingRelationManagerExtension;
 use App\Filament\Extensions\EditProductPageExtension;
 use App\Filament\Extensions\ProductResourceExtension;
+use App\Filament\Extensions\ProductVariantResourceExtension;
 use App\Filament\FieldTypes\TextareaField;
 use App\Filament\FieldTypes\TextListField;
 use App\Filament\Resources\CoaReportResource;
@@ -18,6 +20,8 @@ use Filament\Support\Colors\Color;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
+use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
+use Lunar\Admin\Filament\Resources\ProductVariantResource;
 use Lunar\Admin\Support\Facades\AttributeData;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\FieldTypeManifestInterface;
@@ -51,7 +55,9 @@ class AppServiceProvider extends ServiceProvider
                 ])
         )->extensions([
             ProductResource::class => ProductResourceExtension::class,
+            ProductVariantResource::class => ProductVariantResourceExtension::class,
             EditProduct::class => EditProductPageExtension::class,
+            CustomerGroupPricingRelationManager::class => CustomerGroupPricingRelationManagerExtension::class,
         ])->register();
 
         // Storefront copy is edited as Lunar attributes; these are the two
