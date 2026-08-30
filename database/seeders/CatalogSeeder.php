@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\StackComponent;
 use App\Models\StackTier;
+use App\Models\StackTierQuantity;
 use App\Support\WebsitePageAttributes;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -360,6 +361,8 @@ class CatalogSeeder extends Seeder
                 ]);
             }
 
+            $tiers = StackTier::where('product_id', $product->id)->get();
+
             foreach (array_values($data['components']) as $index => $quantity) {
                 $key = array_keys($data['components'])[$index];
 
@@ -367,14 +370,21 @@ class CatalogSeeder extends Seeder
                     continue;
                 }
 
-                StackComponent::create([
+                $component = StackComponent::create([
                     'stack_product_id' => $product->id,
                     'component_product_id' => $this->compounds[$key]->id,
-                    'base_quantity' => $quantity,
                     'unit' => $key === 'bac-water-10ml' ? 'VIAL' : 'VIAL',
                     'benefit' => $this->componentBenefit($key),
                     'position' => $index,
                 ]);
+
+                foreach ($tiers as $tier) {
+                    StackTierQuantity::create([
+                        'stack_tier_id' => $tier->id,
+                        'stack_component_id' => $component->id,
+                        'quantity' => $quantity * max(1, (int) round($tier->supply_days / 40)),
+                    ]);
+                }
             }
 
             $this->stacks[$data['key']] = $product;
@@ -403,13 +413,12 @@ class CatalogSeeder extends Seeder
         // Savings are no longer stored: the storefront derives them from live
         // prices. Only Lunar's compare price is seeded, for the admin's benefit.
         foreach ($this->stacks as $product) {
-            $components = StackComponent::where('stack_product_id', $product->id)->get();
+            $components = StackComponent::where('stack_product_id', $product->id)->with('tierQuantities')->get();
 
             foreach (StackTier::where('product_id', $product->id)->get() as $tier) {
                 $retail = $components->sum(
                     fn (StackComponent $component) => ($unitPrices[$component->component_product_id] ?? 0)
-                        * $component->base_quantity
-                        * $tier->multiplier()
+                        * $component->quantityForTier($tier)
                 );
 
                 $tier->variant?->prices()->update(['compare_price' => $retail]);
