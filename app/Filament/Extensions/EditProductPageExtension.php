@@ -5,6 +5,7 @@ namespace App\Filament\Extensions;
 use App\Models\Product;
 use App\Models\StackComponent;
 use App\Models\StackTier;
+use App\Models\StackTierQuantity;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -48,11 +49,14 @@ class EditProductPageExtension extends EditPageExtension
         $data['included_items']['components'] = StackComponent::query()
             ->where('stack_product_id', $product->id)
             ->orderBy('position')
+            ->with('tierQuantities')
             ->get()
             ->map(fn (StackComponent $component) => [
                 'id' => $component->id,
                 'component_product_id' => $component->component_product_id,
-                'base_quantity' => $component->base_quantity,
+                'quantities' => $component->tierQuantities
+                    ->mapWithKeys(fn (StackTierQuantity $quantity) => [$quantity->stack_tier_id => $quantity->quantity])
+                    ->all(),
             ])
             ->all();
 
@@ -120,6 +124,7 @@ class EditProductPageExtension extends EditPageExtension
         DB::transaction(function () use ($stackId, $items): void {
             StackComponent::query()->where('stack_product_id', $stackId)->delete();
 
+            $tierIds = StackTier::query()->where('product_id', $stackId)->pluck('id');
             $seen = [];
 
             foreach (array_values($items) as $position => $item) {
@@ -131,13 +136,20 @@ class EditProductPageExtension extends EditPageExtension
 
                 $seen[] = $componentId;
 
-                StackComponent::create([
+                $component = StackComponent::create([
                     'stack_product_id' => $stackId,
                     'component_product_id' => $componentId,
-                    'base_quantity' => max(1, (int) ($item['base_quantity'] ?? 1)),
                     'unit' => 'VIAL',
                     'position' => $position + 1,
                 ]);
+
+                foreach ($tierIds as $tierId) {
+                    StackTierQuantity::create([
+                        'stack_tier_id' => $tierId,
+                        'stack_component_id' => $component->id,
+                        'quantity' => max(0, (int) ($item['quantities'][$tierId] ?? 1)),
+                    ]);
+                }
             }
         });
     }

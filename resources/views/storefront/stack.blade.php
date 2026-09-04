@@ -163,13 +163,18 @@
                                     </td>
                                     <td class="hidden px-5 py-4 text-white/45 md:table-cell">{{ $component->component?->subtitle }}</td>
                                     @foreach ($tiers as $tier)
+                                        @php($quantity = $component->quantityForTier($tier))
                                         <td class="px-5 py-4 text-center whitespace-nowrap">
-                                            <span class="font-bold text-[var(--accent)]">
-                                                {{ $component->base_quantity * $tier->multiplier() }}
-                                            </span>
-                                            <span class="text-[10px] tracking-widest text-white/35 uppercase">
-                                                {{ Str::plural('vial', $component->base_quantity * $tier->multiplier()) }}
-                                            </span>
+                                            @if ($quantity > 0)
+                                                <span class="font-bold text-[var(--accent)]">
+                                                    {{ $quantity }}
+                                                </span>
+                                                <span class="text-[10px] tracking-widest text-white/35 uppercase">
+                                                    {{ Str::plural('vial', $quantity) }}
+                                                </span>
+                                            @else
+                                                <span class="text-white/35">&mdash;</span>
+                                            @endif
                                         </td>
                                     @endforeach
                                 </tr>

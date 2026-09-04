@@ -6,6 +6,7 @@ use App\Filament\Support\Concerns\RoundsEnteredPrices;
 use App\Filament\Support\Pages\ManageProductPricing;
 use App\Filament\Support\RelationManagers\PriceRelationManager;
 use App\Models\Product;
+use App\Models\StackTier;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -29,36 +30,36 @@ class ProductResourceExtension extends ResourceExtension
             ...$form->getComponents(),
 
             Forms\Components\Section::make('What\'s Included table')
-                ->description('The compounds in this collection and how many vials of each the base size contains. Larger sizes multiply these counts automatically; prices and savings follow the compounds\' own prices. Add, remove or reorder items freely, then save.')
+                ->description('The compounds in this collection and how many vials of each every collection size contains. A count of 0 shows the compound as not included in that size. Prices and savings follow the compounds\' own prices. Add, remove or reorder items freely, then save.')
                 ->statePath('included_items')
                 ->visible(fn (?Model $record): bool => static::isStack($record))
-                ->schema([
-                    Forms\Components\Repeater::make('components')
-                        ->label('Included items')
-                        ->addActionLabel('Add compound')
-                        ->reorderableWithButtons()
-                        ->itemLabel(fn (array $state): ?string => static::compoundOptions()[$state['component_product_id'] ?? null] ?? 'New item')
-                        ->schema([
-                            Forms\Components\Hidden::make('id'),
-                            Forms\Components\Select::make('component_product_id')
-                                ->label('Compound')
-                                ->options(fn (): array => static::compoundOptions())
-                                ->searchable()
-                                ->required()
-                                ->distinct()
-                                ->live()
-                                ->helperText('Its description comes from the compound\'s own Short description.'),
-                            Forms\Components\TextInput::make('base_quantity')
-                                ->label('Vials in the base collection size')
-                                ->numeric()
-                                ->minValue(1)
-                                ->maxValue(100)
-                                ->default(1)
-                                ->required(),
-                        ])
-                        ->columns(2)
-                        ->columnSpanFull(),
-                ]),
+                ->schema(function (?Model $record): array {
+                    $tierInputs = static::tierQuantityInputs($record);
+
+                    return [
+                        Forms\Components\Repeater::make('components')
+                            ->label('Included items')
+                            ->addActionLabel('Add compound')
+                            ->reorderableWithButtons()
+                            ->itemLabel(fn (array $state): ?string => static::compoundOptions()[$state['component_product_id'] ?? null] ?? 'New item')
+                            ->schema([
+                                Forms\Components\Hidden::make('id'),
+                                Forms\Components\Select::make('component_product_id')
+                                    ->label('Compound')
+                                    ->options(fn (): array => static::compoundOptions())
+                                    ->searchable()
+                                    ->required()
+                                    ->distinct()
+                                    ->live()
+                                    ->helperText('Its description comes from the compound\'s own Short description.'),
+                                Forms\Components\Fieldset::make('Vials per collection size')
+                                    ->schema($tierInputs)
+                                    ->columns(max(1, min(3, count($tierInputs)))),
+                            ])
+                            ->columns(1)
+                            ->columnSpanFull(),
+                    ];
+                }),
 
             Forms\Components\Section::make('Collection Sizes')
                 ->description('The names shown for each quantity tier of this collection (e.g. "HP" + "Core"). Pricing and stock stay in the standard variant controls below.')
@@ -146,6 +147,32 @@ class ProductResourceExtension extends ResourceExtension
                         ->where('attribute_data', 'like', '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search).'%')),
             ])
             ->searchPlaceholder('Search product name or website wording');
+    }
+
+    /**
+     * One vial-count input per collection size, so every size states its
+     * contents explicitly (sizes no longer scale the base count).
+     *
+     * @return array<int, Forms\Components\TextInput>
+     */
+    private static function tierQuantityInputs(?Model $record): array
+    {
+        if (! static::isStack($record)) {
+            return [];
+        }
+
+        return StackTier::query()
+            ->where('product_id', $record->getKey())
+            ->orderBy('position')
+            ->get()
+            ->map(fn (StackTier $tier): Forms\Components\TextInput => Forms\Components\TextInput::make("quantities.{$tier->id}")
+                ->label("{$tier->code} — {$tier->label}")
+                ->numeric()
+                ->minValue(0)
+                ->maxValue(100)
+                ->default(1)
+                ->required())
+            ->all();
     }
 
     /**

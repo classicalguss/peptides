@@ -25,11 +25,6 @@ class StackTier extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function multiplier(): int
-    {
-        return (int) max(1, round($this->supply_days / 40));
-    }
-
     /**
      * The tier's price in cents, read from its Lunar variant — the same
      * price the cart charges — so repricing in the standard admin screen

@@ -164,8 +164,7 @@ class Catalog
         return $tiers->mapWithKeys(fn (StackTier $tier) => [
             $tier->code => $components->sum(
                 fn (StackComponent $component) => ($unitPrices[$component->component_product_id] ?? 0)
-                    * $component->base_quantity
-                    * $tier->multiplier()
+                    * $component->quantityForTier($tier)
             ),
         ])->all();
     }
@@ -205,7 +204,7 @@ class Catalog
         }
 
         $tiers = StackTier::where('product_id', $product->id)->with('variant.prices')->get();
-        $components = StackComponent::where('stack_product_id', $product->id)->get();
+        $components = StackComponent::where('stack_product_id', $product->id)->with('tierQuantities')->get();
         $componentProducts = static::componentProducts($components);
 
         $savings = static::savings($tiers, static::retailValues($tiers, $components, $componentProducts));
