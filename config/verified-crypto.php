@@ -73,6 +73,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Log Raw Callbacks
+    |--------------------------------------------------------------------------
+    |
+    | Logs the raw body and headers of every inbound callback before the
+    | signature is checked. VERIFIED do not publish the string their signature
+    | is computed over, so this is how the format gets confirmed on the first
+    | live payment. Turn it off once settled — callback bodies contain customer
+    | email addresses.
+    |
+    */
+    'log_callbacks' => env('VERIFIED_CRYPTO_LOG_CALLBACKS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | HTTP Timeout
     |--------------------------------------------------------------------------
     */

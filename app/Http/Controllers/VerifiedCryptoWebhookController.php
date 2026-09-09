@@ -30,6 +30,15 @@ class VerifiedCryptoWebhookController extends Controller
             return response()->json(['ok' => false, 'error' => 'disabled'], 404);
         }
 
+        if (config('verified-crypto.log_callbacks')) {
+            Log::debug('VERIFIED raw callback.', [
+                'body' => $request->getContent(),
+                'timestamp' => $request->header('X-VCC-Timestamp'),
+                'signature' => $request->header('X-VCC-Signature'),
+                'headers' => array_diff_key($request->headers->all(), array_flip(['cookie', 'authorization'])),
+            ]);
+        }
+
         if (! $signature->verify(
             $request->getContent(),
             $request->header('X-VCC-Timestamp'),
