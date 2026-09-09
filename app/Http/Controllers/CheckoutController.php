@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Payments\VerifiedCryptoClient;
+use App\Payments\VerifiedCryptoException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Lunar\Facades\CartSession;
 use Lunar\Facades\ShippingManifest;
@@ -107,10 +110,55 @@ class CheckoutController extends Controller
             return $cart->createOrder();
         });
 
+        if (config('verified-crypto.enabled')) {
+            return $this->redirectToVerifiedCheckout($request, $order, $data['email']);
+        }
+
         CartSession::forget();
         $request->session()->forget('research_disclaimer_accepted');
 
         return redirect()->route('checkout.confirmation', $order->reference);
+    }
+
+    /**
+     * Hand the customer off to the VERIFIED-hosted checkout page.
+     *
+     * The order stays at the draft status until a relay callback confirms
+     * settlement on-chain, so nothing here marks it paid. If the session
+     * cannot be created the order is left in place as a record of the attempt
+     * and the customer is returned to checkout with their input intact.
+     */
+    protected function redirectToVerifiedCheckout(Request $request, Order $order, string $email): RedirectResponse
+    {
+        try {
+            $session = app(VerifiedCryptoClient::class)->createSession(
+                $order,
+                $email,
+                route('webhooks.verified-crypto'),
+            );
+        } catch (VerifiedCryptoException $e) {
+            Log::error('Could not start a VERIFIED payment session.', [
+                'order_reference' => $order->reference,
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['payment' => 'We could not start the payment session. Please try again in a moment.']);
+        }
+
+        $order->update([
+            'meta' => array_merge((array) $order->meta, [
+                'verified_crypto' => $session->toMeta(),
+            ]),
+        ]);
+
+        CartSession::forget();
+        $request->session()->forget('research_disclaimer_accepted');
+
+        // The checkout URL is opaque — VERIFIED builds provider routing into it,
+        // so it is passed through exactly as returned.
+        return redirect()->away($session->checkoutUrl);
     }
 
     public function confirmation(string $reference): View
@@ -121,6 +169,10 @@ class CheckoutController extends Controller
 
         return view('storefront.confirmation', [
             'order' => $order,
+            // Crypto settlement confirms on-chain a minute or two after the
+            // customer is redirected back, so the order can still be awaiting
+            // its callback when this page is first rendered.
+            'awaitingPayment' => $order->placed_at === null,
         ]);
     }
 }
