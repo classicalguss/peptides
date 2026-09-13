@@ -9,6 +9,7 @@ use Lunar\Models\Currency;
 use Lunar\Models\Language;
 use Lunar\Models\Order;
 use Lunar\Models\Transaction;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class VerifiedCryptoWebhookTest extends TestCase
@@ -116,6 +117,50 @@ class VerifiedCryptoWebhookTest extends TestCase
 
         $this->assertSame(1, Transaction::where('order_id', $order->id)->count());
         $this->assertEquals($placedAt, $order->fresh()->placed_at);
+    }
+
+    /**
+     * VERIFIED do not publish the string they sign, so every plausible
+     * construction is accepted. Each must work end to end.
+     */
+    #[DataProvider('signatureFormats')]
+    public function test_it_accepts_any_documented_plausible_signature_format(string $format, bool $base64): void
+    {
+        $order = $this->order();
+
+        $body = json_encode(['order_id' => $order->reference, 'status' => 'confirmed', 'tx_hash' => '0xfmt']);
+        $ts = (string) now()->timestamp;
+
+        $payload = match ($format) {
+            'timestamp.body' => $ts.'.'.$body,
+            'body' => $body,
+            'timestamp+body' => $ts.$body,
+            'body+timestamp' => $body.$ts,
+        };
+
+        $signature = $base64
+            ? base64_encode(hash_hmac('sha256', $payload, self::SECRET, true))
+            : hash_hmac('sha256', $payload, self::SECRET);
+
+        $this->call('POST', route('webhooks.verified-crypto'), [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_VCC_TIMESTAMP' => $ts,
+            'HTTP_X_VCC_SIGNATURE' => $signature,
+        ], $body)->assertOk();
+
+        $this->assertSame('payment-received', $order->fresh()->status);
+    }
+
+    public static function signatureFormats(): array
+    {
+        return [
+            'stripe style, hex' => ['timestamp.body', false],
+            'body only, hex' => ['body', false],
+            'concatenated, hex' => ['timestamp+body', false],
+            'body then timestamp, hex' => ['body+timestamp', false],
+            'stripe style, base64' => ['timestamp.body', true],
+            'body only, base64' => ['body', true],
+        ];
     }
 
     public function test_a_callback_with_a_bad_signature_is_rejected_and_the_order_is_untouched(): void

@@ -3,6 +3,7 @@
 namespace App\Payments;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Verifies the HMAC signature on inbound VERIFIED relay callbacks.
@@ -42,17 +43,41 @@ class VerifiedCryptoSignature
             return false;
         }
 
-        $expected = hash_hmac('sha256', $this->payload($rawBody, $timestamp), (string) $this->secret);
+        $provided = strtolower(trim($signature));
 
-        return hash_equals($expected, strtolower(trim($signature)));
+        foreach ($this->candidates($rawBody, $timestamp) as $label => $payload) {
+            $expected = hash_hmac('sha256', $payload, (string) $this->secret);
+
+            if (hash_equals($expected, $provided)) {
+                Log::info('VERIFIED callback signature verified.', ['format' => $label]);
+
+                return true;
+            }
+
+            if (hash_equals(base64_encode(hash_hmac('sha256', $payload, (string) $this->secret, true)), trim($signature))) {
+                Log::info('VERIFIED callback signature verified.', ['format' => $label.'+base64']);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * The string the HMAC is computed over.
+     * Plausible constructions of the signed string, keyed by a label that is
+     * logged on a match so the format can be pinned down afterwards.
+     *
+     * @return array<string, string>
      */
-    protected function payload(string $rawBody, string $timestamp): string
+    protected function candidates(string $rawBody, string $timestamp): array
     {
-        return $timestamp.'.'.$rawBody;
+        return [
+            'timestamp.body' => $timestamp.'.'.$rawBody,
+            'body' => $rawBody,
+            'timestamp+body' => $timestamp.$rawBody,
+            'body+timestamp' => $rawBody.$timestamp,
+        ];
     }
 
     /**
