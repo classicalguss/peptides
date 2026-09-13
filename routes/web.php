@@ -7,6 +7,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\VerifiedCryptoWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'home'])->name('home');
@@ -27,6 +28,11 @@ Route::post('/checkout/begin', [CheckoutController::class, 'begin'])->name('chec
 Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/confirmation/{reference}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+// VERIFIED relay callback. Signed with HMAC-SHA256 rather than a session,
+// so it is CSRF-exempt in bootstrap/app.php.
+Route::post('/webhooks/verified-crypto', VerifiedCryptoWebhookController::class)
+    ->name('webhooks.verified-crypto');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

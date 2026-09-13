@@ -18,7 +18,7 @@ class CartController extends Controller
 
         return view('storefront.cart', [
             'cart' => $cart?->calculate(),
-            'freeShippingThreshold' => FlatRateShipping::FREE_SHIPPING_THRESHOLD,
+            'freeShippingThreshold' => FlatRateShipping::freeShippingThreshold(),
         ]);
     }
 

@@ -18,13 +18,14 @@ use Lunar\Models\TaxClass;
 class FlatRateShipping extends ShippingModifier
 {
     /**
-     * Carts at or above this subtotal (in cents) qualify for free standard shipping.
+     * Carts at or above this subtotal (in cents) qualify for free standard
+     * shipping. Rates live in config/shipping.php so they can be changed
+     * without a deploy.
      */
-    public const FREE_SHIPPING_THRESHOLD = 20000;
-
-    public const STANDARD_RATE = 1200;
-
-    public const EXPRESS_RATE = 2500;
+    public static function freeShippingThreshold(): int
+    {
+        return (int) config('shipping.free_threshold');
+    }
 
     public function handle(Cart $cart, Closure $next)
     {
@@ -32,13 +33,13 @@ class FlatRateShipping extends ShippingModifier
 
         if ($taxClass) {
             $currency = $cart->currency;
-            $qualifiesForFree = ($cart->subTotal?->value ?? 0) >= self::FREE_SHIPPING_THRESHOLD;
+            $qualifiesForFree = ($cart->subTotal?->value ?? 0) >= self::freeShippingThreshold();
 
             ShippingManifest::addOption(new ShippingOption(
                 name: $qualifiesForFree ? 'Free Standard Shipping' : 'Standard Shipping',
                 description: '3-5 business days, discreet packaging',
                 identifier: 'STANDARD',
-                price: new Price($qualifiesForFree ? 0 : self::STANDARD_RATE, $currency, 1),
+                price: new Price($qualifiesForFree ? 0 : (int) config('shipping.standard_rate'), $currency, 1),
                 taxClass: $taxClass,
             ));
 
@@ -46,7 +47,7 @@ class FlatRateShipping extends ShippingModifier
                 name: 'Express Shipping',
                 description: '1-2 business days',
                 identifier: 'EXPRESS',
-                price: new Price(self::EXPRESS_RATE, $currency, 1),
+                price: new Price((int) config('shipping.express_rate'), $currency, 1),
                 taxClass: $taxClass,
             ));
         }

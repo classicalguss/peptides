@@ -15,6 +15,8 @@ use App\Filament\Resources\PolicyResource;
 use App\Filament\Resources\ProductTextSearchResource;
 use App\Filament\Resources\WebsiteTextResource;
 use App\Models\Product;
+use App\Payments\VerifiedCryptoPayment;
+use App\Payments\VerifiedCryptoSignature;
 use App\Shipping\FlatRateShipping;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +29,7 @@ use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\FieldTypeManifestInterface;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Facades\ModelManifest;
+use Lunar\Facades\Payments;
 use Lunar\Models\Contracts\Product as ProductContract;
 
 class AppServiceProvider extends ServiceProvider
@@ -60,6 +63,11 @@ class AppServiceProvider extends ServiceProvider
             CustomerGroupPricingRelationManager::class => CustomerGroupPricingRelationManagerExtension::class,
         ])->register();
 
+        $this->app->singleton(
+            VerifiedCryptoSignature::class,
+            fn () => new VerifiedCryptoSignature(config('verified-crypto.webhook_secret')),
+        );
+
         // Storefront copy is edited as Lunar attributes; these are the two
         // field types the "Website Page" group needs beyond Lunar's own.
         AttributeData::registerFieldType(Textarea::class, TextareaField::class);
@@ -78,5 +86,10 @@ class AppServiceProvider extends ServiceProvider
         $fieldTypes->add(TextList::class);
 
         $this->app->make(ShippingModifiers::class)->add(FlatRateShipping::class);
+
+        Payments::extend(
+            VerifiedCryptoPayment::DRIVER,
+            fn () => new VerifiedCryptoPayment,
+        );
     }
 }

@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Signed with HMAC-SHA256 by VERIFIED; there is no session to carry a token.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/verified-crypto',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

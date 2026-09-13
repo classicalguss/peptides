@@ -15,8 +15,17 @@
             </div>
 
             <h1 class="display-title mt-7 text-4xl text-white sm:text-5xl">
-                Order <span class="text-foil">Confirmed</span>
+                Order <span class="text-foil">{{ ($awaitingPayment ?? false) ? 'Received' : 'Confirmed' }}</span>
             </h1>
+
+            @if ($awaitingPayment ?? false)
+                <p class="mx-auto mt-6 max-w-xl rounded-xl border border-gold/30 bg-gold/5 px-5 py-4 text-[14px] leading-relaxed text-white/70">
+                    We&rsquo;re still waiting for your payment to confirm. This usually takes a
+                    couple of minutes. You don&rsquo;t need to do anything &mdash; we&rsquo;ll email you
+                    at <span class="text-white/90">{{ $shipping?->contact_email }}</span> as soon
+                    as it clears, and this page will show the full details once it does.
+                </p>
+            @endif
 
             <p class="mt-5 text-[15px] leading-relaxed text-white/55">
                 Thanks{{ $shipping?->first_name ? ', '.$shipping->first_name : '' }} &mdash; {{ site_text('confirmation.intro') }}
