@@ -3,21 +3,19 @@
 namespace App\Payments;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Verifies the HMAC signature on inbound VERIFIED relay callbacks.
  *
- * Callbacks are the authoritative payment signal — the browser redirect after
- * payment is explicitly best-effort — so an order is only ever marked paid off
- * the back of a callback that passes this check.
+ * Implements Section 6 of the partner API guide exactly:
+ *   message   = X-VCC-Timestamp . "." . raw_request_body
+ *   signature = lowercase hex HMAC-SHA256(message, webhook_secret)
+ * compared in constant time, with X-VCC-Timestamp rejected when more than
+ * 300 seconds from the current time. The raw body is used as received —
+ * re-serialising it changes the bytes and breaks verification.
  *
- * NOTE: VERIFIED's docs state the callback carries X-VCC-Timestamp and
- * X-VCC-Signature (HMAC-SHA256, keyed on the webhook_secret sent at session
- * creation) but do not publish the exact signing base string. This implements
- * the conventional "{timestamp}.{raw body}" construction. Confirm it against a
- * real callback during the first live test — if it does not match, only
- * {@see self::payload()} needs to change.
+ * Callbacks are the authoritative payment signal, so an order is only ever
+ * marked paid off the back of a callback that passes this check.
  */
 class VerifiedCryptoSignature
 {
@@ -43,41 +41,9 @@ class VerifiedCryptoSignature
             return false;
         }
 
-        $provided = strtolower(trim($signature));
+        $expected = hash_hmac('sha256', $timestamp.'.'.$rawBody, (string) $this->secret);
 
-        foreach ($this->candidates($rawBody, $timestamp) as $label => $payload) {
-            $expected = hash_hmac('sha256', $payload, (string) $this->secret);
-
-            if (hash_equals($expected, $provided)) {
-                Log::info('VERIFIED callback signature verified.', ['format' => $label]);
-
-                return true;
-            }
-
-            if (hash_equals(base64_encode(hash_hmac('sha256', $payload, (string) $this->secret, true)), trim($signature))) {
-                Log::info('VERIFIED callback signature verified.', ['format' => $label.'+base64']);
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Plausible constructions of the signed string, keyed by a label that is
-     * logged on a match so the format can be pinned down afterwards.
-     *
-     * @return array<string, string>
-     */
-    protected function candidates(string $rawBody, string $timestamp): array
-    {
-        return [
-            'timestamp.body' => $timestamp.'.'.$rawBody,
-            'body' => $rawBody,
-            'timestamp+body' => $timestamp.$rawBody,
-            'body+timestamp' => $rawBody.$timestamp,
-        ];
+        return hash_equals($expected, strtolower(trim($signature)));
     }
 
     /**
