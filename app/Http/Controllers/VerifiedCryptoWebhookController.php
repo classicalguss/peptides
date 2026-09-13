@@ -84,6 +84,9 @@ class VerifiedCryptoWebhookController extends Controller
             ->withData([
                 'tx_hash' => $payload['tx_hash'] ?? $payload['txid_out'] ?? null,
                 'session_id' => $payload['session_id'] ?? null,
+                'amount' => $payload['amount'] ?? null,
+                'value_forwarded_coin' => $payload['value_forwarded_coin'] ?? null,
+                'coin' => $payload['coin'] ?? null,
             ])
             ->authorize();
 

@@ -187,6 +187,56 @@ class VerifiedCryptoWebhookTest extends TestCase
         $this->assertSame(0, Transaction::count());
     }
 
+    public function test_the_settled_amount_is_recorded_rather_than_the_order_total(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '130.00',
+            'value_forwarded_coin' => '124.80',
+            'coin' => 'polygon_usdc',
+        ])->assertOk();
+
+        $transaction = Transaction::where('order_id', $order->id)->sole();
+
+        $this->assertSame(13000, $transaction->amount->value);
+        $this->assertSame(12550, $transaction->meta['order_total']);
+        $this->assertSame('124.80', $transaction->meta['value_forwarded_coin']);
+    }
+
+    public function test_an_underpaid_callback_does_not_mark_the_order_paid(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '5.00',
+        ])->assertStatus(422);
+
+        $this->assertSame('awaiting-payment', $order->fresh()->status);
+        $this->assertNull($order->fresh()->placed_at);
+        $this->assertSame(0, Transaction::count());
+    }
+
+    public function test_rounding_slack_does_not_block_an_otherwise_exact_payment(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '125.49',
+        ])->assertOk();
+
+        $this->assertSame('payment-received', $order->fresh()->status);
+    }
+
     public function test_a_callback_for_an_unknown_order_is_a_404(): void
     {
         $this->sendCallback([
