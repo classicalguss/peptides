@@ -118,6 +118,31 @@ class VerifiedCryptoWebhookTest extends TestCase
         $this->assertEquals($placedAt, $order->fresh()->placed_at);
     }
 
+    /**
+     * Section 6 of the API guide: lowercase hex HMAC-SHA256 over
+     * "{timestamp}.{raw body}". Only that construction is accepted.
+     */
+    public function test_a_signature_in_any_other_construction_is_rejected(): void
+    {
+        $order = $this->order();
+        $body = json_encode(['order_id' => $order->reference, 'event' => 'payment.confirmed', 'tx_hash' => '0xfmt']);
+        $ts = (string) now()->timestamp;
+
+        foreach ([
+            hash_hmac('sha256', $body, self::SECRET),                              // body only
+            hash_hmac('sha256', $ts.$body, self::SECRET),                          // no dot
+            base64_encode(hash_hmac('sha256', $ts.'.'.$body, self::SECRET, true)), // base64
+        ] as $wrong) {
+            $this->call('POST', route('webhooks.verified-crypto'), [], [], [], [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_X_VCC_TIMESTAMP' => $ts,
+                'HTTP_X_VCC_SIGNATURE' => $wrong,
+            ], $body)->assertUnauthorized();
+        }
+
+        $this->assertSame('awaiting-payment', $order->fresh()->status);
+    }
+
     public function test_a_callback_with_a_bad_signature_is_rejected_and_the_order_is_untouched(): void
     {
         $order = $this->order();
@@ -126,7 +151,7 @@ class VerifiedCryptoWebhookTest extends TestCase
             'order_id' => $order->reference,
             'status' => 'success',
             'tx_hash' => '0xabc123',
-        ], secret: 'wrong-secret')->assertForbidden();
+        ], secret: 'wrong-secret')->assertUnauthorized();
 
         $this->assertSame('awaiting-payment', $order->fresh()->status);
         $this->assertNull($order->fresh()->placed_at);
@@ -141,7 +166,7 @@ class VerifiedCryptoWebhookTest extends TestCase
             'order_id' => $order->reference,
             'status' => 'success',
             'tx_hash' => '0xabc123',
-        ])->assertForbidden();
+        ])->assertUnauthorized();
 
         $this->assertSame(0, Transaction::count());
     }
@@ -154,7 +179,7 @@ class VerifiedCryptoWebhookTest extends TestCase
             'order_id' => $order->reference,
             'status' => 'success',
             'tx_hash' => '0xabc123',
-        ], timestamp: (string) now()->subHour()->timestamp)->assertForbidden();
+        ], timestamp: (string) now()->subHour()->timestamp)->assertUnauthorized();
 
         $this->assertSame(0, Transaction::count());
     }
@@ -170,7 +195,7 @@ class VerifiedCryptoWebhookTest extends TestCase
             'order_id' => $order->reference,
             'status' => 'success',
             'tx_hash' => '0xabc123',
-        ])->assertForbidden();
+        ])->assertUnauthorized();
     }
 
     public function test_an_unsettled_status_is_acknowledged_without_marking_the_order_paid(): void
@@ -182,6 +207,111 @@ class VerifiedCryptoWebhookTest extends TestCase
             'status' => 'pending',
             'tx_hash' => '0xabc123',
         ])->assertOk()->assertJson(['ok' => true, 'handled' => false]);
+
+        $this->assertSame('awaiting-payment', $order->fresh()->status);
+        $this->assertSame(0, Transaction::count());
+    }
+
+    public function test_the_settled_amount_is_recorded_rather_than_the_order_total(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '130.00',
+            'value_forwarded_coin' => '124.80',
+            'coin' => 'polygon_usdc',
+        ])->assertOk();
+
+        $transaction = Transaction::where('order_id', $order->id)->sole();
+
+        $this->assertSame(13000, $transaction->amount->value);
+        $this->assertSame(12550, $transaction->meta['order_total']);
+        $this->assertSame('124.80', $transaction->meta['value_forwarded_coin']);
+    }
+
+    public function test_an_underpaid_callback_does_not_mark_the_order_paid(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '5.00',
+        ])->assertStatus(422);
+
+        $this->assertSame('awaiting-payment', $order->fresh()->status);
+        $this->assertNull($order->fresh()->placed_at);
+        $this->assertSame(0, Transaction::count());
+    }
+
+    public function test_rounding_slack_does_not_block_an_otherwise_exact_payment(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+            'amount' => '125.49',
+        ])->assertOk();
+
+        $this->assertSame('payment-received', $order->fresh()->status);
+    }
+
+    public function test_the_documented_payment_confirmed_payload_settles_the_order(): void
+    {
+        $order = $this->order(['meta' => ['verified_crypto' => ['session_id' => 'sess_doc']]]);
+
+        $this->sendCallback([
+            'event' => 'payment.confirmed',
+            'partner_id' => 'nanochecks',
+            'session_id' => 'sess_doc',
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'coin' => 'polygon_usdc',
+            'amount' => '125.50',
+            'currency' => 'USD',
+            'address_in' => '0xPREPARED',
+            'tx_hash' => '0xabc123',
+            'txid_in' => '0xdef456',
+            'txid_out' => '0xabc123',
+            'value_forwarded_coin' => '123.00',
+            'uuid' => 'cbdd11b2',
+            'confirmed_at' => '2026-03-15T14:32:11Z',
+        ])->assertOk()->assertJson(['handled' => true]);
+
+        $this->assertSame('payment-received', $order->fresh()->status);
+    }
+
+    public function test_an_event_other_than_payment_confirmed_is_acknowledged_but_not_settled(): void
+    {
+        $order = $this->order();
+
+        $this->sendCallback([
+            'event' => 'payment.pending',
+            'order_id' => $order->reference,
+            'status' => 'confirmed',
+            'tx_hash' => '0xabc123',
+        ])->assertOk()->assertJson(['handled' => false]);
+
+        $this->assertSame('awaiting-payment', $order->fresh()->status);
+        $this->assertSame(0, Transaction::count());
+    }
+
+    public function test_a_session_id_that_does_not_match_the_order_is_rejected(): void
+    {
+        $order = $this->order(['meta' => ['verified_crypto' => ['session_id' => 'sess_original']]]);
+
+        $this->sendCallback([
+            'event' => 'payment.confirmed',
+            'session_id' => 'sess_someone_elses',
+            'order_id' => $order->reference,
+            'tx_hash' => '0xabc123',
+        ])->assertStatus(422);
 
         $this->assertSame('awaiting-payment', $order->fresh()->status);
         $this->assertSame(0, Transaction::count());

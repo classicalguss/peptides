@@ -7,16 +7,15 @@ use Illuminate\Support\Carbon;
 /**
  * Verifies the HMAC signature on inbound VERIFIED relay callbacks.
  *
- * Callbacks are the authoritative payment signal — the browser redirect after
- * payment is explicitly best-effort — so an order is only ever marked paid off
- * the back of a callback that passes this check.
+ * Implements Section 6 of the partner API guide exactly:
+ *   message   = X-VCC-Timestamp . "." . raw_request_body
+ *   signature = lowercase hex HMAC-SHA256(message, webhook_secret)
+ * compared in constant time, with X-VCC-Timestamp rejected when more than
+ * 300 seconds from the current time. The raw body is used as received —
+ * re-serialising it changes the bytes and breaks verification.
  *
- * NOTE: VERIFIED's docs state the callback carries X-VCC-Timestamp and
- * X-VCC-Signature (HMAC-SHA256, keyed on the webhook_secret sent at session
- * creation) but do not publish the exact signing base string. This implements
- * the conventional "{timestamp}.{raw body}" construction. Confirm it against a
- * real callback during the first live test — if it does not match, only
- * {@see self::payload()} needs to change.
+ * Callbacks are the authoritative payment signal, so an order is only ever
+ * marked paid off the back of a callback that passes this check.
  */
 class VerifiedCryptoSignature
 {
@@ -42,17 +41,9 @@ class VerifiedCryptoSignature
             return false;
         }
 
-        $expected = hash_hmac('sha256', $this->payload($rawBody, $timestamp), (string) $this->secret);
+        $expected = hash_hmac('sha256', $timestamp.'.'.$rawBody, (string) $this->secret);
 
         return hash_equals($expected, strtolower(trim($signature)));
-    }
-
-    /**
-     * The string the HMAC is computed over.
-     */
-    protected function payload(string $rawBody, string $timestamp): string
-    {
-        return $timestamp.'.'.$rawBody;
     }
 
     /**

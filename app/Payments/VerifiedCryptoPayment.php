@@ -25,6 +25,12 @@ class VerifiedCryptoPayment extends AbstractPayment
     public const DRIVER = 'verified-crypto';
 
     /**
+     * Cents of slack allowed between the settled amount and the order total,
+     * to absorb rounding between the decimal the relay sends and our integers.
+     */
+    public const AMOUNT_TOLERANCE = 2;
+
+    /**
      * Mark the order paid against a confirmed on-chain settlement.
      *
      * Expects `withData(['tx_hash' => ..., 'session_id' => ...])`. Callbacks
@@ -53,6 +59,17 @@ class VerifiedCryptoPayment extends AbstractPayment
             );
         }
 
+        $paid = $this->paidAmountInCents();
+
+        if ($paid !== null && $paid + self::AMOUNT_TOLERANCE < $this->order->total->value) {
+            return new PaymentAuthorize(
+                success: false,
+                orderId: $this->order->id,
+                message: "Callback settled {$paid} but the order total is {$this->order->total->value}.",
+                paymentType: self::DRIVER,
+            );
+        }
+
         $existing = Transaction::where('order_id', $this->order->id)
             ->where('reference', $reference)
             ->where('success', true)
@@ -66,23 +83,28 @@ class VerifiedCryptoPayment extends AbstractPayment
             );
         }
 
-        DB::transaction(function () use ($reference) {
+        DB::transaction(function () use ($reference, $paid) {
             Transaction::create([
                 'order_id' => $this->order->id,
                 'success' => true,
                 'type' => 'capture',
                 'driver' => self::DRIVER,
-                'amount' => $this->order->total->value,
+                'amount' => $paid ?? $this->order->total->value,
                 'reference' => $reference,
                 'status' => 'settled',
                 'notes' => 'USDC settled on Polygon.',
                 'card_type' => 'usdc',
                 'last_four' => null,
                 'captured_at' => now(),
-                'meta' => [
+                'meta' => array_filter([
                     'session_id' => $this->data['session_id'] ?? null,
                     'tx_hash' => $reference,
-                ],
+                    'order_total' => $this->order->total->value,
+                    'settled_amount' => $paid,
+                    // What actually reached the wallet after fees, per the relay.
+                    'value_forwarded_coin' => $this->data['value_forwarded_coin'] ?? null,
+                    'coin' => $this->data['coin'] ?? null,
+                ], fn ($value) => $value !== null),
             ]);
 
             $this->order->update([
@@ -106,6 +128,23 @@ class VerifiedCryptoPayment extends AbstractPayment
         PaymentAttemptEvent::dispatch($response);
 
         return $response;
+    }
+
+    /**
+     * The amount the relay says was settled, in minor units.
+     *
+     * Returns null when the callback carries no amount, in which case the
+     * order total is trusted — there is nothing to compare against.
+     */
+    protected function paidAmountInCents(): ?int
+    {
+        $amount = $this->data['amount'] ?? null;
+
+        if ($amount === null || ! is_numeric($amount)) {
+            return null;
+        }
+
+        return (int) round(((float) $amount) * 100);
     }
 
     /**

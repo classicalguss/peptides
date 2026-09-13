@@ -20,7 +20,8 @@ use Lunar\Models\Order;
 class VerifiedCryptoWebhookController extends Controller
 {
     /**
-     * Statuses the relay uses to indicate a confirmed on-chain settlement.
+     * Status values accepted as a confirmed settlement when a callback carries
+     * no `event` field. The documented event is `payment.confirmed`.
      */
     protected const SETTLED_STATUSES = ['success', 'completed', 'complete', 'settled', 'paid', 'confirmed'];
 
@@ -48,7 +49,7 @@ class VerifiedCryptoWebhookController extends Controller
                 'ip' => $request->ip(),
             ]);
 
-            return response()->json(['ok' => false, 'error' => 'invalid signature'], 403);
+            return response()->json(['ok' => false, 'error' => 'invalid signature'], 401);
         }
 
         $payload = $request->json()->all();
@@ -68,11 +69,32 @@ class VerifiedCryptoWebhookController extends Controller
             return response()->json(['ok' => false, 'error' => 'unknown order'], 404);
         }
 
+        $expectedSession = ((array) $order->meta)['verified_crypto']['session_id'] ?? null;
+        $callbackSession = $payload['session_id'] ?? null;
+
+        if (is_string($expectedSession) && is_string($callbackSession) && ! hash_equals($expectedSession, $callbackSession)) {
+            Log::warning('VERIFIED callback session_id does not match the order.', [
+                'order_reference' => $reference,
+                'expected' => $expectedSession,
+                'received' => $callbackSession,
+            ]);
+
+            return response()->json(['ok' => false, 'error' => 'session mismatch'], 422);
+        }
+
+        $event = strtolower((string) ($payload['event'] ?? ''));
         $status = strtolower((string) ($payload['status'] ?? ''));
 
-        if (! in_array($status, self::SETTLED_STATUSES, true)) {
+        // The guide's documented settlement event is payment.confirmed. If a
+        // relay omits `event`, fall back to the status field so a documented
+        // status alone can still settle the order.
+        $isConfirmed = $event === 'payment.confirmed'
+            || ($event === '' && in_array($status, self::SETTLED_STATUSES, true));
+
+        if (! $isConfirmed) {
             Log::info('VERIFIED callback received for an unsettled payment.', [
                 'order_reference' => $reference,
+                'event' => $event,
                 'status' => $status,
             ]);
 
@@ -84,6 +106,9 @@ class VerifiedCryptoWebhookController extends Controller
             ->withData([
                 'tx_hash' => $payload['tx_hash'] ?? $payload['txid_out'] ?? null,
                 'session_id' => $payload['session_id'] ?? null,
+                'amount' => $payload['amount'] ?? null,
+                'value_forwarded_coin' => $payload['value_forwarded_coin'] ?? null,
+                'coin' => $payload['coin'] ?? null,
             ])
             ->authorize();
 
