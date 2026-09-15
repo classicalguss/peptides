@@ -54,12 +54,24 @@ class VerifiedCryptoWebhookController extends Controller
 
         $payload = $request->json()->all();
         $reference = $payload['order_id'] ?? null;
+        $callbackSession = $payload['session_id'] ?? null;
 
-        if (! is_string($reference) || $reference === '') {
-            return response()->json(['ok' => false, 'error' => 'missing order_id'], 422);
+        // The guide says order_id is always echoed back; VERIFIED's own
+        // description of the live payload lists only event, amount, coin,
+        // value_coin and tx_hash. Fall back to the session_id stored on the
+        // order at creation so a confirmation without order_id still lands.
+        $order = null;
+
+        if (is_string($reference) && $reference !== '') {
+            $order = Order::where('reference', $reference)->first();
+        } elseif (is_string($callbackSession) && $callbackSession !== '') {
+            $order = Order::where('meta->verified_crypto->session_id', $callbackSession)->first();
+            $reference = $order?->reference ?? $callbackSession;
         }
 
-        $order = Order::where('reference', $reference)->first();
+        if (! is_string($reference) || $reference === '') {
+            return response()->json(['ok' => false, 'error' => 'missing order_id and session_id'], 422);
+        }
 
         if (! $order) {
             Log::warning('VERIFIED callback referenced an unknown order.', [
@@ -70,7 +82,6 @@ class VerifiedCryptoWebhookController extends Controller
         }
 
         $expectedSession = ((array) $order->meta)['verified_crypto']['session_id'] ?? null;
-        $callbackSession = $payload['session_id'] ?? null;
 
         if (is_string($expectedSession) && is_string($callbackSession) && ! hash_equals($expectedSession, $callbackSession)) {
             Log::warning('VERIFIED callback session_id does not match the order.', [
@@ -107,6 +118,7 @@ class VerifiedCryptoWebhookController extends Controller
                 'tx_hash' => $payload['tx_hash'] ?? $payload['txid_out'] ?? null,
                 'session_id' => $payload['session_id'] ?? null,
                 'amount' => $payload['amount'] ?? null,
+                'value_coin' => $payload['value_coin'] ?? null,
                 'value_forwarded_coin' => $payload['value_forwarded_coin'] ?? null,
                 'coin' => $payload['coin'] ?? null,
             ])
