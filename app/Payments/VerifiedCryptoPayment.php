@@ -92,8 +92,8 @@ class VerifiedCryptoPayment extends AbstractPayment
                 'amount' => $paid ?? $this->order->total->value,
                 'reference' => $reference,
                 'status' => 'settled',
-                'notes' => 'USDC settled on Polygon.',
-                'card_type' => 'usdc',
+                'notes' => $this->settlementNote(),
+                'card_type' => substr(strtolower((string) ($this->data['coin'] ?? 'usdc')) ?: 'usdc', 0, 25),
                 'last_four' => null,
                 'captured_at' => now(),
                 'meta' => array_filter([
@@ -101,7 +101,9 @@ class VerifiedCryptoPayment extends AbstractPayment
                     'tx_hash' => $reference,
                     'order_total' => $this->order->total->value,
                     'settled_amount' => $paid,
-                    // What actually reached the wallet after fees, per the relay.
+                    // Coin amount that reached the wallet, per the relay. The live
+                    // relay sends value_coin; the guide documents value_forwarded_coin.
+                    'value_coin' => $this->data['value_coin'] ?? null,
                     'value_forwarded_coin' => $this->data['value_forwarded_coin'] ?? null,
                     'coin' => $this->data['coin'] ?? null,
                 ], fn ($value) => $value !== null),
@@ -128,6 +130,29 @@ class VerifiedCryptoPayment extends AbstractPayment
         PaymentAttemptEvent::dispatch($response);
 
         return $response;
+    }
+
+    /**
+     * Human-readable settlement note. The provider route decides the coin and
+     * network — Banxa settles ETH on Ethereum, Stripe USDC on Polygon — so the
+     * note names what actually arrived rather than assuming USDC.
+     */
+    protected function settlementNote(): string
+    {
+        $coin = strtoupper((string) ($this->data['coin'] ?? ''));
+        $value = $this->data['value_coin'] ?? null;
+
+        if ($coin === '') {
+            return 'Settled on-chain via VERIFIED.';
+        }
+
+        $network = match (true) {
+            str_contains(strtolower($coin), 'polygon') || $coin === 'POL' => 'Polygon',
+            $coin === 'ETH' => 'Ethereum',
+            default => null,
+        };
+
+        return trim(sprintf('Settled as %s%s%s.', $value !== null ? "{$value} " : '', $coin, $network ? " on {$network}" : ''));
     }
 
     /**

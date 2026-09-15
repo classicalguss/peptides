@@ -317,6 +317,62 @@ class VerifiedCryptoWebhookTest extends TestCase
         $this->assertSame(0, Transaction::count());
     }
 
+    /**
+     * The payload VERIFIED's developer described for live partner-API
+     * confirmations (2026-09-15): event, amount, coin, value_coin, tx_hash —
+     * no status field, coin may be ETH on Ethereum.
+     */
+    public function test_the_live_payload_described_by_verified_settles_the_order(): void
+    {
+        $order = $this->order(['total' => 3500, 'meta' => ['verified_crypto' => ['session_id' => 'sess_0245abd0302b']]]);
+
+        $this->sendCallback([
+            'event' => 'payment.confirmed',
+            'order_id' => $order->reference,
+            'session_id' => 'sess_0245abd0302b',
+            'amount' => '35.00',
+            'coin' => 'eth',
+            'value_coin' => '0.01231276',
+            'tx_hash' => '0xb6aead75bbd682672f2eabc7867a5e376d43dcb941e90eb247754fc32d1c78ab',
+        ])->assertOk()->assertJson(['ok' => true, 'handled' => true]);
+
+        $order->refresh();
+        $transaction = Transaction::where('order_id', $order->id)->sole();
+
+        $this->assertSame('payment-received', $order->status);
+        $this->assertSame(3500, $transaction->amount->value);
+        $this->assertSame('eth', $transaction->card_type);
+        $this->assertSame('0.01231276', $transaction->meta['value_coin']);
+        $this->assertSame('Settled as 0.01231276 ETH on Ethereum.', $transaction->notes);
+    }
+
+    public function test_a_confirmation_without_order_id_is_matched_by_session_id(): void
+    {
+        $order = $this->order(['total' => 3500, 'meta' => ['verified_crypto' => ['session_id' => 'sess_only']]]);
+
+        $this->sendCallback([
+            'event' => 'payment.confirmed',
+            'session_id' => 'sess_only',
+            'amount' => '35.00',
+            'coin' => 'eth',
+            'value_coin' => '0.0123',
+            'tx_hash' => '0xbysession',
+        ])->assertOk()->assertJson(['handled' => true]);
+
+        $this->assertSame('payment-received', $order->fresh()->status);
+    }
+
+    public function test_a_duplicate_of_the_live_payload_still_returns_200(): void
+    {
+        $order = $this->order(['total' => 3500]);
+        $payload = ['event' => 'payment.confirmed', 'order_id' => $order->reference, 'amount' => '35.00', 'coin' => 'eth', 'value_coin' => '0.0123', 'tx_hash' => '0xdup'];
+
+        $this->sendCallback($payload)->assertOk();
+        $this->sendCallback($payload)->assertOk()->assertJson(['ok' => true]);
+
+        $this->assertSame(1, Transaction::where('order_id', $order->id)->count());
+    }
+
     public function test_a_callback_for_an_unknown_order_is_a_404(): void
     {
         $this->sendCallback([
