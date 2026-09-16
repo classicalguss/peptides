@@ -153,6 +153,52 @@ class VerifiedCryptoCheckoutTest extends TestCase
         Http::assertNothingSent();
     }
 
+    public function test_an_order_below_the_minimum_is_rejected_before_any_session_is_created(): void
+    {
+        Http::fake();
+        // The seeded cart totals $137.50; a $1,000 minimum puts it below the floor.
+        config(['verified-crypto.minimum_order' => 100000]);
+
+        $this->submitCheckout()
+            ->assertRedirect()
+            ->assertSessionHasErrors('payment');
+
+        $this->assertSame(0, Order::query()->count(), 'No order should be created below the minimum.');
+        Http::assertNothingSent();
+    }
+
+    public function test_an_order_at_or_above_the_minimum_proceeds(): void
+    {
+        Http::fake([
+            '*/v1/partner-session' => Http::response([
+                'ok' => true, 'status' => 'success', 'session_id' => 'sess_min',
+                'checkout_url' => 'https://go.verifiedcryptocheckout.com/pay.php?ok=1',
+            ]),
+        ]);
+        config(['verified-crypto.minimum_order' => 3000]); // $30, below the $137.50 cart
+
+        $this->submitCheckout()
+            ->assertRedirect('https://go.verifiedcryptocheckout.com/pay.php?ok=1');
+
+        $this->assertSame(1, Order::query()->count());
+        Http::assertSentCount(1);
+    }
+
+    public function test_a_zero_minimum_disables_the_check(): void
+    {
+        Http::fake([
+            '*/v1/partner-session' => Http::response([
+                'ok' => true, 'status' => 'success', 'session_id' => 'sess_z',
+                'checkout_url' => 'https://go.verifiedcryptocheckout.com/pay.php?ok=1',
+            ]),
+        ]);
+        config(['verified-crypto.minimum_order' => 0]);
+
+        $this->submitCheckout()->assertRedirect();
+
+        $this->assertSame(1, Order::query()->count());
+    }
+
     public function test_the_offline_flow_is_untouched_when_the_integration_is_disabled(): void
     {
         Http::fake();

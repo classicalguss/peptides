@@ -101,14 +101,25 @@ class CheckoutController extends Controller
                 ->withErrors(['shipping_option' => 'That shipping method is no longer available.']);
         }
 
-        $order = DB::transaction(function () use ($cart, $address, $shippingOption) {
-            $cart->setShippingAddress($address);
-            $cart->setBillingAddress($address);
-            $cart->setShippingOption($shippingOption);
-            $cart->calculate();
+        $cart->setShippingAddress($address);
+        $cart->setBillingAddress($address);
+        $cart->setShippingOption($shippingOption);
+        $cart->calculate();
 
-            return $cart->createOrder();
-        });
+        // Card-to-crypto providers reject small amounts, so an order below the
+        // minimum could never be paid. Reject it here rather than creating an
+        // order that would strand at awaiting-payment.
+        if (config('verified-crypto.enabled')) {
+            $minimum = (int) config('verified-crypto.minimum_order');
+
+            if ($minimum > 0 && ($cart->total?->value ?? 0) < $minimum) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['payment' => 'The minimum order total for checkout is $'.number_format($minimum / 100, 2).'. Please add more items to your cart before checking out.']);
+            }
+        }
+
+        $order = DB::transaction(fn () => $cart->createOrder());
 
         if (config('verified-crypto.enabled')) {
             return $this->redirectToVerifiedCheckout($request, $order, $data['email']);

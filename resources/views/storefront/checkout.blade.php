@@ -187,10 +187,19 @@
                     <span class="display-title text-3xl text-foil">{{ Catalog::money($cart->total?->value ?? 0) }}</span>
                 </div>
 
-                <button type="submit"
-                        class="mt-6 w-full rounded-full bg-gold px-8 py-4 text-sm font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright">
+                @php($cryptoMinimum = config('verified-crypto.enabled') ? (int) config('verified-crypto.minimum_order') : 0)
+                @php($belowMinimum = $cryptoMinimum > 0 && ($cart->total?->value ?? 0) < $cryptoMinimum)
+
+                <button type="submit" @disabled($belowMinimum)
+                        class="mt-6 w-full rounded-full bg-gold px-8 py-4 text-sm font-extrabold tracking-widest text-black uppercase transition hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-40">
                     Place Order
                 </button>
+
+                @if ($belowMinimum)
+                    <p class="mt-3 text-center text-[12px] font-semibold text-gold">
+                        Minimum order is {{ Catalog::money($cryptoMinimum) }}. Add {{ Catalog::money($cryptoMinimum - ($cart->total?->value ?? 0)) }} more to check out.
+                    </p>
+                @endif
 
                 <p class="mt-4 text-center text-[11px] text-white/35">
                     {{ site_text('checkout.payment_note') }}

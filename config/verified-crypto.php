@@ -87,6 +87,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Minimum Order Total
+    |--------------------------------------------------------------------------
+    |
+    | Card-to-crypto on-ramp providers enforce their own minimums — VERIFIED's
+    | hosted page limits provider options below $20, and some providers floor
+    | higher. Orders below this integer-cent total are rejected at checkout so a
+    | customer never reaches a hosted page that cannot process their amount.
+    | Set to 0 to disable the check. Default: $30.00.
+    |
+    */
+    'minimum_order' => (int) env('VERIFIED_CRYPTO_MINIMUM_ORDER', 3000),
+
+    /*
+    |--------------------------------------------------------------------------
     | HTTP Timeout
     |--------------------------------------------------------------------------
     */
