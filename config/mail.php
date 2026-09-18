@@ -122,4 +122,18 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Store Contact Address
+    |--------------------------------------------------------------------------
+    |
+    | Where storefront contact-form submissions are forwarded. The customer's
+    | own address is set as Reply-To so the team can answer from the inbox.
+    |
+    */
+
+    'contact' => [
+        'address' => env('MAIL_CONTACT_ADDRESS', 'orders@powereduppeptides.com'),
+    ],
+
 ];
