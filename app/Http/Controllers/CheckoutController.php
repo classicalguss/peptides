@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Listeners\SendOrderConfirmation;
 use App\Payments\VerifiedCryptoClient;
 use App\Payments\VerifiedCryptoException;
 use Illuminate\Http\RedirectResponse;
@@ -127,6 +128,11 @@ class CheckoutController extends Controller
 
         CartSession::forget();
         $request->session()->forget('research_disclaimer_accepted');
+
+        // Offline payment never produces a payment attempt, so the receipt is
+        // sent here. Card-to-crypto orders are emailed by the settlement
+        // callback instead, once the payment has actually cleared.
+        app(SendOrderConfirmation::class)->send($order);
 
         return redirect()->route('checkout.confirmation', $order->reference);
     }
