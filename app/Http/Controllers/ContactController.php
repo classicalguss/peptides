@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMessageReceived;
 use App\Models\ContactMessage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -42,7 +46,18 @@ class ContactController extends Controller
 
         RateLimiter::hit($key, 600);
 
-        ContactMessage::create($data);
+        $message = ContactMessage::create($data);
+
+        // The message is already saved; a mail outage must not turn a
+        // successful submission into an error for the customer.
+        try {
+            Mail::to(config('mail.contact.address'))->send(new ContactMessageReceived($message));
+        } catch (Throwable $e) {
+            Log::error('Could not forward a contact message to the store inbox.', [
+                'contact_message_id' => $message->id,
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()
             ->route('contact')
