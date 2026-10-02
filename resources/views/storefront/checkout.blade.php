@@ -1,8 +1,5 @@
 @php
     use App\Support\Catalog;
-
-    $countries = \Lunar\Models\Country::orderBy('name')->get(['id', 'name']);
-    $defaultCountry = old('country_id', \Lunar\Models\Country::where('iso2', 'US')->value('id'));
 @endphp
 
 <x-layouts.storefront :title="site_text('checkout.meta_title')">
@@ -88,26 +85,28 @@
                                    class="mt-1.5 w-full rounded-xl border border-white/12 bg-black/50 px-4 py-3 text-sm text-white outline-none focus:border-gold/50">
                         </label>
                         <label class="block">
-                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">State / region</span>
-                            <input type="text" name="state" value="{{ old('state') }}" required
-                                   class="mt-1.5 w-full rounded-xl border border-white/12 bg-black/50 px-4 py-3 text-sm text-white outline-none focus:border-gold/50">
-                        </label>
-                        <label class="block">
-                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">Postal code</span>
-                            <input type="text" name="postcode" value="{{ old('postcode') }}" required
-                                   class="mt-1.5 w-full rounded-xl border border-white/12 bg-black/50 px-4 py-3 text-sm text-white outline-none focus:border-gold/50">
-                        </label>
-                        <label class="block">
-                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">Country</span>
-                            <select name="country_id" required
+                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">State</span>
+                            <select name="state" required
                                     class="mt-1.5 w-full rounded-xl border border-white/12 bg-black/50 px-4 py-3 text-sm text-white outline-none focus:border-gold/50">
-                                @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}" @selected((int) $defaultCountry === $country->id)>
-                                        {{ $country->name }}
-                                    </option>
+                                <option value="" disabled @selected(! old('state'))>Select a state</option>
+                                @foreach (config('shipping.states') as $code => $name)
+                                    <option value="{{ $code }}" @selected(old('state') === $code)>{{ $name }}</option>
                                 @endforeach
                             </select>
                         </label>
+                        <label class="block">
+                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">ZIP code</span>
+                            <input type="text" name="postcode" value="{{ old('postcode') }}" required
+                                   inputmode="numeric" pattern="\d{5}(-\d{4})?" autocomplete="postal-code"
+                                   placeholder="e.g. 90001" title="Enter a 5-digit US ZIP code, e.g. 90001"
+                                   class="mt-1.5 w-full rounded-xl border border-white/12 bg-black/50 px-4 py-3 text-sm text-white outline-none focus:border-gold/50">
+                        </label>
+                        <div class="block">
+                            <span class="text-[11px] font-bold tracking-wide text-white/50 uppercase">Country</span>
+                            <p class="mt-1.5 w-full rounded-xl border border-white/8 bg-black/30 px-4 py-3 text-sm text-white/60">
+                                United States <span class="text-white/30">— we ship within the US only</span>
+                            </p>
+                        </div>
                     </div>
                 </section>
 

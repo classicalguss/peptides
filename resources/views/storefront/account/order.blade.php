@@ -3,6 +3,7 @@
 
     $shipping = $order->shippingAddress;
     $billing = $order->billingAddress;
+    $label = \App\Shipping\ShippingLabel::forOrder($order);
 @endphp
 
 <x-layouts.storefront :title="'Order '.$order->reference.' — Powered Up Peptides'">
@@ -64,6 +65,22 @@
                 </div>
             </dl>
         </div>
+
+        @if ($label)
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl panel p-6">
+                <div>
+                    <h2 class="text-[11px] font-extrabold tracking-widest text-gold uppercase">Tracking</h2>
+                    <p class="mt-3 text-sm font-bold text-white">{{ $label->trackingCode }}</p>
+                    <p class="mt-0.5 text-xs text-white/40">Shipped with {{ $label->carrier }}</p>
+                </div>
+                @if ($label->trackingUrl)
+                    <a href="{{ $label->trackingUrl }}" target="_blank" rel="noopener"
+                       class="rounded-full border border-gold/50 px-6 py-3 text-[11px] font-extrabold tracking-widest text-gold uppercase transition hover:bg-gold/10">
+                        Track Package
+                    </a>
+                @endif
+            </div>
+        @endif
 
         <div class="mt-6 grid gap-6 sm:grid-cols-2">
             @foreach ([['Shipping Address', $shipping], ['Billing Address', $billing]] as [$label, $address])

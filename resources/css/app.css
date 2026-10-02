@@ -38,6 +38,12 @@
         background: var(--color-gold);
         color: #000;
     }
+
+    /* Tailwind v4 leaves buttons on the default arrow cursor. */
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
 }
 
 @utility display-title {

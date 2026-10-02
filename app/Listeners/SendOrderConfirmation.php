@@ -75,7 +75,7 @@ class SendOrderConfirmation
         ]);
     }
 
-    protected function recipient(Order $order): ?string
+    public function recipient(Order $order): ?string
     {
         $email = $order->shippingAddress?->contact_email
             ?: $order->billingAddress?->contact_email
