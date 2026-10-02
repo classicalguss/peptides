@@ -80,7 +80,7 @@ class ShippingSettings extends Page implements HasForms
                         Forms\Components\TextInput::make('from_street1')->label('Street address')->required()->maxLength(255),
                         Forms\Components\TextInput::make('from_street2')->label('Suite / unit')->maxLength(255),
                         Forms\Components\TextInput::make('from_city')->label('City')->required()->maxLength(255),
-                        Forms\Components\TextInput::make('from_state')->label('State')->placeholder('TX')->required()->maxLength(2)->minLength(2),
+                        Forms\Components\Select::make('from_state')->label('State')->options(config('shipping.states'))->in(array_keys(config('shipping.states')))->searchable()->required(),
                         Forms\Components\TextInput::make('from_zip')->label('ZIP code')->required()->maxLength(10),
                         Forms\Components\TextInput::make('from_phone')->label('Phone')->helperText('USPS requires a sender phone number.')->tel()->required()->maxLength(20),
                     ]),
@@ -100,7 +100,6 @@ class ShippingSettings extends Page implements HasForms
     public function save(): void
     {
         $data = $this->form->getState();
-        $data['from_state'] = strtoupper((string) $data['from_state']);
 
         ShippingSetting::current()->fill($data)->save();
 
