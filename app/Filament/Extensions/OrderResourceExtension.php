@@ -4,9 +4,9 @@ namespace App\Filament\Extensions;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\BaseFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -34,45 +34,42 @@ class OrderResourceExtension extends ResourceExtension
                     : $column,
                 OrderResource::getTableColumns(),
             ))
-            ->filters([
-                SelectFilter::make('status')
-                    ->label(__('lunarpanel::order.table.status.label'))
-                    ->options(collect(config('lunar.orders.statuses', []))
-                        ->mapWithKeys(fn (array $data, string $status) => [$status => $data['label']]))
-                    ->multiple(),
-                Filter::make('created_at')
-                    ->form([
-                        DatePicker::make('created_after')->label('Ordered after'),
-                        DatePicker::make('created_before')->label('Ordered before'),
-                    ])
-                    ->query(fn (Builder $query, array $data): Builder => $query
-                        ->when(
-                            $data['created_after'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                        )
-                        ->when(
-                            $data['created_before'] ?? null,
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                        ))
-                    ->indicateUsing(function (array $data): array {
-                        $indicators = [];
+            ->filters(array_map(
+                fn (BaseFilter $filter) => $filter->getName() === 'placed_at' ? $this->createdDateFilter() : $filter,
+                OrderResource::getTableFilters(),
+            ));
+    }
 
-                        if ($data['created_after'] ?? null) {
-                            $indicators[] = Indicator::make('Ordered after '.Carbon::parse($data['created_after'])->toFormattedDateString())
-                                ->removeField('created_after');
-                        }
+    protected function createdDateFilter(): Filter
+    {
+        return Filter::make('created_at')
+            ->form([
+                DatePicker::make('created_after')->label('Ordered after'),
+                DatePicker::make('created_before')->label('Ordered before'),
+            ])
+            ->query(fn (Builder $query, array $data): Builder => $query
+                ->when(
+                    $data['created_after'] ?? null,
+                    fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                )
+                ->when(
+                    $data['created_before'] ?? null,
+                    fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                ))
+            ->indicateUsing(function (array $data): array {
+                $indicators = [];
 
-                        if ($data['created_before'] ?? null) {
-                            $indicators[] = Indicator::make('Ordered before '.Carbon::parse($data['created_before'])->toFormattedDateString())
-                                ->removeField('created_before');
-                        }
+                if ($data['created_after'] ?? null) {
+                    $indicators[] = Indicator::make('Ordered after '.Carbon::parse($data['created_after'])->toFormattedDateString())
+                        ->removeField('created_after');
+                }
 
-                        return $indicators;
-                    }),
-                SelectFilter::make('tags')
-                    ->label(__('lunarpanel::order.table.tags.label'))
-                    ->multiple()
-                    ->relationship('tags', 'value'),
-            ]);
+                if ($data['created_before'] ?? null) {
+                    $indicators[] = Indicator::make('Ordered before '.Carbon::parse($data['created_before'])->toFormattedDateString())
+                        ->removeField('created_before');
+                }
+
+                return $indicators;
+            });
     }
 }
