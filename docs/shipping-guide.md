@@ -51,6 +51,19 @@ The order is now marked **Dispatched** and the customer has been emailed their t
 
 ![Print Shipping Label button](images/shipping/5-label-bought.png)
 
+## Tracking an order
+
+**What the customer sees.** As soon as you buy the label, the customer gets an "Order shipped" email with the carrier, the tracking number, and a **Track your package** button. Customers with an account also see the same tracking on their order page on the website.
+
+![Order shipped email](images/shipping/6-shipped-email.png)
+
+**Where you can check it.**
+
+- **In the admin** — open the order and scroll to **Additional Information** on the right. It lists the carrier, the tracking number, and the tracking link for that order.
+- **In EasyPost** — open **Trackers** in the EasyPost menu to see the delivery status of every parcel in one place. You can search by tracking number or by the order number.
+
+Tracking can take up to 24 hours to show movement after a label is bought. The order stays **Dispatched** in the admin; it does not change by itself when the parcel is delivered.
+
 ## Good to know
 
 - **One label per order.** Once a label is bought, the buy button is replaced by the print button. You can reprint as often as you like.
