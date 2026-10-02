@@ -369,7 +369,7 @@ class EasyPostShippingLabelTest extends TestCase
                 'from_name' => 'Sam Sender',
                 'from_street1' => '9 Depot St',
                 'from_city' => 'Miami',
-                'from_state' => 'fl',
+                'from_state' => 'FL',
                 'from_zip' => '33101',
                 'from_phone' => '5555550199',
                 'parcel_weight_oz' => 12,
@@ -386,6 +386,16 @@ class EasyPostShippingLabelTest extends TestCase
             && $request['shipment']['from_address']['state'] === 'FL'
             && $request['shipment']['from_address']['country'] === 'US'
             && $request['shipment']['parcel']['weight'] === 12.0);
+    }
+
+    public function test_the_ship_from_state_must_be_a_us_state(): void
+    {
+        $this->signInAsAdmin();
+
+        Livewire::test(ShippingSettings::class)
+            ->fillForm(['from_state' => 'Amman'])
+            ->call('save')
+            ->assertHasFormErrors(['from_state']);
     }
 
     public function test_the_ship_from_address_is_required_in_the_admin(): void
