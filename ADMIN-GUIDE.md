@@ -119,6 +119,14 @@ This is almost always faster than asking a developer, and it's the first place t
 
 ---
 
+## 4b. Shipping labels
+
+**Website → Shipping Settings**, and the **Buy Shipping Label** button on each order
+
+Shipping labels are bought and printed from the order screen, and the customer is emailed their tracking number automatically. Setup and day-to-day steps, with screenshots, are in the **[Shipping guide](docs/shipping-guide.md)**.
+
+---
+
 ## 5. Customers
 
 **Sales → Customers** — look up a customer's contact details and order history. Customer accounts are created automatically when someone checks out or registers; there's no need to create them manually.
