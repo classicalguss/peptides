@@ -34,7 +34,7 @@ class VerifiedCryptoCheckoutTest extends TestCase
         Currency::factory()->create(['code' => 'USD', 'default' => true, 'enabled' => true]);
         Channel::factory()->create(['default' => true]);
         TaxClass::factory()->create(['default' => true]);
-        $this->country = Country::factory()->create();
+        $this->country = Country::factory()->create(['name' => 'United States', 'iso2' => 'US']);
 
         config([
             'verified-crypto.enabled' => true,

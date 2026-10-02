@@ -9,9 +9,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Lunar\Facades\CartSession;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\Country;
 use Lunar\Models\Order;
 
 class CheckoutController extends Controller
@@ -80,14 +82,19 @@ class CheckoutController extends Controller
             'line_one' => ['required', 'string', 'max:255'],
             'line_two' => ['nullable', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'postcode' => ['required', 'string', 'max:32'],
-            'country_id' => ['required', 'integer', 'exists:lunar_countries,id'],
+            'state' => ['required', 'string', Rule::in(array_keys(config('shipping.states')))],
+            'postcode' => ['required', 'string', 'regex:/^\d{5}(-\d{4})?$/'],
             'shipping_option' => ['required', 'string'],
             'research_use_confirmed' => ['accepted'],
         ], [
             'research_use_confirmed.accepted' => 'You must confirm these products are for research use only.',
+            'state.in' => 'Please choose a US state. We only ship within the United States.',
+            'postcode.regex' => 'Please enter a valid US ZIP code.',
         ]);
+
+        // Orders ship within the United States only, so the country is never
+        // taken from the request.
+        $data['country_id'] = Country::query()->where('iso2', config('shipping.country'))->valueOrFail('id');
 
         $address = collect($data)->only([
             'first_name', 'last_name', 'company_name', 'line_one', 'line_two',

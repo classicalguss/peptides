@@ -6,10 +6,13 @@ use App\FieldTypes\Textarea;
 use App\FieldTypes\TextList;
 use App\Filament\Extensions\CustomerGroupPricingRelationManagerExtension;
 use App\Filament\Extensions\EditProductPageExtension;
+use App\Filament\Extensions\ManageOrderPageExtension;
+use App\Filament\Extensions\OrderResourceExtension;
 use App\Filament\Extensions\ProductResourceExtension;
 use App\Filament\Extensions\ProductVariantResourceExtension;
 use App\Filament\FieldTypes\TextareaField;
 use App\Filament\FieldTypes\TextListField;
+use App\Filament\Pages\ShippingSettings;
 use App\Filament\Resources\CoaReportResource;
 use App\Filament\Resources\PolicyResource;
 use App\Filament\Resources\ProductTextSearchResource;
@@ -20,6 +23,8 @@ use App\Payments\VerifiedCryptoSignature;
 use App\Shipping\FlatRateShipping;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Admin\Filament\Resources\OrderResource;
+use Lunar\Admin\Filament\Resources\OrderResource\Pages\ManageOrder;
 use Lunar\Admin\Filament\Resources\ProductResource;
 use Lunar\Admin\Filament\Resources\ProductResource\Pages\EditProduct;
 use Lunar\Admin\Filament\Resources\ProductResource\RelationManagers\CustomerGroupPricingRelationManager;
@@ -52,14 +57,19 @@ class AppServiceProvider extends ServiceProvider
                     PolicyResource::class,
                     ProductTextSearchResource::class,
                 ])
+                ->pages([
+                    ShippingSettings::class,
+                ])
                 ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
                 ->navigationGroups([
                     'Website',
                 ])
         )->extensions([
+            OrderResource::class => OrderResourceExtension::class,
             ProductResource::class => ProductResourceExtension::class,
             ProductVariantResource::class => ProductVariantResourceExtension::class,
             EditProduct::class => EditProductPageExtension::class,
+            ManageOrder::class => ManageOrderPageExtension::class,
             CustomerGroupPricingRelationManager::class => CustomerGroupPricingRelationManagerExtension::class,
         ])->register();
 
