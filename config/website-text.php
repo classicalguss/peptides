@@ -27,7 +27,7 @@ return [
     // Shared site content.
     'global.meta_description' => $item('Shared Site Content', 'Search & Sharing', 'Default search description', 'Third-party tested research peptides and stack protocols. 99%+ purity, published COA for every batch.', 'Used by search engines and link previews when a page has no custom description.', 'home', 10),
     'global.announcement_title' => $item('Shared Site Content', 'Top Announcement', 'Announcement heading', 'Research Use Only', 'Gold message at the very top of every page.', 'home', 20),
-    'global.announcement_detail' => $item('Shared Site Content', 'Top Announcement', 'Announcement details', 'Third-party tested · 99%+ purity · Free shipping over $200', 'Small text beside the gold announcement on larger screens.', 'home', 30),
+    'global.announcement_detail' => $item('Shared Site Content', 'Top Announcement', 'Announcement details', 'Third-party tested · 99%+ purity · Free shipping over $300', 'Small text beside the gold announcement on larger screens.', 'home', 30),
     'global.nav_shop' => $item('Shared Site Content', 'Main Menu', 'Shop menu item', 'Shop', 'Main navigation on desktop and in the mobile menu.', 'shop', 40),
     'global.nav_collections' => $item('Shared Site Content', 'Main Menu', 'Collections menu item', 'Stacks', 'Main navigation on desktop and in the mobile menu.', 'stacks', 50),
     'global.nav_lab_reports' => $item('Shared Site Content', 'Main Menu', 'Lab reports menu item', 'Lab Reports', 'Main navigation on desktop and in the mobile menu.', 'lab-reports', 60),
@@ -135,7 +135,7 @@ return [
     'cart.meta_title' => $item('Cart Page', 'Search & Sharing', 'Browser tab title', 'Your Cart — Powered Up Peptides', 'Browser tab title of the cart page.', 'cart', 2),
     'cart.empty_title' => $item('Cart Page', 'Empty Cart', 'Empty-cart heading', 'Nothing in here yet', 'Heading shown when the shopping cart is empty.', 'cart', 8),
     'cart.empty_description' => $item('Cart Page', 'Empty Cart', 'Empty-cart description', 'Start with a stack protocol built around your research goal, or browse the compound library and build your own.', 'Paragraph shown when the shopping cart is empty.', 'cart', 10),
-    'cart.shipping_unlocked' => $item('Cart Page', 'Order Summary', 'Free-shipping unlocked message', 'Free standard shipping unlocked.', 'Gold message when the cart qualifies for free shipping.', 'cart', 30),
+    'cart.shipping_unlocked' => $item('Cart Page', 'Order Summary', 'Free-shipping unlocked message', 'Free priority shipping unlocked.', 'Gold message when the cart qualifies for free shipping.', 'cart', 30),
     'cart.empty_collections_button' => $item('Cart Page', 'Empty Cart', 'Collections button', 'Shop Stack Protocols', 'Gold button shown when the shopping cart is empty.', 'cart', 20),
     'cart.disclaimer_heading' => $item('Cart Page', 'Checkout Disclaimer', 'Disclaimer heading', 'Research-use disclaimer', 'Gold heading above the required acceptance checkbox.', 'cart', 30),
     'cart.disclaimer_text' => $item('Cart Page', 'Checkout Disclaimer', 'Required acceptance text', 'I confirm that I am a qualified researcher aged 21 or over and that these products are strictly for in-vitro laboratory research only. They are not for human or veterinary consumption, diagnostic use, or therapeutic use.', 'Text beside the required checkbox before checkout.', 'cart', 40),

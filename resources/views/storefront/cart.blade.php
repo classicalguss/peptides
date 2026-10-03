@@ -58,7 +58,7 @@
                         <div class="rounded-2xl panel p-5">
                             <p class="text-sm text-white/70">
                                 Add <span class="font-bold text-gold">{{ Catalog::money($remaining) }}</span>
-                                more to unlock <span class="font-bold text-white">free standard shipping</span>.
+                                more to unlock <span class="font-bold text-white">free priority shipping</span>.
                             </p>
                             <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/8">
                                 <div class="h-full rounded-full bg-gold" style="width: {{ $progress }}%"></div>

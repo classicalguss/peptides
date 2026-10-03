@@ -58,14 +58,35 @@ class FlatRateShippingTest extends TestCase
     {
         $this->cartWithSubtotal(5000);
 
-        $this->assertSame(1200, $this->standardRate());
+        $this->assertSame(1500, $this->standardRate());
     }
 
     public function test_standard_shipping_is_free_at_or_above_the_threshold(): void
     {
-        $this->cartWithSubtotal(20000);
+        $this->cartWithSubtotal(30000);
 
         $this->assertSame(0, $this->standardRate());
+    }
+
+    public function test_the_options_are_named_and_priced_as_the_store_advertises(): void
+    {
+        $this->cartWithSubtotal(5000);
+        $cart = CartSession::current();
+
+        $priority = ShippingManifest::getOption($cart, 'STANDARD');
+        $express = ShippingManifest::getOption($cart, 'EXPRESS');
+
+        $this->assertSame('Priority Shipping', $priority->name);
+        $this->assertSame('3-5 days, discreet packaging', $priority->description);
+        $this->assertSame('Express Shipping', $express->name);
+        $this->assertSame(5000, $express->price->value);
+    }
+
+    public function test_free_priority_shipping_is_labelled_as_such(): void
+    {
+        $this->cartWithSubtotal(30000);
+
+        $this->assertSame('Free Priority Shipping', ShippingManifest::getOption(CartSession::current(), 'STANDARD')->name);
     }
 
     public function test_a_zero_threshold_makes_every_order_ship_free(): void

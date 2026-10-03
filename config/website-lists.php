@@ -162,7 +162,7 @@ return [
             ['body' => 'Third-party HPLC tested'],
             ['body' => 'Ships within 24 hours'],
             ['body' => 'Lyophilized powder'],
-            ['body' => 'Free shipping over $200'],
+            ['body' => 'Free shipping over $300'],
         ],
     ],
     'supply_product.trust' => [
@@ -177,7 +177,7 @@ return [
             ['body' => 'Third-party tested'],
             ['body' => 'Ships within 24 hours'],
             ['body' => 'Sterile solution'],
-            ['body' => 'Free shipping over $200'],
+            ['body' => 'Free shipping over $300'],
         ],
     ],
     'collection_product.trust' => [
@@ -192,7 +192,7 @@ return [
             ['body' => 'Bacteriostatic water included'],
             ['body' => 'COA published per batch'],
             ['body' => 'Ships within 24 hours'],
-            ['body' => 'Free shipping over $200'],
+            ['body' => 'Free shipping over $300'],
         ],
     ],
     'confirmation.steps' => [

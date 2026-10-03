@@ -15,11 +15,11 @@
 
 return [
 
-    'free_threshold' => (int) env('SHIPPING_FREE_THRESHOLD', 20000),
+    'free_threshold' => (int) env('SHIPPING_FREE_THRESHOLD', 30000),
 
-    'standard_rate' => (int) env('SHIPPING_STANDARD_RATE', 1200),
+    'standard_rate' => (int) env('SHIPPING_STANDARD_RATE', 1500),
 
-    'express_rate' => (int) env('SHIPPING_EXPRESS_RATE', 2500),
+    'express_rate' => (int) env('SHIPPING_EXPRESS_RATE', 5000),
 
     /*
     |--------------------------------------------------------------------------
