@@ -27,6 +27,20 @@ if (! function_exists('site_list')) {
     }
 }
 
+if (! function_exists('canonical_url')) {
+    /**
+     * The search-engine canonical form of a storefront URL: the configured
+     * APP_URL host (so www/IP/http variants all collapse to one), the path,
+     * and no query string (filters, sorting and image pickers aren't pages).
+     */
+    function canonical_url(?string $url = null): string
+    {
+        $path = parse_url($url ?? url()->current(), PHP_URL_PATH) ?: '/';
+
+        return rtrim((string) config('app.url'), '/').$path;
+    }
+}
+
 if (! function_exists('foil_last_words')) {
     /**
      * Safely retain the storefront's highlighted heading style for plain text.
