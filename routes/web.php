@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorefrontController;
 use App\Http\Controllers\VerifiedCryptoWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::get('/stacks/{slug}', [StorefrontController::class, 'stack'])->name('stac
 Route::get('/peptides/{slug}', [StorefrontController::class, 'compound'])->name('compound');
 Route::get('/policies/{policy}', [PolicyController::class, 'show'])->name('policy');
 Route::get('/lab-reports', [StorefrontController::class, 'labReports'])->name('lab-reports');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart', [CartController::class, 'add'])->name('cart.add');

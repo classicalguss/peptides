@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Powered Up Peptides' }}</title>
     <meta name="description" content="{{ $description ?? site_text('global.meta_description') }}">
+    @if (request()->routeIs('cart', 'checkout', 'checkout.*', 'login', 'register', 'account', 'account.*'))
+        <meta name="robots" content="noindex">
+    @else
+        <link rel="canonical" href="{{ canonical_url() }}">
+    @endif
     <link rel="icon" href="{{ asset('favicon.ico') }}?v=1" sizes="48x48">
     <link rel="icon" href="{{ asset('favicon-32x32.png') }}" type="image/png" sizes="32x32">
     <link rel="icon" href="{{ asset('favicon-16x16.png') }}" type="image/png" sizes="16x16">
